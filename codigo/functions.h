@@ -1,0 +1,35 @@
+#include "structures.h"
+
+is_static_list* insert_static_list( is_static_list* list, is_static_list* stat );
+is_static_list* insert_d_static( is_declaracao* dec );
+is_static_list* insert_a_static( is_atributo* atributo );
+is_static_list* insert_m_static( is_metodo* metodo );
+is_atributo* insert_atributo( char* nome, is_expressao *exp );
+is_atribuicao_list* insert_atribuicao_list( is_atribuicao_list* list, is_atributo* attr );
+is_statement_list* insert_a_statement( is_atributo* attr );
+is_statement_list* insert_d_statement( is_declaracao* dec );
+is_statement_list* insert_p_statement( is_print* print);
+is_statement_list* insert_i_statement( is_if* ii);
+is_statement_list* insert_w_statement( is_while* iw);
+is_statement_list* insert_statement_list( is_statement_list* list, is_statement_list* stts );
+is_declaracao* insert_declaracao( is_atribuicao_list* list, is_tipo tipo);
+is_metodo* insert_metodo( is_tipo tipo, char* nome, is_argumento_list *arg_list, is_statement_list *list );
+is_expressao_list* insert_expression_list( is_expressao_list* list, is_expressao* exp );
+is_expressao* insert_i_expression(is_infix_expression*);
+is_expressao* insert_u_expression(is_unary_expression*);
+is_expressao* insert_NUMBER(int);
+is_expressao* insert_VAR( char* var );
+is_infix_expression* insert_infix_expression(is_expressao*, is_operador, is_expressao*);
+is_unary_expression* insert_unary_expression(is_expressao*);
+is_argumento* insert_argumento( is_tipo tipo, char* nome );
+is_argumento_list* insert_argumento_list( is_argumento_list* list, is_argumento* arg );
+is_print* insert_print( is_expressao* exp, char fim);
+is_b_expressao* insert_b_tf_expressao( char boolean  );
+is_b_expressao* insert_comparacao(is_expressao* exp1, is_comparator comp, is_expressao* exp2);
+is_b_expressao* insert_b_n_expressao(is_b_expressao* exp);
+is_b_expressao* insert_b_i_expressao(is_b_expressao* exp1, is_b_operator op, is_b_expressao* exp2);
+is_if* insert_if(is_b_expressao* exp, is_statement_list* stt);
+is_while* insert_while(is_b_expressao* exp, is_statement_list* stt);
+is_for* insert_for(is_statement_list* att, is_b_expressao* ibe, is_expressao* ie, is_statement_list* stt);
+is_statement_list* insert_f_statement( is_for* isf);
+is_statement_list* insert_as_statement( is_atribuicao_list* attr );

@@ -1,0 +1,22 @@
+Caso de teste actual: test3.p
+
+
+O que está feito:
+
+test1.p:
+	- Contas simples
+
+test2.p:
+	- Definição da classe
+
+test3.p:
+	- Definição de atributos e métodos estáticos (globais)
+	- Argumentos de métodos
+
+test4.p:
+    - Permitir inicializar mais do que uma variável por linha
+
+O que falta fazer:
+
+test4.p:
+	- Permitir receber mais do que inteiros (ver test4.p linha 6 e 7)

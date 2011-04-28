@@ -1,0 +1,169 @@
+#ifndef _STRUCTURES_
+#define _STRUCTURES_
+
+/*is_operador -> is_PLUS or is_MINUS or is_MULT or is_DIVIDE*/
+typedef enum {is_PLUS, is_MINUS, is_MULT, is_DIVIDE} is_operador;
+
+typedef enum {is_AND, is_OR, is_NOT} is_b_operator;
+
+typedef enum {is_GREATER, is_LESSER, is_GREATEQ, is_LESSEQ, is_EQUALS, is_DIFERENT} is_comparator;
+
+typedef enum {is_INT, is_STRING, is_VOID, is_FLOAT, is_DOUBLE, is_BOOLEAN, is_CHAR, is_NONE} is_tipo;
+
+typedef enum {d_declaracao, d_atribuicao, d_metodo} tipo_static;
+
+typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for} tipo_statement;
+
+typedef enum {d_expression} tipo_print;
+
+/*is_ expression  -> is_infix_ expression  or is_unary_expression 
+			   or is_NUMBER*/
+
+typedef enum {d_infix_exp, d_unary_exp, d_number, d_var} tipo_expressao;
+
+typedef enum {d_tf, d_comparison, d_infix_b_exp, d_not_b_exp} tipo_b_expressao;
+
+typedef struct _a0 {
+	tipo_static tipo;
+	union {
+		struct is_atributo* u_atributo;
+		struct is_declaracao* u_declaracao;
+		struct is_metodo* u_metodo;
+	} conteudo;
+} is_static;
+
+typedef struct _a1 {
+	is_tipo tipo;
+	char* nome;
+	struct is_expressao* exp;
+} is_atributo;
+
+typedef struct _a2 {
+	is_tipo tipo;
+	char* nome;
+	struct is_argumento_list* arg_list;
+	struct is_statement_list* list;
+} is_metodo;
+
+typedef struct _a3 {
+	tipo_expressao tipo;
+	union {
+		struct is_infix_expression* u_infix_exp;
+		struct is_unary_expression* u_unary_exp;
+		int number;
+		char* var;
+	} conteudo;
+} is_expressao;
+
+/*is_infix_expression  -> 
+	(<exp1: is_expressao><operador:is_operador><exp2:is_expressao>)*/
+typedef struct _a4 {
+	is_expressao  *exp1;
+	is_operador operador;
+	is_expressao  *exp2;
+} is_infix_expression;
+
+/*is_unary_expression  -> (<exp: is_expressao>)*/
+typedef struct _a5 {
+	is_expressao  *exp;
+} is_unary_expression;
+
+typedef struct _a6 {
+	is_expressao* expr;
+	struct _a6* next;
+} is_expressao_list;
+
+typedef struct _a7 {
+	is_static* stat;
+	struct _a7* next;
+} is_static_list;
+
+typedef struct _a8 {
+    is_tipo tipo;
+    char* nome;
+} is_argumento;
+
+typedef struct _a9 {
+    is_argumento* arg;
+    struct _a9* next;
+} is_argumento_list;
+
+typedef struct _a11 {
+    is_atributo* attr;
+    struct _a11* next;
+} is_atribuicao_list;
+
+typedef struct _a12 {
+    tipo_statement tipo;
+    union {
+		struct is_atributo* u_atributo;
+		struct is_declaracao* u_declaracao;
+		struct is_print* u_print;
+		struct is_if* u_if;
+		struct is_while* u_while;
+		struct is_for* u_for;
+	} conteudo;
+} is_statement;
+
+typedef struct _a13 {
+    is_statement* stt;
+    struct _a13* next;
+} is_statement_list;
+
+typedef struct _a14 {
+    tipo_print tipo;
+    char fim;
+    union {
+        struct is_expressao* u_p_exp;
+    } conteudo;
+} is_print;
+
+typedef struct _a15 {
+    is_tipo tipo;
+    is_atribuicao_list* list;
+} is_declaracao;
+
+typedef struct _a16 {
+    tipo_b_expressao tipo;
+    union {
+        char boolean;
+        struct is_b_infix_expressao* u_infix_b_exp;
+        struct is_b_not_expressao* u_not_b_exp;
+        struct is_comparison* u_comp;
+    } conteudo;
+} is_b_expressao;
+
+typedef struct _a17 {
+    is_b_expressao* exp1;
+    is_b_operator op;
+    is_b_expressao* exp2;
+} is_b_infix_expressao;
+
+typedef struct _a18 {
+    is_expressao* exp1;
+    is_comparator op;
+    is_expressao* exp2;
+} is_comparison;
+
+typedef struct _a19 {
+    is_b_expressao* exp;
+} is_b_not_expressao;
+
+typedef struct _a20 {
+    is_b_expressao* exp;
+    is_statement_list* stt;
+} is_if;
+
+typedef struct _a21 {
+    is_b_expressao* exp;
+    is_statement_list* stt;
+} is_while;
+
+typedef struct _a22 {
+    is_statement_list* attr;
+    is_b_expressao* b_exp;
+    is_expressao* exp;
+    is_statement_list* stt;
+} is_for;
+
+#endif
