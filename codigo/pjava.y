@@ -213,7 +213,7 @@ int main()
 
 int yyerror(char* s)
 {
-	printf("%s\n", s);
+	printf("line %d: %s\n", line, s);
 	return 0;
 }
 
