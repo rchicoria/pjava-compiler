@@ -32,9 +32,9 @@ void semantic_analysis_block(prog_env *pe, is_static* is)
 	//faz a triagem do bloco a analisar
 	switch(is->tipo)
 	{
-		case is_atributo: semantic_analysis_atribuicao(pe, is->conteudo.u_atributo);break;
-		case is_declaracao: semantic_analysis_declaration(pe, is->conteudo.u_declaracao);break;
-		case is_metodo: semantic_analysis_method(pe, is->conteudo.u_metodo);break;
+		case d_atribuicao: semantic_analysis_atribuicao(pe, pe->global, (is_atributo *)(is->conteudo.u_atributo));break;
+		case d_declaracao: semantic_analysis_declaration(pe, (is_declaracao *)(is->conteudo.u_declaracao));break;
+		case d_metodo: semantic_analysis_method(pe, (is_metodo *)(is->conteudo.u_metodo));break;
 	/*
 	case d_procedure: semantic_analysis_procedure(pe, ip->data_block.u_procedure);  break;
 	case d_globals: semantic_analysis_globals(pe, ip->data_block.u_globals);break;
@@ -79,7 +79,7 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//faz an‡lise sem‰ntica do procedimento
 		//  aqui que vai adicionando os s’mbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
 		semantic_analysis_argumento_list(LOCALSCOPE, pe, pl->locals, im->arg_list);
-		semantic_analysis_statement_list(pe, pl->locals, im->list);
+		semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
 		semantic_analysis_statement_list(pe, pl->locals, im->slist);
@@ -134,7 +134,7 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	
 	//procura por uma vari‡vel com o mesmo nome
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
-		if(strcmp(ia->nome, aux->nome)==0){
+		if(strcmp(ia->nome, aux->name)==0){
 			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
 			return stmp;
 		}
@@ -147,7 +147,7 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	return stmp;
 }
 
-table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_element* stable, is_atributo* ia)
+table_element* semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atributo* ia)
 {
 	table_element *aux, *last, *stmp=stable;
 
@@ -161,7 +161,7 @@ table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_elem
 	
 	//procura por uma vari‡vel com o mesmo nome
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
-		if(strcmp(ia->nome, aux->nome)!=0){
+		if(strcmp(ia->nome, aux->name)!=0){
 			printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
 			return stmp;
 		}
