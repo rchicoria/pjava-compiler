@@ -10,7 +10,7 @@ enum {LOCALSCOPE, GLOBALSCOPE};
 int global_offset=0;
 int maincount;
 
-prog_env* semantic_analysis(is_static_list* isl) //an‡lise sem‰ntica da lista de blocos, ou seja do nosso programa
+prog_env* semantic_analysis(is_static_list* isl) //an‡ltyise sem‰ntica da lista de blocos, ou seja do nosso programa
 {
 	is_static_list *aux;
 
