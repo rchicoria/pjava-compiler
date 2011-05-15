@@ -368,8 +368,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 34
-#define YY_END_OF_BUFFER 35
+#define YY_NUM_RULES 35
+#define YY_END_OF_BUFFER 36
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -379,9 +379,9 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[117] =
     {   0,
-        0,    0,   35,   33,   31,   31,   33,   33,    1,   32,
-       23,   33,   22,   30,   30,   30,   30,   30,   30,   30,
-       30,   30,   30,   30,   30,   33,   21,   18,    1,   25,
+        0,    0,   36,   34,   31,   32,   34,   34,    1,   33,
+       23,   34,   22,   30,   30,   30,   30,   30,   30,   30,
+       30,   30,   30,   30,   30,   34,   21,   18,    1,   25,
        20,   24,   30,   30,   30,   30,   30,   30,   30,   15,
        30,   30,   30,   12,   30,   30,   30,   30,   30,   30,
        30,   19,   30,   30,   30,   30,   30,   30,   30,   30,
@@ -964,7 +964,6 @@ YY_RULE_SETUP
                  }
 	YY_BREAK
 case 31:
-/* rule 31 can match eol */
 YY_RULE_SETUP
 #line 59 "pjava.l"
 {//	Os espaços, tabs e parágrafos servem para separar os elementos
@@ -972,20 +971,26 @@ YY_RULE_SETUP
 				}
 	YY_BREAK
 case 32:
-#line 64 "pjava.l"
-case 33:
+/* rule 32 can match eol */
 YY_RULE_SETUP
-#line 64 "pjava.l"
+#line 63 "pjava.l"
+{line++;}
+	YY_BREAK
+case 33:
+#line 66 "pjava.l"
+case 34:
+YY_RULE_SETUP
+#line 66 "pjava.l"
 {// Recebe o resto como texto normal
 					return yytext[0];
 				}
 	YY_BREAK
-case 34:
+case 35:
 YY_RULE_SETUP
-#line 68 "pjava.l"
+#line 70 "pjava.l"
 ECHO;
 	YY_BREAK
-#line 989 "lex.yy.c"
+#line 994 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1983,7 +1988,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 68 "pjava.l"
+#line 70 "pjava.l"
 
 
 int yywrap()

@@ -40,6 +40,7 @@ typedef struct _a1 {
 	is_tipo tipo;
 	char* nome;
 	struct is_expressao* exp;
+	int codeline;
 } is_atributo;
 
 typedef struct _a2 {
@@ -47,6 +48,7 @@ typedef struct _a2 {
 	char* nome;
 	struct is_argumento_list* arg_list;
 	struct is_statement_list* list;
+	int codeline;
 } is_metodo;
 
 typedef struct _a3 {
@@ -57,6 +59,7 @@ typedef struct _a3 {
 		int number;
 		char* var;
 	} conteudo;
+	int codeline;
 } is_expressao;
 
 /*is_infix_expression  -> 
@@ -120,11 +123,13 @@ typedef struct _a14 {
     union {
         struct is_expressao* u_p_exp;
     } conteudo;
+    int codeline;
 } is_print;
 
 typedef struct _a15 {
     is_tipo tipo;
     is_atribuicao_list* list;
+    int codeline;
 } is_declaracao;
 
 typedef struct _a16 {
@@ -135,6 +140,7 @@ typedef struct _a16 {
         struct is_b_not_expressao* u_not_b_exp;
         struct is_comparison* u_comp;
     } conteudo;
+    int codeline;
 } is_b_expressao;
 
 typedef struct _a17 {
@@ -156,11 +162,13 @@ typedef struct _a19 {
 typedef struct _a20 {
     is_b_expressao* exp;
     is_statement_list* stt;
+    int codeline;
 } is_if;
 
 typedef struct _a21 {
     is_b_expressao* exp;
     is_statement_list* stt;
+    int codeline;
 } is_while;
 
 typedef struct _a22 {
@@ -168,6 +176,7 @@ typedef struct _a22 {
     is_b_expressao* b_exp;
     is_expressao* exp;
     is_statement_list* stt;
+    int codeline;
 } is_for;
 
 #endif
