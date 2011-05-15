@@ -50,8 +50,8 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 	
 	environment_list *pl;
 
-	if(lookup(pe->global, im->name))
-		printf("Symbol %s already defined! Cannot create method!\n", im->name);
+	if(lookup(pe->global, im->nome))
+		printf("Symbol %s already defined! Cannot create method!\n", im->nome);
 	else
 	{
 		pl=(environment_list*)malloc(sizeof(environment_list)); //cria um nodo para a lista de ambientes 
@@ -65,15 +65,15 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//Serve apenas para facilitar na pesquisa (na realidade, Ž uma redundncia, pois
 		//haver‡ tambŽm uma entrada na lista de ambientes)
 		if(te==NULL)
-			pe->global=create_symbol(-1, im->name, method);
+			pe->global=create_symbol(-1, im->nome, method);
 		else
 		{
 			for(; te->next; te=te->next);					
-			te->next=create_symbol(-1, im->name, method);		
+			te->next=create_symbol(-1, im->nome, method);		
 		}
 		
 		//preenche entrada para o procedimento na lista de ambientes
-		pl->name=(char*)strdup(im->name);	
+		pl->name=(char*)strdup(im->nome);	
 		pl->locals=(table_element*)malloc(sizeof(table_element));
 
 		//faz an‡lise sem‰ntica do procedimento
@@ -134,16 +134,15 @@ table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_elem
 	
 	//procura por uma vari‡vel com o mesmo nome
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
-		if(strcmp(ia->nome, aux->nome)==0)
-			break;
+		if(strcmp(ia->nome, aux->nome)==0){
+			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
+			return stmp;
+		}
 	
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
 		stmp=create_symbol(offset, ia->nome, ia->tipo);	//criar um símbolo na cabeça da lista de símbolos, stable
 	else
-		if(last->next==NULL)		//se n‹o existe 
-			last->next=create_symbol(offset, ia->nome, ia->tipo);	//coloca no final da stable
-		else				//EXISTE! J‡ est‡ definida!!!
-			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
+		last->next=create_symbol(offset, ia->nome, ia->tipo);	//nao existe mas tabela tem elementos - coloca no final da stable
 	
 	return stmp;
 }
