@@ -5,8 +5,8 @@ prog_env* semantic_analysis(is_static_list*);
 void semantic_analysis_block(prog_env*, is_static*);
 void semantic_analysis_method(prog_env*, is_metodo*);
 void semantic_analysis_declaration(prog_env*, is_declaracao*);
-table_element* semantic_analysis_atribuicao_list(int, prog_env*, table_element*, is_atribuicao_list*);
-table_element* semantic_analysis_atribuicao_dec(int, prog_env*, table_element*, is_atributo*);
+table_element* semantic_analysis_atribuicao_list(int, prog_env*, table_element*, is_atribuicao_list*, is_tipo);
+table_element* semantic_analysis_atribuicao_dec(int, prog_env*, table_element*, is_atributo*, is_tipo);
 table_element* semantic_analysis_atribuicao(prog_env*, table_element*, is_atributo*);
 void semantic_analysis_argumento_list(int, prog_env*, table_element*, is_argumento_list*);
 void semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*);
@@ -24,6 +24,6 @@ void semantic_analysis_write_stat(prog_env *pe, table_element* env, is_write_sta
 void semantic_analysis_assgn_stat(prog_env *pe, table_element* stable, is_assgn_stat* ias);
 void semantic_analysis_call_stat(prog_env *pe, table_element* env, is_call_stat* ics);
 */
-char* typeToString(int type);
-table_element* create_symbol(int offset, char* name, basic_type type);
+char* typeToString(is_tipo type);
+table_element* create_symbol(int offset, char* name, is_tipo type);
 table_element *lookup(table_element* table, char *str);

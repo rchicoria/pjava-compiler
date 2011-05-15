@@ -32,11 +32,11 @@ is_static_list* insert_a_static( is_atributo* atributo )
 {
 	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );	//Cria novo nó na lista
 	
-	is_static* is = (is_static*) malloc( sizeof(is_static) );
+	/*is_static* is = (is_static*) malloc( sizeof(is_static) );
 	is->tipo = d_atribuicao;				//Coloca etiqueta a informar que é um "metodo"
 	is->conteudo.u_atributo = (struct is_atributo*) atributo;	//Guarda o conteúdo
 	
-	isl->stat=is;
+	isl->stat=is;*/
 		
 	return isl;		
 }
@@ -84,7 +84,6 @@ is_atributo* insert_atributo( int line, char* nome, is_expressao *exp )
     is_atributo *ia = (is_atributo*) malloc( sizeof(is_atributo) );
     ia->nome = nome;		//Guarda nome
     ia->exp = (struct is_expressao*) exp;			//Guarda expressão
-    ia->tipo = is_NONE;
     ia->codeline = line;
     return ia;
 }

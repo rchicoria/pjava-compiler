@@ -98,8 +98,7 @@ statics:	statics static	{$$=insert_static_list($1, $2);}
 		|	static			{$$=insert_static_list(NULL, $1); isl=$$;}
 		;
 
-static:		STATIC attribution ';'	{$$=insert_a_static($2);}
-        |   STATIC declaration      {$$=insert_d_static($2);}
+static:		STATIC declaration      {$$=insert_d_static($2);}
 		|	method			        {$$=insert_m_static($1);}
 		;
 		

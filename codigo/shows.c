@@ -19,10 +19,10 @@ void show_static(is_static* is)
 {
 	switch(is->tipo)
 	{
-		case d_atribuicao:	printf("atributo(");
+		/*case d_atribuicao:	printf("atributo(");
 							show_attribute((is_atributo*)is->conteudo.u_atributo);
 							printf(")");
-							break;
+							break;*/
 		case d_metodo:		printf("metodo(");
 							show_method((is_metodo*)is->conteudo.u_metodo);
 							printf(")");

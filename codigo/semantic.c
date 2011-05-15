@@ -32,7 +32,7 @@ void semantic_analysis_block(prog_env *pe, is_static* is)
 	//faz a triagem do bloco a analisar
 	switch(is->tipo)
 	{
-		case d_atribuicao: semantic_analysis_atribuicao(pe, pe->global, (is_atributo *)(is->conteudo.u_atributo));break;
+		//case d_atribuicao: semantic_analysis_atribuicao_dec(pe, pe->global, (is_atributo *)(is->conteudo.u_atributo));break;
 		case d_declaracao: semantic_analysis_declaration(pe, (is_declaracao *)(is->conteudo.u_declaracao));break;
 		case d_metodo: semantic_analysis_method(pe, (is_metodo *)(is->conteudo.u_metodo));break;
 	/*
@@ -65,11 +65,11 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//Serve apenas para facilitar na pesquisa (na realidade, Ž uma redundncia, pois
 		//haver‡ tambŽm uma entrada na lista de ambientes)
 		if(te==NULL)
-			pe->global=create_symbol(-1, im->nome, method);
+			pe->global=create_symbol(-1, im->nome, is_VOID);
 		else
 		{
 			for(; te->next; te=te->next);					
-			te->next=create_symbol(-1, im->nome, method);		
+			te->next=create_symbol(-1, im->nome, is_VOID);		
 		}
 		
 		//preenche entrada para o procedimento na lista de ambientes
@@ -99,20 +99,20 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 //An‡lise das declara›es de vari‡veis globais
 void semantic_analysis_declaration(prog_env *pe, is_declaracao* id)
 {
-	pe->global=semantic_analysis_atribuicao_list(GLOBALSCOPE, pe, pe->global, id->list);	//0 -> global
+	pe->global=semantic_analysis_atribuicao_list(GLOBALSCOPE, pe, pe->global, id->list, id->tipo);	//0 -> global
 }
 
 
 //An‡lise de declara›es de vari‡veis
 //Ž necess‡rio saber o scope para saber onde calcular o offset das vari‡veis nos registos de activa‹o
-table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_element* stable, is_atribuicao_list* ial)
+table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_element* stable, is_atribuicao_list* ial, is_tipo tipo)
 {
 	is_atribuicao_list* aux;
 	int offset=0;
 	table_element* stmp=stable;
 
 	for(aux=ial; aux; aux=aux->next)
-		stmp=semantic_analysis_atribuicao_dec((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->attr);
+		stmp=semantic_analysis_atribuicao_dec((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->attr, tipo);
 
 	return stmp;
 }
@@ -120,7 +120,7 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 //Dependendo do scope, esta função verifica primeiro se j‡ existe a vari‡vel nas tabelas de símbolos. Não pode existir na tabela de símbolos "corrente". Apenas nas "superiores"
 //Caso exista como vari‡vel ou até como procedimento (uma vari‡vel não pode nunca ser definida local, ou globalmente, se existir um procedimento com o seu nome), emite-se uma mensagem
 //de erro
-table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia)
+table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia, is_tipo tipo)
 {
 	table_element *aux, *last, *stmp=stable;
 
@@ -138,11 +138,10 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
 			return stmp;
 		}
-	
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
-		stmp=create_symbol(offset, ia->nome, ia->tipo);	//criar um símbolo na cabeça da lista de símbolos, stable
+		stmp=create_symbol(offset, ia->nome, tipo);	//criar um símbolo na cabeça da lista de símbolos, stable
 	else
-		last->next=create_symbol(offset, ia->nome, ia->tipo);	//nao existe mas tabela tem elementos - coloca no final da stable
+		last->next=create_symbol(offset, ia->nome, tipo);	//nao existe mas tabela tem elementos - coloca no final da stable
 	
 	return stmp;
 }
@@ -250,20 +249,27 @@ void semantic_analysis_call_stat(prog_env *pe, table_element* env, is_call_stat*
 
 
 //Convers‹o enum-> string para ajudar no output de erros
-char* typeToString(int type)
+char* typeToString(is_tipo type)
 {
 	switch(type)
 	{
-		case integer: return "integer";
+		/*case integer: return "integer";
 		case character: return "char";
-		case doub: return "double";
-		case method: return "method";
+		case doub: return "double";*/
+		case is_INT:		return "int";
+		case is_STRING:		return "String";
+		case is_VOID:		return "void";
+		case is_FLOAT:		return "float";
+		case is_DOUBLE:		return "double";
+		case is_BOOLEAN:	return "Boolean";
+		case is_CHAR:		return "char";
+		case is_NONE:       return "none";
 	}
 	return "unknown type";
 }
 
 //Criação de uma estrutura table_element
-table_element* create_symbol(int offset, char* name, basic_type type)
+table_element* create_symbol(int offset, char* name, is_tipo type)
 {
 	table_element* el=(table_element*)malloc(sizeof(table_element));
 	strcpy(el->name,name);
