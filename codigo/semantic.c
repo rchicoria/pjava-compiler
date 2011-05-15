@@ -112,7 +112,7 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 	table_element* stmp=stable;
 
 	for(aux=ial; aux; aux=aux->next)
-		stmp=semantic_analysis_atribuicao((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->v);
+		stmp=semantic_analysis_atribuicao_dec((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->v);
 
 	return stmp;
 }
@@ -120,7 +120,7 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 //Dependendo do scope, esta função verifica primeiro se j‡ existe a vari‡vel nas tabelas de símbolos. Não pode existir na tabela de símbolos "corrente". Apenas nas "superiores"
 //Caso exista como vari‡vel ou até como procedimento (uma vari‡vel não pode nunca ser definida local, ou globalmente, se existir um procedimento com o seu nome), emite-se uma mensagem
 //de erro
-table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_element* stable, is_atributo* ia)
+table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia)
 {
 	table_element *aux, *last, *stmp=stable;
 
@@ -147,6 +147,27 @@ table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_elem
 	return stmp;
 }
 
+table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_element* stable, is_atributo* ia)
+{
+	table_element *aux, *last, *stmp=stable;
+
+	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
+
+	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
+	{
+		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
+		return stmp;
+	}
+	
+	//procura por uma vari‡vel com o mesmo nome
+	for(aux=last=stmp; aux; last=aux, aux=aux->next)
+		if(strcmp(ia->nome, aux->nome)!=0){
+			printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
+			return stmp;
+		}
+	
+	return stmp;
+}
 
 //An‡lise sem‰ntica de listas de statements
 void semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl)
