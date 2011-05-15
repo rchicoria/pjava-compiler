@@ -1,14 +1,14 @@
 #include "structures.h"
 #include "symbol_table.h"
 
-prog_env* semantic_analysis(is_static_list* isl);
-void semantic_analysis_block(prog_env *pe, is_static* is);
-void semantic_analysis_method(prog_env *pe, is_metodo* im);
-void semantic_analysis_declaration(prog_env *pe, is_declaracao* id);
-table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_element* stable, is_atribuicao_list* ial);
-table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_element* stable, is_atributo* ia);
-void semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl);
-void semantic_analysis_statement(prog_env *pe, table_element* env, is_statement* is);
+prog_env* semantic_analysis(is_static_list*);
+void semantic_analysis_block(prog_env*, is_static*);
+void semantic_analysis_method(prog_env*, is_metodo*);
+void semantic_analysis_declaration(prog_env*, is_declaracao*);
+table_element* semantic_analysis_atribuicao_list(int, prog_env*, table_element*, is_atribuicao_list*);
+table_element* semantic_analysis_atribuicao(int, prog_env*, table_element*, is_atributo*);
+void semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*);
+void semantic_analysis_statement(prog_env*, table_element*, is_statement*);
 
 /*prog_env* semantic_analysis(is_block_list* ipl);
 void semantic_analysis_block(prog_env *pe, is_block* ip);

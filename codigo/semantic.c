@@ -21,7 +21,7 @@ prog_env* semantic_analysis(is_static_list* isl) //an‡lise sem‰ntica da lista de
 	{
 	
 		//Note-se que se envia o program environment existente. Para o bloco poder verificar, por exemplo, se um dado procedimento existe, ou uma vari‡vel global
-		semantic_analysis_block(pe, aux->p);
+		semantic_analysis_block(pe, aux->stat);
 	}
 	
 	return pe;
@@ -30,7 +30,7 @@ prog_env* semantic_analysis(is_static_list* isl) //an‡lise sem‰ntica da lista de
 void semantic_analysis_block(prog_env *pe, is_static* is)
 {
 	//faz a triagem do bloco a analisar
-	switch(is->tipo_static)
+	switch(is->tipo)
 	{
 		case is_atributo: semantic_analysis_atribuicao(pe, is->conteudo.u_atributo);break;
 		case is_declaracao: semantic_analysis_declaration(pe, is->conteudo.u_declaracao);break;
@@ -50,8 +50,8 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 	
 	environment_list *pl;
 
-	if(lookup(pe->global, im->name))
-		printf("Symbol %s already defined! Cannot create method!\n", im->name);
+	if(lookup(pe->global, im->nome))
+		printf("Symbol %s already defined! Cannot create method!\n", im->nome);
 	else
 	{
 		pl=(environment_list*)malloc(sizeof(environment_list)); //cria um nodo para a lista de ambientes 
@@ -65,11 +65,11 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//Serve apenas para facilitar na pesquisa (na realidade, Ž uma redundncia, pois
 		//haver‡ tambŽm uma entrada na lista de ambientes)
 		if(te==NULL)
-			pe->global=create_symbol(-1, im->name, method);
+			pe->global=create_symbol(-1, im->nome, method);
 		else
 		{
 			for(; te->next; te=te->next);					
-			te->next=create_symbol(-1, im->name, method);		
+			te->next=create_symbol(-1, im->nome, method);		
 		}
 		
 		//preenche entrada para o procedimento na lista de ambientes
@@ -112,7 +112,7 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 	table_element* stmp=stable;
 
 	for(aux=ial; aux; aux=aux->next)
-		stmp=semantic_analysis_atribuicao((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->v);
+		stmp=semantic_analysis_atribuicao((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->attr);
 
 	return stmp;
 }
@@ -134,7 +134,7 @@ table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_elem
 	
 	//procura por uma vari‡vel com o mesmo nome
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
-		if(strcmp(ia->nome, aux->nome)==0)
+		if(strcmp(ia->nome, aux->name)==0)
 			break;
 	
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
