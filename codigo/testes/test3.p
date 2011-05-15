@@ -1,4 +1,4 @@
-class ola
+class test3
 {
 
 	static int b = 0;
