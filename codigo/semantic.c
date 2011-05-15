@@ -138,7 +138,6 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
 			return stmp;
 		}
-	printf("%d\n", tipo);
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
 		stmp=create_symbol(offset, ia->nome, tipo);	//criar um símbolo na cabeça da lista de símbolos, stable
 	else
