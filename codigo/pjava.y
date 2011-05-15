@@ -3,9 +3,12 @@
 #include "functions.h"
 #include "shows.h"
 #include <stdio.h>
+#include "symbol_table.h"
+#include "semantic.h"
 
-is_atribuicao_list* myprogram;
+//is_atribuicao_list* myprogram;
 is_static_list* isl;
+prog_env* prog_environment;
 %}
 
 %union{
@@ -199,6 +202,7 @@ int main()
 {
 	yyparse();
 	show_program(isl);	//mostra a árvore que acabou de ser construida
+	show_table(prog_environment->global);
     return 0;
 }
 
@@ -206,4 +210,12 @@ int yyerror(char* s)
 {
 	printf("%s\n", s);
 	return 0;
+}
+
+void show_table(table_element* table)
+{
+	table_element *aux;
+	printf("\n");
+	for(aux=table; aux; aux=aux->next)
+		printf("symbol %s, type %s\n", aux->name, typeToString(aux->type));
 }

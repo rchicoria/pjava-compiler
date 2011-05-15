@@ -1,6 +1,8 @@
 #ifndef _STRUCTURES_
 #define _STRUCTURES_
 
+#include "symbol_table.h"
+
 /*is_operador -> is_PLUS or is_MINUS or is_MULT or is_DIVIDE*/
 typedef enum {is_PLUS, is_MINUS, is_MULT, is_DIVIDE} is_operador;
 
