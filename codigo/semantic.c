@@ -78,7 +78,7 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 
 		//faz an‡lise sem‰ntica do procedimento
 		// Ž aqui que vai adicionando os s’mbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
-		semantic_analysis_argumento_list(LOCALSCOPE, pe, pl->locals, im->arg_list);
+		semantic_analysis_argumento_list(LOCALSCOPE, pe, pl->locals, (is_argumento_list *)(im->arg_list));
 		semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
@@ -167,6 +167,10 @@ table_element* semantic_analysis_atribuicao(prog_env* pe, table_element* stable,
 		}
 	
 	return stmp;
+}
+
+void semantic_analysis_argumento_list(int scope, prog_env* pe, table_element* env, is_argumento_list* ial)
+{
 }
 
 //An‡lise sem‰ntica de listas de statements
