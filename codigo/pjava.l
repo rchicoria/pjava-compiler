@@ -56,9 +56,11 @@
               		return VAR;
                  }
 		
-[ \t\n]			{//	Os espaços, tabs e parágrafos servem para separar os elementos
+[ \t]			{//	Os espaços, tabs e parágrafos servem para separar os elementos
 					;
 				}
+				
+\n              {line++;}
 
 ";"	|
 .				{// Recebe o resto como texto normal
