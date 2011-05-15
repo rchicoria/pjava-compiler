@@ -10,14 +10,14 @@ enum {LOCALSCOPE, GLOBALSCOPE};
 int global_offset=0;
 int maincount;
 
-prog_env* semantic_analysis(is_block_list* ipl) //análise semântica da lista de blocos, ou seja do nosso programa
+prog_env* semantic_analysis(is_static_list* isl) //análise semântica da lista de blocos, ou seja do nosso programa
 {
-	is_block_list *aux;
+	is_static_list *aux;
 
 	prog_env* pe=(prog_env*)malloc(sizeof(prog_env));		//criaÁ„o do program_environment, que conterá todas os sÌmbolos (globais, locais, procedimentos)
 
 	//vamos fazer análise semântica bloco a bloco
-	for(aux=ipl; aux; aux=aux->next)	
+	for(aux=isl; aux; aux=aux->next)	
 	{
 	
 		//Note-se que se envia o program environment existente. Para o bloco poder verificar, por exemplo, se um dado procedimento existe, ou uma variável global
@@ -27,28 +27,33 @@ prog_env* semantic_analysis(is_block_list* ipl) //análise semântica da lista de 
 	return pe;
 }
 
-void semantic_analysis_block(prog_env *pe, is_block* ip)
+void semantic_analysis_block(prog_env *pe, is_static* is)
 {
 	//faz a triagem do bloco a analisar
-	switch(ip->disc_d)
+	switch(is->tipo_static)
 	{
+		case is_atributo: semantic_analysis_attribute(pe, is->conteudo.u_atributo);break;
+		case is_declaracao: semantic_analysis_declaration(pe, is->conteudo.u_declaracao);break;
+		case is_metodo: semantic_analysis_method(pe, is->conteudo.u_metodo);break;
+	/*
 	case d_procedure: semantic_analysis_procedure(pe, ip->data_block.u_procedure);  break;
 	case d_globals: semantic_analysis_globals(pe, ip->data_block.u_globals);break;
+	*/
 	}
 		
 }
 
-void semantic_analysis_procedure(prog_env *pe, is_procedure* ipr)
+void semantic_analysis_method(prog_env *pe, is_metodo* im)
 {
 	environment_list *aux;
 	table_element *te;	
 	
 	environment_list *pl;
 
-	if(lookup(pe->global, ipr->name))
-		printf("Symbol %s already defined! Cannot create procedure!\n", ipr->name);
+	if(lookup(pe->global, im->name))
+		printf("Symbol %s already defined! Cannot create method!\n", im->name);
 	else
-		{
+	{
 		pl=(environment_list*)malloc(sizeof(environment_list)); //cria um nodo para a lista de ambientes 
 																//(que é mantida no program environment)
 		
@@ -60,38 +65,46 @@ void semantic_analysis_procedure(prog_env *pe, is_procedure* ipr)
 		//Serve apenas para facilitar na pesquisa (na realidade, é uma redundncia, pois
 		//haverá também uma entrada na lista de ambientes)
 		if(te==NULL)
-			pe->global=create_symbol(-1, ipr->name, procedure);
+			pe->global=create_symbol(-1, im->name, method);
 		else
-			{
+		{
 			for(; te->next; te=te->next);					
-			te->next=create_symbol(-1, ipr->name, procedure);		
-			}
+			te->next=create_symbol(-1, im->name, method);		
+		}
 		
 		//preenche entrada para o procedimento na lista de ambientes
-		pl->name=(char*)strdup(ipr->name);	
+		pl->name=(char*)strdup(im->name);	
 		pl->locals=(table_element*)malloc(sizeof(table_element));
 
 		//faz análise semântica do procedimento
 		// é aqui que vai adicionando os símbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
-		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, ipr->vlist);	
-		semantic_analysis_statement_list(pe, pl->locals, ipr->slist);
-		}
+		semantic_analysis_argumento_list(LOCALSCOPE, pe, pl->locals, im->arg_list);
+		semantic_analysis_statement_list(pe, pl->locals, im->list);
+		/*
+		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
+		semantic_analysis_statement_list(pe, pl->locals, im->slist);
+		*/
+	}
 
 	//Adiciona ao program environment
 	if(pe->procs==NULL)	//Caso seja o primeiro procedimento, fica na cabeça
 		pe->procs=pl;
 	else			//senão, fica na cauda
-		{
+	{
 		for(aux=pe->procs; aux->next; aux=aux->next);
 			aux->next=pl;
-		}
+	}
 }
 
 //Análise das declarações de variáveis globais
-void semantic_analysis_globals(prog_env *pe, is_globals* ipg)
+void semantic_analysis_declaration(prog_env *pe, is_declaracao* id)
 {
-	pe->global=semantic_analysis_vardeclist(GLOBALSCOPE, pe, pe->global, ipg->vlist);	//0 -> global
+	pe->global=semantic_analysis_atribuicao(GLOBALSCOPE, pe, pe->global, id->list);	//0 -> global
 }
+
+/*******************************************************
+********************************************************
+*******************************************************/
 
 
 //Análise de declarações de variáveis

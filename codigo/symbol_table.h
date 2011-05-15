@@ -1,7 +1,7 @@
 #ifndef _SYMBOL_TABLE_
 #define _SYMBOL_TABLE_
 
-typedef enum {integer, character, doub, procedure} basic_type;
+typedef enum {integer, character, doub, method} basic_type;
 
 //lista ligada de simbolos - um ambiente/registo de activação
 typedef struct _t1{	
