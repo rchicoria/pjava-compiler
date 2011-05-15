@@ -109,170 +109,170 @@ extern int YYLEX_DECL();
 #define UMINUS 286
 #define YYERRCODE 256
 static const short yylhs[] = {                           -1,
-    0,    1,    1,    2,    2,    2,    5,    4,    4,    3,
-    3,    6,    6,    6,    6,   12,   12,   11,    7,    7,
-    7,    7,    7,    7,    7,   15,   15,   14,   14,   14,
-   14,   14,   14,   13,   13,    8,    8,    8,    8,    9,
-    9,    9,    9,    9,    9,   10,   16,   16,   16,   16,
-   16,   16,   16,   16,   16,   16,   16,   17,   17,   18,
-   18,   19,   19,   20,   20,
+    0,    1,    1,    2,    2,    5,    4,    4,    3,    3,
+    6,    6,    6,    6,   12,   12,   11,    7,    7,    7,
+    7,    7,    7,    7,   15,   15,   14,   14,   14,   14,
+   14,   14,   13,   13,    8,    8,    8,    8,    9,    9,
+    9,    9,    9,    9,   10,   16,   16,   16,   16,   16,
+   16,   16,   16,   16,   16,   16,   17,   17,   18,   18,
+   19,   19,   20,   20,
 };
 static const short yylen[] = {                            2,
-    5,    2,    1,    3,    2,    1,    3,    3,    1,    1,
-    3,    9,    8,    8,    7,    3,    1,    2,    1,    1,
-    1,    1,    1,    1,    1,    2,    1,    1,    2,    1,
-    1,    1,    1,    5,    5,    1,    1,    1,    1,    3,
-    3,    3,    3,    3,    3,    2,    3,    3,    2,    3,
-    3,    3,    3,    3,    3,    1,    1,    7,    5,    7,
-    5,   10,    8,    2,    1,
+    5,    2,    1,    2,    1,    3,    3,    1,    1,    3,
+    9,    8,    8,    7,    3,    1,    2,    1,    1,    1,
+    1,    1,    1,    1,    2,    1,    1,    2,    1,    1,
+    1,    1,    5,    5,    1,    1,    1,    1,    3,    3,
+    3,    3,    3,    3,    2,    3,    3,    2,    3,    3,
+    3,    3,    3,    3,    1,    1,    7,    5,    7,    5,
+   10,    8,    2,    1,
 };
 static const short yydefred[] = {                         0,
-    0,    0,    0,    0,    0,    0,    3,    6,   19,   20,
-   21,   22,   23,   24,   25,    0,    0,    5,    0,    1,
-    2,    0,    4,    0,    9,    0,   39,   38,    0,    0,
-   36,   37,    0,    7,    0,   46,    0,    0,    0,    0,
-    0,    0,   17,    0,    8,   44,   40,    0,   41,   42,
-   43,    0,   18,    0,    0,    0,    0,    0,    0,    0,
-   15,    0,   28,    0,   30,   27,    0,   31,   32,   33,
-   16,    0,    0,    0,    0,    0,    0,   29,   14,   26,
-   13,    0,   56,   57,    0,    0,    0,    0,    0,   65,
-    0,    0,    0,   12,   49,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,   64,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,   47,   48,    0,   59,    0,
-   61,    0,   34,   35,    0,    0,    0,   58,   60,    0,
-    0,   63,    0,   62,
+    0,    0,    0,    0,    0,    0,    3,    5,   18,   19,
+   20,   21,   22,   23,   24,    4,    0,    1,    2,    0,
+    8,    0,    0,    0,    6,    0,   38,   37,    0,    0,
+   35,   36,    0,    0,   16,    0,    0,    7,   45,    0,
+    0,    0,    0,    0,   17,    0,    0,   43,   39,    0,
+   40,   41,   42,    0,    0,    0,    0,    0,   14,    0,
+   27,    0,   29,   26,    0,   30,   31,   32,   15,    0,
+    0,    0,    0,    0,    0,   28,   13,   25,   12,    0,
+   55,   56,    0,    0,    0,    0,    0,   64,    0,    0,
+    0,   11,   48,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,   63,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,   46,   47,    0,   58,    0,   60,    0,
+   33,   34,    0,    0,    0,   57,   59,    0,    0,   62,
+    0,   61,
 };
 static const short yydgoto[] = {                          2,
-    6,    7,   62,   26,   63,    8,   64,   86,   31,   32,
-   43,   44,   65,   66,   67,   87,   68,   69,   70,   91,
+    6,    7,   60,   22,   61,    8,   62,   84,   31,   32,
+   35,   36,   63,   64,   65,   85,   66,   67,   68,   89,
 };
 static const short yysindex[] = {                      -248,
- -268,    0, -106, -223,  121,  -96,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,  -21,  -18,    0, -228,    0,
-    0,   -3,    0,  -30,    0,   -6,    0,    0,   -3,  267,
-    0,    0,  -40,    0, -214,    0,  -41,    2,   -3,   -3,
-  -62, -213,    0,   46,    0,    0,    0, -270,    0,    0,
-    0,   35,    0, -139,  -44,   45,   52,   65,   66,   71,
-    0,   27,    0, -214,    0,    0,   61,    0,    0,    0,
-    0,   76,  -33,  -33,  121,   -3,   -3,    0,    0,    0,
-    0,   91,    0,    0,  -33,   12,   -7,   -4,    5,    0,
-  -33,  146,  155,    0,    0,   -3,   -3,   -3,   -3,   -3,
-   -3,  -33,  -33, -117,  -90,    0,  -56,   56,   57,  267,
-  267,  267,  267,  267,  267,    0,    0, -165,    0, -165,
-    0,   -3,    0,    0,  106,  136,  191,    0,    0,  -55,
- -165,    0,  179,    0,
+ -273,    0, -106, -223, -132,  -96,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0, -244,    0,    0,  -30,
+    0,   -6,   -3,  -40,    0, -239,    0,    0,   -3,  190,
+    0,    0,  -59, -213,    0,  -28,   11,    0,    0,  -41,
+    2,   -3,   -3,   35,    0, -132,  -46,    0,    0, -270,
+    0,    0,    0,   41,   42,   43,   45,   56,    0,   38,
+    0, -239,    0,    0,   61,    0,    0,    0,    0,   76,
+  -33,  -33, -172,   -3,   -3,    0,    0,    0,    0,   91,
+    0,    0,  -33,   12,   -7,   -4,    7,    0,  -33,  116,
+  146,    0,    0,   -3,   -3,   -3,   -3,   -3,   -3,  -33,
+  -33, -117,  -90,    0,  -56,   39,   44,  190,  190,  190,
+  190,  190,  190,    0,    0,  121,    0,  121,    0,   -3,
+    0,    0,  106,  136,  155,    0,    0,  -55,  121,    0,
+  179,    0,
 };
 static const short yyrindex[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,   18,    0,    0,    0,    0,
-    0,    0,    0,   18,    0,    0,    0,    0,    0,   23,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,  -23,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    8,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,   25,
+    0,    0,    0,    0,    0,    0,    8,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,  -23,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,  -36,
-  -34,  -15,  -13,  -11,   -9,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,  -36,  -34,  -15,
+  -13,  -11,   -9,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,
 };
 static const short yygindex[] = {                         0,
-    0,  112,    8,   53,    3,    0,    6,   36,    0,    0,
-   73,    0,    0,  -16,  -27,  -22,    0,    0,    0,    0,
+    0,   95,   48,   29,    3,    0,   34,   20,    0,    0,
+   59,    0,    0,  -24,  -43,   37,    0,    0,    0,    0,
 };
 #define YYTABLESIZE 463
-static const short yytable[] = {                         85,
-   41,   46,  122,   29,   50,  118,   51,   18,    1,   33,
-   19,   29,   17,   27,   28,    3,    4,   45,   45,   45,
-   45,   45,   50,   45,   51,   52,   25,   53,   20,   54,
-   22,   55,  120,  104,    5,   45,  105,   35,   42,   22,
-   23,   29,   45,   52,   82,   53,   48,   54,   35,   55,
-   80,   88,   34,   39,   37,   24,   38,   30,   40,   42,
-   52,   10,   95,  106,   36,   80,   11,  131,  107,   16,
-   53,   25,   47,   49,   50,   51,   10,   90,   72,  116,
-  117,   11,   25,   36,   73,   78,   55,  119,  121,   54,
-  125,   74,  126,    9,   10,   11,   12,   13,   14,   15,
-   56,   57,   58,  133,   75,   76,   59,   60,   80,   80,
-   77,   92,   93,  132,  123,  124,   80,   21,   16,    9,
-   10,   11,   12,   13,   14,   15,   71,   89,    0,    0,
-    0,  110,  111,  112,  113,  114,  115,    0,    0,    0,
-    0,    9,   10,   11,   12,   13,   14,   15,   56,   57,
-   58,    0,    0,    0,   59,   60,    0,  127,    0,   61,
-    0,    5,    0,    0,    0,    0,   16,    0,    9,   10,
-   11,   12,   13,   14,   15,   56,   57,   58,    0,    0,
-    0,   59,   60,    0,    0,   79,  108,   39,   37,    0,
-   38,    0,   40,   16,    0,  109,   39,   37,    0,   38,
-   81,   40,    0,    9,   10,   11,   12,   13,   14,   15,
-   56,   57,   58,    0,    0,   94,   59,   60,    9,   10,
-   11,   12,   13,   14,   15,  102,  103,    0,   16,    0,
-  128,  130,   39,   37,    0,   38,    0,   40,    0,    0,
-   83,   84,   27,   28,    0,   50,   50,   51,   51,    0,
-   27,   28,   45,   45,   45,   45,   45,   45,   45,   45,
-  129,    0,    0,    0,    0,    0,   52,   52,   53,   53,
-   54,   54,   55,   55,  102,  103,    0,  102,  103,    0,
-   27,   28,    0,    0,    0,   27,   28,   96,   97,   98,
-   99,  100,  101,    9,   10,   11,   12,   13,   14,   15,
-   56,   57,   58,  134,    0,    0,   59,   60,   39,   37,
-    0,   38,    0,   40,    0,    0,    0,    0,   16,    9,
-   10,   11,   12,   13,   14,   15,   56,   57,   58,    0,
-    0,    0,   59,   60,    9,   10,   11,   12,   13,   14,
-   15,   56,   57,   58,   16,    0,    0,   59,   60,    9,
-   10,   11,   12,   13,   14,   15,   56,   57,   58,   16,
-    0,    0,   59,   60,    9,   10,   11,   12,   13,   14,
-   15,   56,   57,   58,   16,    0,    0,   59,   60,    9,
-   10,   11,   12,   13,   14,   15,    0,    0,    0,   16,
-    0,    0,    0,    0,    9,   10,   11,   12,   13,   14,
-   15,   56,   57,   58,   16,    0,    0,   59,   60,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,   16,
+static const short yytable[] = {                         83,
+   33,   48,  120,   29,   49,  116,   50,   16,    1,   24,
+    3,   29,   47,   27,   28,   46,    4,   44,   44,   44,
+   44,   44,   49,   44,   50,   51,   80,   52,   18,   53,
+   23,   54,  118,  102,    5,   44,  103,   26,   17,   20,
+   78,   29,   30,   51,   37,   52,   50,   53,   39,   54,
+   26,    9,   25,   42,   40,   78,   41,   34,   43,   49,
+   51,   52,   53,   44,   21,  104,    9,  129,   10,   39,
+   45,   23,  123,   38,  124,   88,   70,  117,  119,   34,
+   71,   72,   73,   10,   74,  131,    9,   10,   11,   12,
+   13,   14,   15,   90,   91,   75,   76,  121,   78,   78,
+   19,   87,  122,  130,   69,    0,   78,    0,   86,   21,
+    0,   37,    0,  108,  109,  110,  111,  112,  113,   93,
+   21,    0,    0,    0,    0,  105,    9,   10,   11,   12,
+   13,   14,   15,    0,    0,    0,  114,  115,    0,  125,
+    0,    9,   10,   11,   12,   13,   14,   15,   54,   55,
+   56,    0,    0,    0,   57,   58,  106,   42,   40,   59,
+   41,    5,   43,    0,    0,    0,   37,    0,    9,   10,
+   11,   12,   13,   14,   15,   54,   55,   56,    0,    0,
+    0,   57,   58,    0,    0,   77,  107,   42,   40,    0,
+   41,    0,   43,   37,    0,  128,   42,   40,    0,   41,
+   79,   43,    0,    9,   10,   11,   12,   13,   14,   15,
+   54,   55,   56,    0,    0,   92,   57,   58,    9,   10,
+   11,   12,   13,   14,   15,  100,  101,    0,   37,    0,
+  126,   42,   40,    0,   41,    0,   43,    0,    0,    0,
+   81,   82,   27,   28,    0,   49,   49,   50,   50,    0,
+   27,   28,   44,   44,   44,   44,   44,   44,   44,   44,
+  127,    0,    0,    0,    0,    0,   51,   51,   52,   52,
+   53,   53,   54,   54,  100,  101,    0,  100,  101,    0,
+   27,   28,    0,    0,    0,   27,   28,   94,   95,   96,
+   97,   98,   99,    9,   10,   11,   12,   13,   14,   15,
+   54,   55,   56,  132,    0,    0,   57,   58,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,   37,    9,
+   10,   11,   12,   13,   14,   15,   54,   55,   56,    0,
+    0,    0,   57,   58,    9,   10,   11,   12,   13,   14,
+   15,   54,   55,   56,   37,    0,    0,   57,   58,    9,
+   10,   11,   12,   13,   14,   15,   54,   55,   56,   37,
+    0,    0,   57,   58,    9,   10,   11,   12,   13,   14,
+   15,   54,   55,   56,   37,    0,    0,   57,   58,    9,
+   10,   11,   12,   13,   14,   15,   54,   55,   56,   37,
+    0,    0,   57,   58,    9,   10,   11,   12,   13,   14,
+   15,   54,   55,   56,   37,    0,    0,   57,   58,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,   37,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    9,   10,   11,
-   12,   13,   14,   15,   56,   57,   58,    0,    0,    0,
-   59,   60,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,   16,
+   12,   13,   14,   15,   54,   55,   56,    0,    0,    0,
+   57,   58,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,   37,
 };
 static const short yycheck[] = {                         33,
    41,   43,   59,   45,   41,  123,   41,    5,  257,   40,
-    5,   45,    5,  284,  285,  284,  123,   41,   42,   43,
-   44,   45,   59,   47,   59,   41,   19,   41,  125,   41,
-   61,   41,  123,   41,  258,   59,   41,   44,   33,   61,
-   59,   45,   35,   59,   72,   59,   45,   59,   44,   59,
-   67,   74,   59,   42,   43,  284,   45,   22,   47,   54,
-  123,   44,   85,   59,   29,   82,   44,  123,   91,  284,
-  284,   64,   37,   38,   39,   40,   59,   75,  123,  102,
-  103,   59,   75,   48,   40,   59,   41,  104,  105,   44,
-  118,   40,  120,  259,  260,  261,  262,  263,  264,  265,
-  266,  267,  268,  131,   40,   40,  272,  273,  125,  126,
-   40,   76,   77,  130,   59,   59,  133,    6,  284,  259,
-  260,  261,  262,  263,  264,  265,   54,   75,   -1,   -1,
-   -1,   96,   97,   98,   99,  100,  101,   -1,   -1,   -1,
+  284,   45,   41,  284,  285,   44,  123,   41,   42,   43,
+   44,   45,   59,   47,   59,   41,   70,   41,  125,   41,
+   61,   41,  123,   41,  258,   59,   41,   44,    5,  284,
+   65,   45,   23,   59,  284,   59,   45,   59,   29,   59,
+   44,   44,   59,   42,   43,   80,   45,   24,   47,   40,
+   41,   42,   43,  123,   17,   59,   59,  123,   44,   50,
+  284,   61,  116,   26,  118,   73,  123,  102,  103,   46,
+   40,   40,   40,   59,   40,  129,  259,  260,  261,  262,
+  263,  264,  265,   74,   75,   40,   59,   59,  123,  124,
+    6,   73,   59,  128,   46,   -1,  131,   -1,   72,   62,
+   -1,  284,   -1,   94,   95,   96,   97,   98,   99,   83,
+   73,   -1,   -1,   -1,   -1,   89,  259,  260,  261,  262,
+  263,  264,  265,   -1,   -1,   -1,  100,  101,   -1,  120,
    -1,  259,  260,  261,  262,  263,  264,  265,  266,  267,
-  268,   -1,   -1,   -1,  272,  273,   -1,  122,   -1,  125,
-   -1,  258,   -1,   -1,   -1,   -1,  284,   -1,  259,  260,
+  268,   -1,   -1,   -1,  272,  273,   41,   42,   43,  125,
+   45,  258,   47,   -1,   -1,   -1,  284,   -1,  259,  260,
   261,  262,  263,  264,  265,  266,  267,  268,   -1,   -1,
    -1,  272,  273,   -1,   -1,  125,   41,   42,   43,   -1,
    45,   -1,   47,  284,   -1,   41,   42,   43,   -1,   45,
   125,   47,   -1,  259,  260,  261,  262,  263,  264,  265,
   266,  267,  268,   -1,   -1,  125,  272,  273,  259,  260,
   261,  262,  263,  264,  265,  282,  283,   -1,  284,   -1,
-  125,   41,   42,   43,   -1,   45,   -1,   47,   -1,   -1,
+  125,   42,   43,   -1,   45,   -1,   47,   -1,   -1,   -1,
   274,  275,  284,  285,   -1,  282,  283,  282,  283,   -1,
   284,  285,  276,  277,  278,  279,  280,  281,  282,  283,
   125,   -1,   -1,   -1,   -1,   -1,  282,  283,  282,  283,
   282,  283,  282,  283,  282,  283,   -1,  282,  283,   -1,
   284,  285,   -1,   -1,   -1,  284,  285,  276,  277,  278,
   279,  280,  281,  259,  260,  261,  262,  263,  264,  265,
-  266,  267,  268,  125,   -1,   -1,  272,  273,   42,   43,
-   -1,   45,   -1,   47,   -1,   -1,   -1,   -1,  284,  259,
+  266,  267,  268,  125,   -1,   -1,  272,  273,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  284,  259,
   260,  261,  262,  263,  264,  265,  266,  267,  268,   -1,
    -1,   -1,  272,  273,  259,  260,  261,  262,  263,  264,
   265,  266,  267,  268,  284,   -1,   -1,  272,  273,  259,
   260,  261,  262,  263,  264,  265,  266,  267,  268,  284,
    -1,   -1,  272,  273,  259,  260,  261,  262,  263,  264,
   265,  266,  267,  268,  284,   -1,   -1,  272,  273,  259,
-  260,  261,  262,  263,  264,  265,   -1,   -1,   -1,  284,
-   -1,   -1,   -1,   -1,  259,  260,  261,  262,  263,  264,
+  260,  261,  262,  263,  264,  265,  266,  267,  268,  284,
+   -1,   -1,  272,  273,  259,  260,  261,  262,  263,  264,
   265,  266,  267,  268,  284,   -1,   -1,  272,  273,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  284,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
@@ -306,7 +306,6 @@ static const char *yyrule[] = {
 "initclass : CLASS VAR '{' statics '}'",
 "statics : statics static",
 "statics : static",
-"static : STATIC attribution ';'",
 "static : STATIC declaration",
 "static : method",
 "declaration : type attributions ';'",
@@ -404,7 +403,7 @@ YYSTYPE  yylval;
 
 /* variables for the parser stack */
 static YYSTACKDATA yystack;
-#line 203 "pjava.y"
+#line 202 "pjava.y"
 int main()
 {
 	line = 1;
@@ -431,7 +430,7 @@ void show_table(table_element* table)
 	for(aux=table; aux; aux=aux->next)
 		printf("symbol %s, type %s\n", aux->name, typeToString(aux->type));
 }
-#line 434 "y.tab.c"
+#line 433 "y.tab.c"
 
 #if YYDEBUG
 #include <stdio.h>		/* needed for printf */
@@ -651,253 +650,249 @@ case 3:
 break;
 case 4:
 #line 101 "pjava.y"
-	{yyval.isl=insert_a_static(yystack.l_mark[-1].ia);}
+	{yyval.isl=insert_d_static(yystack.l_mark[0].id);}
 break;
 case 5:
 #line 102 "pjava.y"
-	{yyval.isl=insert_d_static(yystack.l_mark[0].id);}
-break;
-case 6:
-#line 103 "pjava.y"
 	{yyval.isl=insert_m_static(yystack.l_mark[0].im);}
 break;
-case 7:
-#line 106 "pjava.y"
+case 6:
+#line 105 "pjava.y"
 	{yyval.id=insert_declaracao(line, yystack.l_mark[-1].ial,yystack.l_mark[-2].it);}
+break;
+case 7:
+#line 108 "pjava.y"
+	{yyval.ial=insert_atribuicao_list(yystack.l_mark[-2].ial, yystack.l_mark[0].ia);}
 break;
 case 8:
 #line 109 "pjava.y"
-	{yyval.ial=insert_atribuicao_list(yystack.l_mark[-2].ial, yystack.l_mark[0].ia);}
+	{yyval.ial=insert_atribuicao_list(NULL, yystack.l_mark[0].ia);}
 break;
 case 9:
-#line 110 "pjava.y"
-	{yyval.ial=insert_atribuicao_list(NULL, yystack.l_mark[0].ia);}
+#line 112 "pjava.y"
+	{yyval.ia=insert_atributo(line, yystack.l_mark[0].var, NULL);}
 break;
 case 10:
 #line 113 "pjava.y"
-	{yyval.ia=insert_atributo(line, yystack.l_mark[0].var, NULL);}
+	{yyval.ia=insert_atributo(line, yystack.l_mark[-2].var, yystack.l_mark[0].ie);}
 break;
 case 11:
-#line 114 "pjava.y"
-	{yyval.ia=insert_atributo(line, yystack.l_mark[-2].var, yystack.l_mark[0].ie);}
+#line 116 "pjava.y"
+	{yyval.im=insert_metodo(line, yystack.l_mark[-7].it, yystack.l_mark[-6].var, yystack.l_mark[-4].iarl, yystack.l_mark[-1].istl);}
 break;
 case 12:
 #line 117 "pjava.y"
-	{yyval.im=insert_metodo(line, yystack.l_mark[-7].it, yystack.l_mark[-6].var, yystack.l_mark[-4].iarl, yystack.l_mark[-1].istl);}
+	{yyval.im=insert_metodo(line, yystack.l_mark[-6].it, yystack.l_mark[-5].var, yystack.l_mark[-3].iarl, NULL);}
 break;
 case 13:
 #line 118 "pjava.y"
-	{yyval.im=insert_metodo(line, yystack.l_mark[-6].it, yystack.l_mark[-5].var, yystack.l_mark[-3].iarl, NULL);}
+	{yyval.im=insert_metodo(line, yystack.l_mark[-6].it, yystack.l_mark[-5].var, NULL, yystack.l_mark[-1].istl);}
 break;
 case 14:
 #line 119 "pjava.y"
-	{yyval.im=insert_metodo(line, yystack.l_mark[-6].it, yystack.l_mark[-5].var, NULL, yystack.l_mark[-1].istl);}
+	{yyval.im=insert_metodo(line, yystack.l_mark[-5].it, yystack.l_mark[-4].var, NULL, NULL);}
 break;
 case 15:
-#line 120 "pjava.y"
-	{yyval.im=insert_metodo(line, yystack.l_mark[-5].it, yystack.l_mark[-4].var, NULL, NULL);}
+#line 122 "pjava.y"
+	{yyval.iarl=insert_argumento_list(yystack.l_mark[-2].iarl, yystack.l_mark[0].iar);}
 break;
 case 16:
 #line 123 "pjava.y"
-	{yyval.iarl=insert_argumento_list(yystack.l_mark[-2].iarl, yystack.l_mark[0].iar);}
-break;
-case 17:
-#line 124 "pjava.y"
 	{yyval.iarl=insert_argumento_list(NULL, yystack.l_mark[0].iar);}
 break;
-case 18:
-#line 127 "pjava.y"
+case 17:
+#line 126 "pjava.y"
 	{yyval.iar=insert_argumento(yystack.l_mark[-1].it, yystack.l_mark[0].var);}
+break;
+case 18:
+#line 129 "pjava.y"
+	{yyval.it=is_INT;}
 break;
 case 19:
 #line 130 "pjava.y"
-	{yyval.it=is_INT;}
+	{yyval.it=is_STRING;}
 break;
 case 20:
 #line 131 "pjava.y"
-	{yyval.it=is_STRING;}
+	{yyval.it=is_VOID;}
 break;
 case 21:
 #line 132 "pjava.y"
-	{yyval.it=is_VOID;}
+	{yyval.it=is_FLOAT;}
 break;
 case 22:
 #line 133 "pjava.y"
-	{yyval.it=is_FLOAT;}
+	{yyval.it=is_DOUBLE;}
 break;
 case 23:
 #line 134 "pjava.y"
-	{yyval.it=is_DOUBLE;}
+	{yyval.it=is_BOOLEAN;}
 break;
 case 24:
 #line 135 "pjava.y"
-	{yyval.it=is_BOOLEAN;}
+	{yyval.it=is_CHAR;}
 break;
 case 25:
-#line 136 "pjava.y"
-	{yyval.it=is_CHAR;}
+#line 138 "pjava.y"
+	{insert_statement_list(yystack.l_mark[-1].istl,yystack.l_mark[0].istl);}
 break;
 case 26:
 #line 139 "pjava.y"
-	{insert_statement_list(yystack.l_mark[-1].istl,yystack.l_mark[0].istl);}
+	{insert_statement_list(NULL, yystack.l_mark[0].istl);}
 break;
 case 27:
-#line 140 "pjava.y"
-	{insert_statement_list(NULL, yystack.l_mark[0].istl);}
+#line 142 "pjava.y"
+	{yyval.istl=insert_d_statement(yystack.l_mark[0].id);}
 break;
 case 28:
 #line 143 "pjava.y"
-	{yyval.istl=insert_d_statement(yystack.l_mark[0].id);}
+	{yyval.istl=insert_a_statement(yystack.l_mark[-1].ia);}
 break;
 case 29:
 #line 144 "pjava.y"
-	{yyval.istl=insert_a_statement(yystack.l_mark[-1].ia);}
+	{yyval.istl=insert_p_statement(yystack.l_mark[0].ip);}
 break;
 case 30:
 #line 145 "pjava.y"
-	{yyval.istl=insert_p_statement(yystack.l_mark[0].ip);}
+	{yyval.istl=insert_i_statement(yystack.l_mark[0].ii);}
 break;
 case 31:
 #line 146 "pjava.y"
-	{yyval.istl=insert_i_statement(yystack.l_mark[0].ii);}
+	{yyval.istl=insert_w_statement(yystack.l_mark[0].iw);}
 break;
 case 32:
 #line 147 "pjava.y"
-	{yyval.istl=insert_w_statement(yystack.l_mark[0].iw);}
+	{yyval.istl=insert_f_statement(yystack.l_mark[0].isf);}
 break;
 case 33:
-#line 148 "pjava.y"
-	{yyval.istl=insert_f_statement(yystack.l_mark[0].isf);}
+#line 151 "pjava.y"
+	{yyval.ip=insert_print(line, yystack.l_mark[-2].ie, '\0');}
 break;
 case 34:
 #line 152 "pjava.y"
-	{yyval.ip=insert_print(line, yystack.l_mark[-2].ie, '\0');}
+	{yyval.ip=insert_print(line, yystack.l_mark[-2].ie, '\n');}
 break;
 case 35:
-#line 153 "pjava.y"
-	{yyval.ip=insert_print(line, yystack.l_mark[-2].ie, '\n');}
+#line 155 "pjava.y"
+	{yyval.ie=insert_i_expression(line, yystack.l_mark[0].iie);}
 break;
 case 36:
 #line 156 "pjava.y"
-	{yyval.ie=insert_i_expression(line, yystack.l_mark[0].iie);}
+	{yyval.ie=insert_u_expression(line, yystack.l_mark[0].iue);}
 break;
 case 37:
 #line 157 "pjava.y"
-	{yyval.ie=insert_u_expression(line, yystack.l_mark[0].iue);}
+	{yyval.ie=insert_NUMBER(line, yystack.l_mark[0].num);}
 break;
 case 38:
 #line 158 "pjava.y"
-	{yyval.ie=insert_NUMBER(line, yystack.l_mark[0].num);}
+	{yyval.ie=insert_VAR(line, yystack.l_mark[0].var);}
 break;
 case 39:
-#line 159 "pjava.y"
-	{yyval.ie=insert_VAR(line, yystack.l_mark[0].var);}
+#line 161 "pjava.y"
+	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_PLUS, yystack.l_mark[0].ie);}
 break;
 case 40:
 #line 162 "pjava.y"
-	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_PLUS, yystack.l_mark[0].ie);}
+	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_MINUS, yystack.l_mark[0].ie);}
 break;
 case 41:
 #line 163 "pjava.y"
-	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_MINUS, yystack.l_mark[0].ie);}
+	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_MULT, yystack.l_mark[0].ie);}
 break;
 case 42:
 #line 164 "pjava.y"
-	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_MULT, yystack.l_mark[0].ie);}
+	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_DIVIDE, yystack.l_mark[0].ie);}
 break;
 case 43:
 #line 165 "pjava.y"
-	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_DIVIDE, yystack.l_mark[0].ie);}
+	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_PLUS, insert_NUMBER(line, 1));}
 break;
 case 44:
 #line 166 "pjava.y"
-	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_PLUS, insert_NUMBER(line, 1));}
-break;
-case 45:
-#line 167 "pjava.y"
 	{yyval.iie=insert_infix_expression(yystack.l_mark[-2].ie, is_MINUS, insert_NUMBER(line, 1));}
 break;
-case 46:
-#line 170 "pjava.y"
+case 45:
+#line 169 "pjava.y"
 	{yyval.iue=insert_unary_expression(yystack.l_mark[0].ie);}
+break;
+case 46:
+#line 172 "pjava.y"
+	{yyval.ibe=insert_b_i_expressao(line, yystack.l_mark[-2].ibe, is_AND, yystack.l_mark[0].ibe);}
 break;
 case 47:
 #line 173 "pjava.y"
-	{yyval.ibe=insert_b_i_expressao(line, yystack.l_mark[-2].ibe, is_AND, yystack.l_mark[0].ibe);}
+	{yyval.ibe=insert_b_i_expressao(line, yystack.l_mark[0].ibe, is_OR, yystack.l_mark[0].ibe);}
 break;
 case 48:
 #line 174 "pjava.y"
-	{yyval.ibe=insert_b_i_expressao(line, yystack.l_mark[0].ibe, is_OR, yystack.l_mark[0].ibe);}
+	{yyval.ibe=insert_b_n_expressao(line, yystack.l_mark[0].ibe);}
 break;
 case 49:
 #line 175 "pjava.y"
-	{yyval.ibe=insert_b_n_expressao(line, yystack.l_mark[0].ibe);}
+	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_EQUALS, yystack.l_mark[0].ie);}
 break;
 case 50:
 #line 176 "pjava.y"
-	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_EQUALS, yystack.l_mark[0].ie);}
+	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_DIFERENT, yystack.l_mark[0].ie);}
 break;
 case 51:
 #line 177 "pjava.y"
-	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_DIFERENT, yystack.l_mark[0].ie);}
+	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_GREATER, yystack.l_mark[0].ie);}
 break;
 case 52:
 #line 178 "pjava.y"
-	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_GREATER, yystack.l_mark[0].ie);}
+	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_LESSER, yystack.l_mark[0].ie);}
 break;
 case 53:
 #line 179 "pjava.y"
-	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_LESSER, yystack.l_mark[0].ie);}
+	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_GREATEQ, yystack.l_mark[0].ie);}
 break;
 case 54:
 #line 180 "pjava.y"
-	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_GREATEQ, yystack.l_mark[0].ie);}
+	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_LESSEQ, yystack.l_mark[0].ie);}
 break;
 case 55:
 #line 181 "pjava.y"
-	{yyval.ibe=insert_comparacao(line, yystack.l_mark[-2].ie, is_LESSEQ, yystack.l_mark[0].ie);}
+	{yyval.ibe=insert_b_tf_expressao(line, '1');}
 break;
 case 56:
 #line 182 "pjava.y"
-	{yyval.ibe=insert_b_tf_expressao(line, '1');}
+	{yyval.ibe=insert_b_tf_expressao(line, '0');}
 break;
 case 57:
-#line 183 "pjava.y"
-	{yyval.ibe=insert_b_tf_expressao(line, '0');}
+#line 185 "pjava.y"
+	{yyval.ii=insert_if(line, yystack.l_mark[-4].ibe, yystack.l_mark[-1].istl);}
 break;
 case 58:
 #line 186 "pjava.y"
-	{yyval.ii=insert_if(line, yystack.l_mark[-4].ibe, yystack.l_mark[-1].istl);}
+	{yyval.ii=insert_if(line, yystack.l_mark[-2].ibe, yystack.l_mark[0].istl);}
 break;
 case 59:
-#line 187 "pjava.y"
-	{yyval.ii=insert_if(line, yystack.l_mark[-2].ibe, yystack.l_mark[0].istl);}
+#line 189 "pjava.y"
+	{yyval.iw=insert_while(line, yystack.l_mark[-4].ibe, yystack.l_mark[-1].istl);}
 break;
 case 60:
 #line 190 "pjava.y"
-	{yyval.iw=insert_while(line, yystack.l_mark[-4].ibe, yystack.l_mark[-1].istl);}
+	{yyval.iw=insert_while(line, yystack.l_mark[-2].ibe, yystack.l_mark[0].istl);}
 break;
 case 61:
-#line 191 "pjava.y"
-	{yyval.iw=insert_while(line, yystack.l_mark[-2].ibe, yystack.l_mark[0].istl);}
+#line 193 "pjava.y"
+	{yyval.isf=insert_for(line, yystack.l_mark[-7].istl, yystack.l_mark[-6].ibe, yystack.l_mark[-4].ie, yystack.l_mark[-1].istl);}
 break;
 case 62:
 #line 194 "pjava.y"
-	{yyval.isf=insert_for(line, yystack.l_mark[-7].istl, yystack.l_mark[-6].ibe, yystack.l_mark[-4].ie, yystack.l_mark[-1].istl);}
+	{yyval.isf=insert_for(line, yystack.l_mark[-5].istl, yystack.l_mark[-4].ibe, yystack.l_mark[-2].ie, yystack.l_mark[0].istl);}
 break;
 case 63:
-#line 195 "pjava.y"
-	{yyval.isf=insert_for(line, yystack.l_mark[-5].istl, yystack.l_mark[-4].ibe, yystack.l_mark[-2].ie, yystack.l_mark[0].istl);}
+#line 197 "pjava.y"
+	{yyval.istl=insert_as_statement(yystack.l_mark[-1].ial);}
 break;
 case 64:
 #line 198 "pjava.y"
-	{yyval.istl=insert_as_statement(yystack.l_mark[-1].ial);}
-break;
-case 65:
-#line 199 "pjava.y"
 	{yyval.istl=insert_d_statement(yystack.l_mark[0].id);}
 break;
-#line 900 "y.tab.c"
+#line 895 "y.tab.c"
     }
     yystack.s_mark -= yym;
     yystate = *yystack.s_mark;

@@ -12,7 +12,7 @@ typedef enum {is_AND, is_OR, is_NOT} is_b_operator;
 
 typedef enum {is_GREATER, is_LESSER, is_GREATEQ, is_LESSEQ, is_EQUALS, is_DIFERENT} is_comparator;
 
-typedef enum {d_declaracao, d_atribuicao, d_metodo} tipo_static;
+typedef enum {d_declaracao, d_metodo} tipo_static;
 
 typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for} tipo_statement;
 
