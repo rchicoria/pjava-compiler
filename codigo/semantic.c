@@ -32,7 +32,7 @@ void semantic_analysis_block(prog_env *pe, is_static* is)
 	//faz a triagem do bloco a analisar
 	switch(is->tipo_static)
 	{
-		case is_atributo: semantic_analysis_attribute(pe, is->conteudo.u_atributo);break;
+		case is_atributo: semantic_analysis_atribuicao(pe, is->conteudo.u_atributo);break;
 		case is_declaracao: semantic_analysis_declaration(pe, is->conteudo.u_declaracao);break;
 		case is_metodo: semantic_analysis_method(pe, is->conteudo.u_metodo);break;
 	/*
@@ -99,27 +99,27 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 //An‡lise das declara›es de vari‡veis globais
 void semantic_analysis_declaration(prog_env *pe, is_declaracao* id)
 {
-	pe->global=semantic_analysis_atribuicao(GLOBALSCOPE, pe, pe->global, id->list);	//0 -> global
+	pe->global=semantic_analysis_atribuicao_list(GLOBALSCOPE, pe, pe->global, id->list);	//0 -> global
+}
+
+
+//An‡lise de declara›es de vari‡veis
+//Ž necess‡rio saber o scope para saber onde calcular o offset das vari‡veis nos registos de activa‹o
+table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_element* stable, is_atribuicao_list* ivl)
+{
+	is_atribuicao_list* aux;
+	int offset=0;
+	table_element* stmp=stable;
+
+	for(aux=ivl; aux; aux=aux->next)
+		stmp=semantic_analysis_atribuicao((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->v);
+
+	return stmp;
 }
 
 /*******************************************************
 ********************************************************
 *******************************************************/
-
-
-//An‡lise de declara›es de vari‡veis
-//Ž necess‡rio saber o scope para saber onde calcular o offset das vari‡veis nos registos de activa‹o
-table_element* semantic_analysis_vardeclist(int scope, prog_env *pe, table_element* stable, is_vardec_list* ivl)
-{
-	is_vardec_list* aux;
-	int offset=0;
-	table_element* stmp=stable;
-
-	for(aux=ivl; aux; aux=aux->next)
-		stmp=semantic_analysis_vardec((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->v);
-
-	return stmp;
-}
 
 //Dependendo do scope, esta função verifica primeiro se j‡ existe a vari‡vel nas tabelas de símbolos. Não pode existir na tabela de símbolos "corrente". Apenas nas "superiores"
 //Caso exista como vari‡vel ou até como procedimento (uma vari‡vel não pode nunca ser definida local, ou globalmente, se existir um procedimento com o seu nome), emite-se uma mensagem
