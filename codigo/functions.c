@@ -84,7 +84,6 @@ is_atributo* insert_atributo( int line, char* nome, is_expressao *exp )
     is_atributo *ia = (is_atributo*) malloc( sizeof(is_atributo) );
     ia->nome = nome;		//Guarda nome
     ia->exp = (struct is_expressao*) exp;			//Guarda expressão
-    ia->tipo = is_NONE;
     ia->codeline = line;
     return ia;
 }

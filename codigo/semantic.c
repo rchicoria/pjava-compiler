@@ -65,11 +65,11 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//Serve apenas para facilitar na pesquisa (na realidade, Ž uma redundncia, pois
 		//haver‡ tambŽm uma entrada na lista de ambientes)
 		if(te==NULL)
-			pe->global=create_symbol(-1, im->nome, method);
+			pe->global=create_symbol(-1, im->nome, is_VOID);
 		else
 		{
 			for(; te->next; te=te->next);					
-			te->next=create_symbol(-1, im->nome, method);		
+			te->next=create_symbol(-1, im->nome, is_VOID);		
 		}
 		
 		//preenche entrada para o procedimento na lista de ambientes
@@ -250,20 +250,22 @@ void semantic_analysis_call_stat(prog_env *pe, table_element* env, is_call_stat*
 
 
 //Convers‹o enum-> string para ajudar no output de erros
-char* typeToString(int type)
+char* typeToString(is_tipo type)
 {
 	switch(type)
 	{
-		case integer: return "integer";
+		/*case integer: return "integer";
 		case character: return "char";
-		case doub: return "double";
-		case method: return "method";
+		case doub: return "double";*/
+		case is_VOID: return "method";
+		case is_INT: return "int";
+		case is_STRING: return "String";
 	}
 	return "unknown type";
 }
 
 //Criação de uma estrutura table_element
-table_element* create_symbol(int offset, char* name, basic_type type)
+table_element* create_symbol(int offset, char* name, is_tipo type)
 {
 	table_element* el=(table_element*)malloc(sizeof(table_element));
 	strcpy(el->name,name);

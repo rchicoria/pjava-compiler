@@ -24,6 +24,6 @@ void semantic_analysis_write_stat(prog_env *pe, table_element* env, is_write_sta
 void semantic_analysis_assgn_stat(prog_env *pe, table_element* stable, is_assgn_stat* ias);
 void semantic_analysis_call_stat(prog_env *pe, table_element* env, is_call_stat* ics);
 */
-char* typeToString(int type);
-table_element* create_symbol(int offset, char* name, basic_type type);
+char* typeToString(is_tipo type);
+table_element* create_symbol(int offset, char* name, is_tipo type);
 table_element *lookup(table_element* table, char *str);

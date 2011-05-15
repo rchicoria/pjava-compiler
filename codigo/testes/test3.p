@@ -2,7 +2,7 @@ class test3
 {
 
 	static int b = 0;
-	static int b = 2;
+	static String texto;
 	
 	public static int func(double a, double b, int c) {
 	}
