@@ -101,21 +101,21 @@ static:		STATIC attribution ';'	{$$=insert_a_static($2);}
 		|	method			        {$$=insert_m_static($1);}
 		;
 		
-declaration: type attributions ';'  {$$=insert_declaracao($2,$1);}
+declaration: type attributions ';'  {$$=insert_declaracao(line, $2,$1);}
         ;
 
 attributions:   attributions ',' attribution        {$$=insert_atribuicao_list($1, $3);}
         |       attribution                         {$$=insert_atribuicao_list(NULL, $1);}
         ;
 
-attribution:	VAR                                 {$$=insert_atributo($1, NULL);}
-        |       VAR '=' expression                  {$$=insert_atributo($1, $3);}
+attribution:	VAR                                 {$$=insert_atributo(line, $1, NULL);}
+        |       VAR '=' expression                  {$$=insert_atributo(line, $1, $3);}
 		;
 
-method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_metodo($2, $3, $5, $8);}
-		|	STATIC type VAR '(' args ')' '{' '}'			{$$=insert_metodo($2, $3, $5, NULL);}
-		|	STATIC type VAR '(' ')' '{' statements '}'		{$$=insert_metodo($2, $3, NULL, $7);}
-		|	STATIC type VAR '(' ')' '{' '}'	    			{$$=insert_metodo($2, $3, NULL, NULL);}
+method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_metodo(line, $2, $3, $5, $8);}
+		|	STATIC type VAR '(' args ')' '{' '}'			{$$=insert_metodo(line, $2, $3, $5, NULL);}
+		|	STATIC type VAR '(' ')' '{' statements '}'		{$$=insert_metodo(line, $2, $3, NULL, $7);}
+		|	STATIC type VAR '(' ')' '{' '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL);}
 		;
 
 args:		args ',' arg    {$$=insert_argumento_list($1, $3);}
@@ -147,50 +147,50 @@ statement:	declaration     {$$=insert_d_statement($1);}
         ;
 
 
-print:      PRINT '(' expression ')' ';'    {$$=insert_print($3, '\0');}
-		|	PRINTLN '(' expression ')' ';'	{$$=insert_print($3, '\n');}
+print:      PRINT '(' expression ')' ';'    {$$=insert_print(line, $3, '\0');}
+		|	PRINTLN '(' expression ')' ';'	{$$=insert_print(line, $3, '\n');}
         ;     
 
-expression:	infix_expression	{$$=insert_i_expression($1);}
-		|	unary_expression	{$$=insert_u_expression($1);}
-		|	NUMBER				{$$=insert_NUMBER($1);}
-		|   VAR                 {$$=insert_VAR($1);}
+expression:	infix_expression	{$$=insert_i_expression(line, $1);}
+		|	unary_expression	{$$=insert_u_expression(line, $1);}
+		|	NUMBER				{$$=insert_NUMBER(line, $1);}
+		|   VAR                 {$$=insert_VAR(line, $1);}
 		;
 
 infix_expression:	expression '+' expression	{$$=insert_infix_expression($1, is_PLUS, $3);}
 		|			expression '-' expression	{$$=insert_infix_expression($1, is_MINUS, $3);}
 		|			expression '*' expression	{$$=insert_infix_expression($1, is_MULT, $3);}
 		|			expression '/' expression	{$$=insert_infix_expression($1, is_DIVIDE, $3);}
-		|			expression '+''+'			{$$=insert_infix_expression($1, is_PLUS, insert_NUMBER(1));}
-		|			expression '-''-'			{$$=insert_infix_expression($1, is_MINUS, insert_NUMBER(1));}
+		|			expression '+''+'			{$$=insert_infix_expression($1, is_PLUS, insert_NUMBER(line, 1));}
+		|			expression '-''-'			{$$=insert_infix_expression($1, is_MINUS, insert_NUMBER(line, 1));}
 		;
 
 unary_expression:	'-' expression	%prec UMINUS	{$$=insert_unary_expression($2);}
 		;
 	
-b_expression:       b_expression AND b_expression       {$$=insert_b_i_expressao($1, is_AND, $3);}
-        |           b_expression OR b_expression        {$$=insert_b_i_expressao($3, is_OR, $3);}
-        |           '!' b_expression  %prec UMINUS      {$$=insert_b_n_expressao($2);}
-        |           expression EQUALS expression        {$$=insert_comparacao($1, is_EQUALS, $3);}
-        |           expression DIFERENT expression      {$$=insert_comparacao($1, is_DIFERENT, $3);}
-        |           expression GREATER expression       {$$=insert_comparacao($1, is_GREATER, $3);}
-        |           expression LESSER expression        {$$=insert_comparacao($1, is_LESSER, $3);}
-        |           expression GREATEQ expression       {$$=insert_comparacao($1, is_GREATEQ, $3);}
-        |           expression LESSEQ expression        {$$=insert_comparacao($1, is_LESSEQ, $3);}
-        |           TRUE                                {$$=insert_b_tf_expressao('1');}
-        |           FALSE                               {$$=insert_b_tf_expressao('0');}
+b_expression:       b_expression AND b_expression       {$$=insert_b_i_expressao(line, $1, is_AND, $3);}
+        |           b_expression OR b_expression        {$$=insert_b_i_expressao(line, $3, is_OR, $3);}
+        |           '!' b_expression  %prec UMINUS      {$$=insert_b_n_expressao(line, $2);}
+        |           expression EQUALS expression        {$$=insert_comparacao(line, $1, is_EQUALS, $3);}
+        |           expression DIFERENT expression      {$$=insert_comparacao(line, $1, is_DIFERENT, $3);}
+        |           expression GREATER expression       {$$=insert_comparacao(line, $1, is_GREATER, $3);}
+        |           expression LESSER expression        {$$=insert_comparacao(line, $1, is_LESSER, $3);}
+        |           expression GREATEQ expression       {$$=insert_comparacao(line, $1, is_GREATEQ, $3);}
+        |           expression LESSEQ expression        {$$=insert_comparacao(line, $1, is_LESSEQ, $3);}
+        |           TRUE                                {$$=insert_b_tf_expressao(line, '1');}
+        |           FALSE                               {$$=insert_b_tf_expressao(line, '0');}
         ;
 
-if:     IF '(' b_expression ')' '{' statements '}'      {$$=insert_if($3, $6);}
-    |   IF '(' b_expression ')' statement               {$$=insert_if($3, $5);}
+if:     IF '(' b_expression ')' '{' statements '}'      {$$=insert_if(line, $3, $6);}
+    |   IF '(' b_expression ')' statement               {$$=insert_if(line, $3, $5);}
     ;
 
-while:  WHILE '(' b_expression ')' '{' statements '}'      {$$=insert_while($3, $6);}
-    |   WHILE '(' b_expression ')' statement               {$$=insert_while($3, $5);}
+while:  WHILE '(' b_expression ')' '{' statements '}'      {$$=insert_while(line, $3, $6);}
+    |   WHILE '(' b_expression ')' statement               {$$=insert_while(line, $3, $5);}
     ;
 
-for:    FOR '(' for_first_camp b_expression ';' expression ')' '{' statements '}' {$$=insert_for($3, $4, $6, $9);}
-    |   FOR '(' for_first_camp b_expression ';' expression ')' statement          {$$=insert_for($3, $4, $6, $8);}
+for:    FOR '(' for_first_camp b_expression ';' expression ')' '{' statements '}' {$$=insert_for(line, $3, $4, $6, $9);}
+    |   FOR '(' for_first_camp b_expression ';' expression ')' statement          {$$=insert_for(line, $3, $4, $6, $8);}
     ;
     
 for_first_camp: attributions ';'    {$$=insert_as_statement($1);}
