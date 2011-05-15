@@ -6,6 +6,8 @@
 #include "symbol_table.h"
 #include "semantic.h"
 
+void show_table(table_element*);
+
 //is_atribuicao_list* myprogram;
 is_static_list* isl;
 prog_env* prog_environment;

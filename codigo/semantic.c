@@ -128,7 +128,7 @@ table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_elem
 
 	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
 	{
-		printf("line %d: error: Cannot define %s, already defined as procedure!\n", ia->codeline, ia->nome);
+		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
 		return stmp;
 	}
 	
@@ -148,10 +148,6 @@ table_element* semantic_analysis_atribuicao(int offset, prog_env* pe, table_elem
 	return stmp;
 }
 
-/*******************************************************
-********************************************************
-*******************************************************/
-
 
 //An‡lise sem‰ntica de listas de statements
 void semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl)
@@ -159,20 +155,31 @@ void semantic_analysis_statement_list(prog_env *pe, table_element* env, is_state
 	is_statement_list* aux;
 	
 	for(aux=isl; aux; aux=aux->next)
-		semantic_analysis_statement(pe, env, aux->s);
+		semantic_analysis_statement(pe, env, aux->stt);
 }
 
 //Triagem por tipo de statement
 void semantic_analysis_statement(prog_env *pe, table_element* env, is_statement* is)
 {
-	switch(is->disc_d)
+	switch(is->tipo)
 	{
-	case d_write_stat:	semantic_analysis_write_stat(pe, env, is->data_statement.u_write_stat);break;
+		case d_s_atribuicao: break;
+		case d_s_declaracao: break;
+		case d_print: break;
+		case d_if: break;
+		case d_while: break;
+		case d_for: break;
+	/*case d_write_stat:	semantic_analysis_write_stat(pe, env, is->data_statement.u_write_stat);break;
 	case d_assgn_stat:	semantic_analysis_assgn_stat(pe, env, is->data_statement.u_assgn_stat);break;
 	case d_call_stat:	semantic_analysis_call_stat(pe, env, is->data_statement.u_call_stat);break;
+	*/
 	}
 		
 }
+
+/*******************************************************
+********************************************************
+*******************************************************
 
 //S— se faz um write se a vari‡vel existir e se n‹o for um procedimento
 void semantic_analysis_write_stat(prog_env *pe, table_element* env, is_write_stat* iws)
@@ -215,16 +222,18 @@ void semantic_analysis_call_stat(prog_env *pe, table_element* env, is_call_stat*
 		printf("line %d: Unknown procedure: %s\n", ics->codeline, ics->proc);
 }
 
+*/
+
 
 //Convers‹o enum-> string para ajudar no output de erros
 char* typeToString(int type)
 {
 	switch(type)
 	{
-	case integer: return "integer";
-	case character: return "char";
-	case doub: return "double";
-	case procedure: return "procedure";
+		case integer: return "integer";
+		case character: return "char";
+		case doub: return "double";
+		case method: return "method";
 	}
 	return "unknown type";
 }
@@ -243,12 +252,12 @@ table_element* create_symbol(int offset, char* name, basic_type type)
 //Procura um identificador, devolve 0 caso n‹o exista
 table_element *lookup(table_element* table, char *str)
 {
-table_element *aux;
+	table_element *aux;
 
-for(aux=table; aux; aux=aux->next)
-	if(strcmp(aux->name, str)==0)
-		return aux;
+	for(aux=table; aux; aux=aux->next)
+		if(strcmp(aux->name, str)==0)
+			return aux;
 
-return 0;
+	return 0;
 }
 
