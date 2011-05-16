@@ -144,8 +144,11 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 		}
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
 		stmp=create_symbol(offset, ia->nome, tipo,is_VAR);	//criar um símbolo na cabeça da lista de símbolos, stable
-	else
-		last->next=create_symbol(offset, ia->nome, tipo,is_VAR);	//nao existe mas tabela tem elementos - coloca no final da stable
+	else {
+		aux = stmp;
+		stmp=create_symbol(offset, ia->nome, tipo,is_VAR);	//nao existe mas tabela tem elementos - coloca no final da stable
+		stmp->next = aux;
+	}
 	
 	return stmp;
 }
@@ -220,7 +223,7 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 		case d_s_atribuicao: semantic_analysis_atribuicao(pe, env, (is_atributo *)(is->conteudo.u_atributo));break;
 		case d_s_declaracao: return semantic_analysis_declaration(LOCALSCOPE, pe, env,(is_declaracao *)(is->conteudo.u_declaracao));
 		case d_print: semantic_analysis_print(pe, (is_print*)(is->conteudo.u_print)); break;
-		case d_if: break;
+		case d_if: semantic_analysis_if(pe, env, (is_if*)(is->conteudo.u_if));break;
 		case d_while: break;
 		case d_for: break;
 	/*case d_write_stat:	semantic_analysis_write_stat(pe, env, is->data_statement.u_write_stat);break;
@@ -265,6 +268,19 @@ void semantic_analysis_print(prog_env* pe, is_print* ip)
 	{
 		case d_expression: semantic_analysis_expression(pe, (is_expressao*)(ip->conteudo.u_p_exp));break;
 	}
+}
+
+void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii)
+{
+	semantic_analysis_statement_list(pe, env, ii->stt);
+}
+
+void semantic_analysis_while(prog_env* pe, is_while* iw)
+{
+}
+
+void semantic_analysis_for(prog_env* pe, is_for* isf)
+{
 }
 
 /*******************************************************
