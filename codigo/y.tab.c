@@ -2240,16 +2240,22 @@ yyreturn:
 int main()
 {
 	line = 1;
+	errors = 0;
 	int parsing = yyparse();
 	
 	if(!parsing)
 		prog_environment=semantic_analysis(isl);
-	show_program(isl);	//mostra a árvore que acabou de ser construida
-	show_table(prog_environment->global);
-	environment_list* aux = (environment_list*) malloc(sizeof(environment_list));
-	for(aux=prog_environment->procs; aux; aux=aux->next){
-	    show_table(aux->locals);
-	    printf("\n");
+	if(errors)
+		printf("This program could not compile because there are %d errors.\n", errors);
+	else
+	{
+	    show_program(isl);	//mostra a árvore que acabou de ser construida
+	    show_table(prog_environment->global);
+	    environment_list* aux = (environment_list*) malloc(sizeof(environment_list));
+	    for(aux=prog_environment->procs; aux; aux=aux->next){
+	        show_table(aux->locals);
+	        printf("\n");
+	   }
 	}
     return 0;
 }

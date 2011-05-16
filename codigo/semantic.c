@@ -1,4 +1,3 @@
-#include "structures.h"
 #include "symbol_table.h"
 #include "semantic.h"
 #include <stdlib.h>
@@ -50,7 +49,10 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 	environment_list *pl;
 
 	if(lookup(pe->global, im->nome))
+	{
 		printf("Symbol %s already defined! Cannot create method!\n", im->nome);
+		errors++;
+	}
 	else
 	{
 		pl=(environment_list*)malloc(sizeof(environment_list)); //cria um nodo para a lista de ambientes 
@@ -77,7 +79,7 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 
 		//faz an‡lise sem‰ntica do procedimento
 		// Ž aqui que vai adicionando os s’mbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
-		semantic_analysis_argumento_list(LOCALSCOPE, pe, pl->locals, (is_argumento_list *)(im->arg_list));
+		semantic_analysis_argumento_list(pe, pl->locals, (is_argumento_list *)(im->arg_list), im->nome);
 		semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
@@ -129,6 +131,7 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
 	{
 		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
+		errors++;
 		return stmp;
 	}
 	
@@ -136,6 +139,7 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
 		if(strcmp(ia->nome, aux->name)==0){
 			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
+			errors++;
 			return stmp;
 		}
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
@@ -152,20 +156,48 @@ void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atribu
     int found=1;
 	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
 
-	if(aux!=0 && aux->type!=ia->tipo)		//se existir e nao for do mesmo tipo, temos um erro!
+	if(aux!=0 && aux->type!=ia->tipo){		//se existir e nao for do mesmo tipo, temos um erro!
 		printf("line %d: error: %s is not defined as a %s!\n", ia->codeline, ia->nome, typeToString(ia->tipo));
+	    errors++;
+	}
 	else if (aux==0)
 	    found=0;
 	//procura por uma vari‡vel com o mesmo nome
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
 		if(strcmp(ia->nome, aux->name)==0)
 			return;
-	if(found==0)
+	if(found==0){
 	    printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
+        errors++;
+    }
 }
 
-void semantic_analysis_argumento_list(int scope, prog_env* pe, table_element* env, is_argumento_list* ial)
+void semantic_analysis_argumento_list(prog_env* pe, table_element* env, is_argumento_list* ial, char* metodo)
 {
+	is_argumento_list* aux;
+	int offset=0;
+	table_element* stmp=env;
+
+	for(aux=ial; aux; aux=aux->next)
+		stmp=semantic_analysis_argumento(offset++, pe, stmp, aux->arg, metodo);
+}
+
+table_element* semantic_analysis_argumento(int offset, prog_env* pe, table_element* stmp, is_argumento* arg, char* metodo)
+{
+	table_element *aux, *last;
+	
+	for(aux=last=stmp; aux; last=aux, aux=aux->next)
+		if(strcmp(arg->nome, aux->name)==0){
+			printf("error in declaration of %s: %s already defined!\n", metodo, arg->nome);
+			errors++;
+			return stmp;
+		}
+	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
+		stmp=create_symbol(offset, arg->nome, arg->tipo);	//criar um símbolo na cabeça da lista de símbolos, stable
+	else
+		last->next=create_symbol(offset, arg->nome, arg->tipo);	//nao existe mas tabela tem elementos - coloca no final da stable
+	
+	return stmp;
 }
 
 //An‡lise sem‰ntica de listas de statements
@@ -253,9 +285,6 @@ char* typeToString(is_tipo type)
 {
 	switch(type)
 	{
-		/*case integer: return "integer";
-		case character: return "char";
-		case doub: return "double";*/
 		case is_INT:		return "int";
 		case is_STRING:		return "String";
 		case is_VOID:		return "void";

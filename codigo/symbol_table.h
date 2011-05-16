@@ -1,8 +1,6 @@
 #ifndef _SYMBOL_TABLE_
 #define _SYMBOL_TABLE_
 
-#include "structures.h"
-
 typedef enum {integer, character, doub, method} basic_type;
 
 typedef enum {is_INT, is_STRING, is_VOID, is_FLOAT, is_DOUBLE, is_BOOLEAN, is_CHAR, is_NONE} is_tipo;
