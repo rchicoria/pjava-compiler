@@ -19,8 +19,8 @@ void semantic_analysis_number(prog_env*, int);
 void semantic_analysis_var(prog_env*, char*);
 void semantic_analysis_print(prog_env*, is_print*);
 void semantic_analysis_if(prog_env*, table_element*, is_if*);
-void semantic_analysis_while(prog_env*, is_while*);
-void semantic_analysis_for(prog_env*, is_for*);
+void semantic_analysis_while(prog_env*, table_element*, is_while*);
+void semantic_analysis_for(prog_env*, table_element*, is_for*);
 
 /*prog_env* semantic_analysis(is_block_list* ipl);
 void semantic_analysis_block(prog_env *pe, is_block* ip);

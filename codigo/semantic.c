@@ -224,8 +224,8 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 		case d_s_declaracao: return semantic_analysis_declaration(LOCALSCOPE, pe, env,(is_declaracao *)(is->conteudo.u_declaracao));
 		case d_print: semantic_analysis_print(pe, (is_print*)(is->conteudo.u_print)); break;
 		case d_if: semantic_analysis_if(pe, env, (is_if*)(is->conteudo.u_if));break;
-		case d_while: break;
-		case d_for: break;
+		case d_while: semantic_analysis_while(pe, env, (is_while*)(is->conteudo.u_while));break;
+		case d_for: semantic_analysis_for(pe, env, (is_for*)(is->conteudo.u_for));break;
 	/*case d_write_stat:	semantic_analysis_write_stat(pe, env, is->data_statement.u_write_stat);break;
 	case d_assgn_stat:	semantic_analysis_assgn_stat(pe, env, is->data_statement.u_assgn_stat);break;
 	case d_call_stat:	semantic_analysis_call_stat(pe, env, is->data_statement.u_call_stat);break;
@@ -275,12 +275,14 @@ void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii)
 	semantic_analysis_statement_list(pe, env, ii->stt);
 }
 
-void semantic_analysis_while(prog_env* pe, is_while* iw)
+void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw)
 {
+	semantic_analysis_statement_list(pe, env, iw->stt);
 }
 
-void semantic_analysis_for(prog_env* pe, is_for* isf)
+void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf)
 {
+	semantic_analysis_statement_list(pe, env, isf->stt);
 }
 
 /*******************************************************
