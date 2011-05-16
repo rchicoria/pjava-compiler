@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "symbol_table.h"
 #include "semantic.h"
+#include <string.h>
 
 void show_table(table_element*);
 
@@ -213,11 +214,6 @@ int main()
 	{
 	    show_program(isl);	//mostra a árvore que acabou de ser construida
 	    show_table(prog_environment->global);
-	    environment_list* aux = (environment_list*) malloc(sizeof(environment_list));
-	    for(aux=prog_environment->procs; aux; aux=aux->next){
-	        show_table(aux->locals);
-	        printf("\n");
-	   }
 	}
     return 0;
 }
@@ -232,6 +228,17 @@ void show_table(table_element* table)
 {
 	table_element *aux;
 	printf("\n");
-	for(aux=table; aux; aux=aux->next)
-		printf("symbol %s, type %s\n", aux->name, typeToString(aux->type));
+	environment_list* aux1 = (environment_list*) malloc(sizeof(environment_list));
+	aux1=prog_environment->procs;
+	for(aux=table; aux; aux=aux->next){
+		printf("symbol %s, type %s %s", aux->name, typeToString(aux->type), printSymType(aux->stype)); 
+		if(aux->stype==is_METHOD){
+		    printf(":\n---------");
+		    show_table(aux1->locals);
+		    aux1=aux1->next;
+		    printf("---------\n");
+		}
+		else
+		    printf("\n");
+	}
 }

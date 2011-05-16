@@ -111,7 +111,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 16 "pjava.y"
+#line 17 "pjava.y"
 
 	is_static_list* isl;
 	is_atribuicao_list* ial;

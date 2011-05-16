@@ -76,6 +76,7 @@
 #include <stdio.h>
 #include "symbol_table.h"
 #include "semantic.h"
+#include <string.h>
 
 void show_table(table_element*);
 
@@ -85,7 +86,7 @@ prog_env* prog_environment;
 
 
 /* Line 189 of yacc.c  */
-#line 89 "y.tab.c"
+#line 90 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -184,7 +185,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 16 "pjava.y"
+#line 17 "pjava.y"
 
 	is_static_list* isl;
 	is_atribuicao_list* ial;
@@ -210,7 +211,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 214 "y.tab.c"
+#line 215 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -222,7 +223,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 226 "y.tab.c"
+#line 227 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -537,13 +538,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    94,    94,    97,    98,   101,   102,   105,   108,   109,
-     112,   113,   116,   117,   118,   119,   122,   123,   126,   129,
-     130,   131,   132,   133,   134,   135,   138,   139,   142,   143,
-     144,   145,   146,   147,   151,   152,   155,   156,   157,   158,
-     161,   162,   163,   164,   165,   166,   169,   172,   173,   174,
-     175,   176,   177,   178,   179,   180,   181,   182,   185,   186,
-     189,   190,   193,   194,   197,   198
+       0,    95,    95,    98,    99,   102,   103,   106,   109,   110,
+     113,   114,   117,   118,   119,   120,   123,   124,   127,   130,
+     131,   132,   133,   134,   135,   136,   139,   140,   143,   144,
+     145,   146,   147,   148,   152,   153,   156,   157,   158,   159,
+     162,   163,   164,   165,   166,   167,   170,   173,   174,   175,
+     176,   177,   178,   179,   180,   181,   182,   183,   186,   187,
+     190,   191,   194,   195,   198,   199
 };
 #endif
 
@@ -1582,448 +1583,448 @@ yyreduce:
         case 3:
 
 /* Line 1455 of yacc.c  */
-#line 97 "pjava.y"
+#line 98 "pjava.y"
     {(yyval.isl)=insert_static_list((yyvsp[(1) - (2)].isl), (yyvsp[(2) - (2)].isl));}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 98 "pjava.y"
+#line 99 "pjava.y"
     {(yyval.isl)=insert_static_list(NULL, (yyvsp[(1) - (1)].isl)); isl=(yyval.isl);}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 101 "pjava.y"
+#line 102 "pjava.y"
     {(yyval.isl)=insert_d_static((yyvsp[(2) - (2)].id));}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 102 "pjava.y"
+#line 103 "pjava.y"
     {(yyval.isl)=insert_m_static((yyvsp[(1) - (1)].im));}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 105 "pjava.y"
+#line 106 "pjava.y"
     {(yyval.id)=insert_declaracao(line, (yyvsp[(2) - (3)].ial),(yyvsp[(1) - (3)].it));}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 108 "pjava.y"
+#line 109 "pjava.y"
     {(yyval.ial)=insert_atribuicao_list((yyvsp[(1) - (3)].ial), (yyvsp[(3) - (3)].ia));}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 109 "pjava.y"
+#line 110 "pjava.y"
     {(yyval.ial)=insert_atribuicao_list(NULL, (yyvsp[(1) - (1)].ia));}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 112 "pjava.y"
+#line 113 "pjava.y"
     {(yyval.ia)=insert_atributo(line, (yyvsp[(1) - (1)].var), NULL);}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 113 "pjava.y"
+#line 114 "pjava.y"
     {(yyval.ia)=insert_atributo(line, (yyvsp[(1) - (3)].var), (yyvsp[(3) - (3)].ie));}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 116 "pjava.y"
+#line 117 "pjava.y"
     {(yyval.im)=insert_metodo(line, (yyvsp[(2) - (9)].it), (yyvsp[(3) - (9)].var), (yyvsp[(5) - (9)].iarl), (yyvsp[(8) - (9)].istl));}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 117 "pjava.y"
+#line 118 "pjava.y"
     {(yyval.im)=insert_metodo(line, (yyvsp[(2) - (8)].it), (yyvsp[(3) - (8)].var), (yyvsp[(5) - (8)].iarl), NULL);}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 118 "pjava.y"
+#line 119 "pjava.y"
     {(yyval.im)=insert_metodo(line, (yyvsp[(2) - (8)].it), (yyvsp[(3) - (8)].var), NULL, (yyvsp[(7) - (8)].istl));}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 119 "pjava.y"
+#line 120 "pjava.y"
     {(yyval.im)=insert_metodo(line, (yyvsp[(2) - (7)].it), (yyvsp[(3) - (7)].var), NULL, NULL);}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 122 "pjava.y"
+#line 123 "pjava.y"
     {(yyval.iarl)=insert_argumento_list((yyvsp[(1) - (3)].iarl), (yyvsp[(3) - (3)].iar));}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 123 "pjava.y"
+#line 124 "pjava.y"
     {(yyval.iarl)=insert_argumento_list(NULL, (yyvsp[(1) - (1)].iar));}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 126 "pjava.y"
+#line 127 "pjava.y"
     {(yyval.iar)=insert_argumento((yyvsp[(1) - (2)].it), (yyvsp[(2) - (2)].var));}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 129 "pjava.y"
+#line 130 "pjava.y"
     {(yyval.it)=is_INT;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 130 "pjava.y"
+#line 131 "pjava.y"
     {(yyval.it)=is_STRING;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 131 "pjava.y"
+#line 132 "pjava.y"
     {(yyval.it)=is_VOID;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 132 "pjava.y"
+#line 133 "pjava.y"
     {(yyval.it)=is_FLOAT;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 133 "pjava.y"
+#line 134 "pjava.y"
     {(yyval.it)=is_DOUBLE;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 134 "pjava.y"
+#line 135 "pjava.y"
     {(yyval.it)=is_BOOLEAN;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 135 "pjava.y"
+#line 136 "pjava.y"
     {(yyval.it)=is_CHAR;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 138 "pjava.y"
+#line 139 "pjava.y"
     {insert_statement_list((yyvsp[(1) - (2)].istl),(yyvsp[(2) - (2)].istl));}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 139 "pjava.y"
+#line 140 "pjava.y"
     {insert_statement_list(NULL, (yyvsp[(1) - (1)].istl));}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 142 "pjava.y"
+#line 143 "pjava.y"
     {(yyval.istl)=insert_d_statement((yyvsp[(1) - (1)].id));}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 143 "pjava.y"
+#line 144 "pjava.y"
     {(yyval.istl)=insert_a_statement((yyvsp[(1) - (2)].ia));}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 144 "pjava.y"
+#line 145 "pjava.y"
     {(yyval.istl)=insert_p_statement((yyvsp[(1) - (1)].ip));}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 145 "pjava.y"
+#line 146 "pjava.y"
     {(yyval.istl)=insert_i_statement((yyvsp[(1) - (1)].ii));}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 146 "pjava.y"
+#line 147 "pjava.y"
     {(yyval.istl)=insert_w_statement((yyvsp[(1) - (1)].iw));}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 147 "pjava.y"
+#line 148 "pjava.y"
     {(yyval.istl)=insert_f_statement((yyvsp[(1) - (1)].isf));}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 151 "pjava.y"
+#line 152 "pjava.y"
     {(yyval.ip)=insert_print(line, (yyvsp[(3) - (5)].ie), '\0');}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 152 "pjava.y"
+#line 153 "pjava.y"
     {(yyval.ip)=insert_print(line, (yyvsp[(3) - (5)].ie), '\n');}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 155 "pjava.y"
+#line 156 "pjava.y"
     {(yyval.ie)=insert_i_expression(line, (yyvsp[(1) - (1)].iie));}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 156 "pjava.y"
+#line 157 "pjava.y"
     {(yyval.ie)=insert_u_expression(line, (yyvsp[(1) - (1)].iue));}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 157 "pjava.y"
+#line 158 "pjava.y"
     {(yyval.ie)=insert_NUMBER(line, (yyvsp[(1) - (1)].num));}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 158 "pjava.y"
+#line 159 "pjava.y"
     {(yyval.ie)=insert_VAR(line, (yyvsp[(1) - (1)].var));}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 161 "pjava.y"
+#line 162 "pjava.y"
     {(yyval.iie)=insert_infix_expression((yyvsp[(1) - (3)].ie), is_PLUS, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 162 "pjava.y"
+#line 163 "pjava.y"
     {(yyval.iie)=insert_infix_expression((yyvsp[(1) - (3)].ie), is_MINUS, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 163 "pjava.y"
+#line 164 "pjava.y"
     {(yyval.iie)=insert_infix_expression((yyvsp[(1) - (3)].ie), is_MULT, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 164 "pjava.y"
+#line 165 "pjava.y"
     {(yyval.iie)=insert_infix_expression((yyvsp[(1) - (3)].ie), is_DIVIDE, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 165 "pjava.y"
+#line 166 "pjava.y"
     {(yyval.iie)=insert_infix_expression((yyvsp[(1) - (3)].ie), is_PLUS, insert_NUMBER(line, 1));}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 166 "pjava.y"
+#line 167 "pjava.y"
     {(yyval.iie)=insert_infix_expression((yyvsp[(1) - (3)].ie), is_MINUS, insert_NUMBER(line, 1));}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 169 "pjava.y"
+#line 170 "pjava.y"
     {(yyval.iue)=insert_unary_expression((yyvsp[(2) - (2)].ie));}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 172 "pjava.y"
+#line 173 "pjava.y"
     {(yyval.ibe)=insert_b_i_expressao(line, (yyvsp[(1) - (3)].ibe), is_AND, (yyvsp[(3) - (3)].ibe));}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 173 "pjava.y"
+#line 174 "pjava.y"
     {(yyval.ibe)=insert_b_i_expressao(line, (yyvsp[(3) - (3)].ibe), is_OR, (yyvsp[(3) - (3)].ibe));}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 174 "pjava.y"
+#line 175 "pjava.y"
     {(yyval.ibe)=insert_b_n_expressao(line, (yyvsp[(2) - (2)].ibe));}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 175 "pjava.y"
+#line 176 "pjava.y"
     {(yyval.ibe)=insert_comparacao(line, (yyvsp[(1) - (3)].ie), is_EQUALS, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 176 "pjava.y"
+#line 177 "pjava.y"
     {(yyval.ibe)=insert_comparacao(line, (yyvsp[(1) - (3)].ie), is_DIFERENT, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 177 "pjava.y"
+#line 178 "pjava.y"
     {(yyval.ibe)=insert_comparacao(line, (yyvsp[(1) - (3)].ie), is_GREATER, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 178 "pjava.y"
+#line 179 "pjava.y"
     {(yyval.ibe)=insert_comparacao(line, (yyvsp[(1) - (3)].ie), is_LESSER, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 179 "pjava.y"
+#line 180 "pjava.y"
     {(yyval.ibe)=insert_comparacao(line, (yyvsp[(1) - (3)].ie), is_GREATEQ, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 180 "pjava.y"
+#line 181 "pjava.y"
     {(yyval.ibe)=insert_comparacao(line, (yyvsp[(1) - (3)].ie), is_LESSEQ, (yyvsp[(3) - (3)].ie));}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 181 "pjava.y"
+#line 182 "pjava.y"
     {(yyval.ibe)=insert_b_tf_expressao(line, '1');}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 182 "pjava.y"
+#line 183 "pjava.y"
     {(yyval.ibe)=insert_b_tf_expressao(line, '0');}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 185 "pjava.y"
+#line 186 "pjava.y"
     {(yyval.ii)=insert_if(line, (yyvsp[(3) - (7)].ibe), (yyvsp[(6) - (7)].istl));}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 186 "pjava.y"
+#line 187 "pjava.y"
     {(yyval.ii)=insert_if(line, (yyvsp[(3) - (5)].ibe), (yyvsp[(5) - (5)].istl));}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 189 "pjava.y"
+#line 190 "pjava.y"
     {(yyval.iw)=insert_while(line, (yyvsp[(3) - (7)].ibe), (yyvsp[(6) - (7)].istl));}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 190 "pjava.y"
+#line 191 "pjava.y"
     {(yyval.iw)=insert_while(line, (yyvsp[(3) - (5)].ibe), (yyvsp[(5) - (5)].istl));}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 193 "pjava.y"
+#line 194 "pjava.y"
     {(yyval.isf)=insert_for(line, (yyvsp[(3) - (10)].istl), (yyvsp[(4) - (10)].ibe), (yyvsp[(6) - (10)].ie), (yyvsp[(9) - (10)].istl));}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 194 "pjava.y"
+#line 195 "pjava.y"
     {(yyval.isf)=insert_for(line, (yyvsp[(3) - (8)].istl), (yyvsp[(4) - (8)].ibe), (yyvsp[(6) - (8)].ie), (yyvsp[(8) - (8)].istl));}
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 197 "pjava.y"
+#line 198 "pjava.y"
     {(yyval.istl)=insert_as_statement((yyvsp[(1) - (2)].ial));}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 198 "pjava.y"
+#line 199 "pjava.y"
     {(yyval.istl)=insert_d_statement((yyvsp[(1) - (1)].id));}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2027 "y.tab.c"
+#line 2028 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2235,7 +2236,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 201 "pjava.y"
+#line 202 "pjava.y"
 
 int main()
 {
@@ -2251,11 +2252,6 @@ int main()
 	{
 	    show_program(isl);	//mostra a árvore que acabou de ser construida
 	    show_table(prog_environment->global);
-	    environment_list* aux = (environment_list*) malloc(sizeof(environment_list));
-	    for(aux=prog_environment->procs; aux; aux=aux->next){
-	        show_table(aux->locals);
-	        printf("\n");
-	   }
 	}
     return 0;
 }
@@ -2270,7 +2266,18 @@ void show_table(table_element* table)
 {
 	table_element *aux;
 	printf("\n");
-	for(aux=table; aux; aux=aux->next)
-		printf("symbol %s, type %s\n", aux->name, typeToString(aux->type));
+	environment_list* aux1 = (environment_list*) malloc(sizeof(environment_list));
+	aux1=prog_environment->procs;
+	for(aux=table; aux; aux=aux->next){
+		printf("symbol %s, type %s %s", aux->name, typeToString(aux->type), printSymType(aux->stype)); 
+		if(aux->stype==is_METHOD){
+		    printf(":\n---------");
+		    show_table(aux1->locals);
+		    aux1=aux1->next;
+		    printf("---------\n");
+		}
+		else
+		    printf("\n");
+	}
 }
 
