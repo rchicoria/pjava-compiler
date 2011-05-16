@@ -219,7 +219,7 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 	{
 		case d_s_atribuicao: semantic_analysis_atribuicao(pe, env, (is_atributo *)(is->conteudo.u_atributo));break;
 		case d_s_declaracao: return semantic_analysis_declaration(LOCALSCOPE, pe, env,(is_declaracao *)(is->conteudo.u_declaracao));
-		case d_print: break;
+		case d_print: break;//semantic_analysis(pe, (is_print*)(is->conteudo.u_print)); break;
 		case d_if: break;
 		case d_while: break;
 		case d_for: break;
@@ -230,6 +230,24 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 	}
 	return env;
 		
+}
+
+is_expressao* semantic_analysis_expression(prog_env* pe, is_expressao* ie)
+{
+	return ie;
+}
+
+void semantic_analysis_print(prog_env* pe, is_print* ip)
+{
+	switch(ip->tipo)
+	{
+		case d_expression: if(!semantic_analysis_expression(pe, (is_expressao*)(ip->conteudo.u_p_exp)))
+							{
+								printf("line %d: error in expression of print\n", ip->codeline);
+								errors++;
+							}
+							break;
+	}
 }
 
 /*******************************************************

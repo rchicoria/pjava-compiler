@@ -12,6 +12,8 @@ table_element* semantic_analysis_argumento_list(prog_env*, table_element*, is_ar
 table_element* semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*);
 table_element* semantic_analysis_statement(prog_env*, table_element*, is_statement*);
 table_element* semantic_analysis_argumento(int, prog_env*, table_element*, is_argumento*, char*);
+is_expressao* semantic_analysis_expression(prog_env*, is_expressao*);
+void semantic_analysis_print(prog_env*, is_print*);
 
 /*prog_env* semantic_analysis(is_block_list* ipl);
 void semantic_analysis_block(prog_env *pe, is_block* ip);

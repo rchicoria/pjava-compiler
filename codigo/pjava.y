@@ -102,7 +102,7 @@ statics:	statics static	{$$=insert_static_list($1, $2);}
 static:		STATIC declaration      {$$=insert_d_static($2);}
 		|	method			        {$$=insert_m_static($1);}
 		;
-		
+
 declaration: type attributions ';'  {$$=insert_declaracao(line, $2,$1);}
         ;
 
@@ -123,7 +123,7 @@ method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_metodo(line,
 args:		args ',' arg    {$$=insert_argumento_list($1, $3);}
 		|	arg             {$$=insert_argumento_list(NULL, $1);}                                 
 		;
-		
+
 arg:        type VAR        {$$=insert_argumento($1, $2);}
         ;
 
@@ -169,7 +169,7 @@ infix_expression:	expression '+' expression	{$$=insert_infix_expression($1, is_P
 
 unary_expression:	'-' expression	%prec UMINUS	{$$=insert_unary_expression($2);}
 		;
-	
+
 b_expression:       b_expression AND b_expression       {$$=insert_b_i_expressao(line, $1, is_AND, $3);}
         |           b_expression OR b_expression        {$$=insert_b_i_expressao(line, $3, is_OR, $3);}
         |           '!' b_expression  %prec UMINUS      {$$=insert_b_n_expressao(line, $2);}
@@ -205,7 +205,7 @@ int main()
 	line = 1;
 	errors = 0;
 	int parsing = yyparse();
-	
+
 	if(!parsing)
 		prog_environment=semantic_analysis(isl);
 	if(errors)
