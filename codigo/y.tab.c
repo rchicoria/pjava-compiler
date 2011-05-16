@@ -407,13 +407,19 @@ static YYSTACKDATA yystack;
 int main()
 {
 	line = 1;
+	errors = 0;
 	int parsing = yyparse();
 	
 	if(!parsing)
 		prog_environment=semantic_analysis(isl);
 	
-	show_program(isl);	//mostra a árvore que acabou de ser construida
-	show_table(prog_environment->global);
+	if(errors)
+		printf("This program could not compile because there are %d errors.\n", errors);
+	else
+	{
+		show_program(isl);	//mostra a árvore que acabou de ser construida
+		show_table(prog_environment->global);
+	}
     return 0;
 }
 
@@ -430,7 +436,7 @@ void show_table(table_element* table)
 	for(aux=table; aux; aux=aux->next)
 		printf("symbol %s, type %s\n", aux->name, typeToString(aux->type));
 }
-#line 433 "y.tab.c"
+#line 439 "y.tab.c"
 
 #if YYDEBUG
 #include <stdio.h>		/* needed for printf */
@@ -892,7 +898,7 @@ case 64:
 #line 198 "pjava.y"
 	{yyval.istl=insert_d_statement(yystack.l_mark[0].id);}
 break;
-#line 895 "y.tab.c"
+#line 901 "y.tab.c"
     }
     yystack.s_mark -= yym;
     yystate = *yystack.s_mark;

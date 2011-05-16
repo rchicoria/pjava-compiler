@@ -202,13 +202,19 @@ for_first_camp: attributions ';'    {$$=insert_as_statement($1);}
 int main()
 {
 	line = 1;
+	errors = 0;
 	int parsing = yyparse();
 	
 	if(!parsing)
 		prog_environment=semantic_analysis(isl);
 	
-	show_program(isl);	//mostra a árvore que acabou de ser construida
-	show_table(prog_environment->global);
+	if(errors)
+		printf("This program could not compile because there are %d errors.\n", errors);
+	else
+	{
+		show_program(isl);	//mostra a árvore que acabou de ser construida
+		show_table(prog_environment->global);
+	}
     return 0;
 }
 

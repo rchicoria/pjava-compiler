@@ -51,7 +51,10 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 	environment_list *pl;
 
 	if(lookup(pe->global, im->nome))
+	{
 		printf("Symbol %s already defined! Cannot create method!\n", im->nome);
+		errors++;
+	}
 	else
 	{
 		pl=(environment_list*)malloc(sizeof(environment_list)); //cria um nodo para a lista de ambientes 
@@ -129,6 +132,7 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
 	{
 		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
+		errors++;
 		return stmp;
 	}
 	
@@ -136,6 +140,7 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
 		if(strcmp(ia->nome, aux->name)==0){
 			printf("line %d: error: %s already defined!\n", ia->codeline, ia->nome);
+			errors++;
 			return stmp;
 		}
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
@@ -155,6 +160,7 @@ table_element* semantic_analysis_atribuicao(prog_env* pe, table_element* stable,
 	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
 	{
 		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
+		errors++;
 		return stmp;
 	}
 	
@@ -162,6 +168,7 @@ table_element* semantic_analysis_atribuicao(prog_env* pe, table_element* stable,
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
 		if(strcmp(ia->nome, aux->name)!=0){
 			printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
+			errors++;
 			return stmp;
 		}
 	
@@ -185,6 +192,7 @@ table_element* semantic_analysis_argumento(int offset, prog_env* pe, table_eleme
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
 		if(strcmp(arg->nome, aux->name)==0){
 			printf("error in declaration of %s: %s already defined!\n", metodo, arg->nome);
+			errors++;
 			return stmp;
 		}
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
