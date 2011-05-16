@@ -33,14 +33,13 @@ void semantic_analysis_block(prog_env *pe, is_static* is)
 	switch(is->tipo)
 	{
 		//case d_atribuicao: semantic_analysis_atribuicao_dec(pe, pe->global, (is_atributo *)(is->conteudo.u_atributo));break;
-		case d_declaracao: semantic_analysis_declaration(pe, (is_declaracao *)(is->conteudo.u_declaracao));break;
+		case d_declaracao: pe->global=semantic_analysis_declaration(GLOBALSCOPE, pe, pe->global,(is_declaracao *)(is->conteudo.u_declaracao));break;
 		case d_metodo: semantic_analysis_method(pe, (is_metodo *)(is->conteudo.u_metodo));break;
 	/*
 	case d_procedure: semantic_analysis_procedure(pe, ip->data_block.u_procedure);  break;
 	case d_globals: semantic_analysis_globals(pe, ip->data_block.u_globals);break;
 	*/
-	}
-		
+	}	
 }
 
 void semantic_analysis_method(prog_env *pe, is_metodo* im)
@@ -97,9 +96,11 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 }
 
 //An‡lise das declara›es de vari‡veis globais
-void semantic_analysis_declaration(prog_env *pe, is_declaracao* id)
+table_element* semantic_analysis_declaration(int scope, prog_env *pe, table_element* env, is_declaracao* id)
 {
-	pe->global=semantic_analysis_atribuicao_list(GLOBALSCOPE, pe, pe->global, id->list, id->tipo);	//0 -> global
+	table_element* aux = (table_element*) malloc(sizeof(table_element));
+	aux=semantic_analysis_atribuicao_list(scope, pe, env, id->list, id->tipo);	//0 -> global
+    return aux;
 }
 
 
@@ -113,7 +114,6 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 
 	for(aux=ial; aux; aux=aux->next)
 		stmp=semantic_analysis_atribuicao_dec((scope==LOCALSCOPE?offset++:global_offset++), pe, stmp, aux->attr, tipo);
-
 	return stmp;
 }
 
@@ -146,26 +146,22 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	return stmp;
 }
 
-table_element* semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atributo* ia)
+void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atributo* ia)
 {
 	table_element *aux, *last, *stmp=stable;
-
+    int found=1;
 	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
 
-	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
-	{
-		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
-		return stmp;
-	}
-	
+	if(aux!=0 && aux->type!=ia->tipo)		//se existir e nao for do mesmo tipo, temos um erro!
+		printf("line %d: error: %s is not defined as a %s!\n", ia->codeline, ia->nome, typeToString(ia->tipo));
+	else if (aux==0)
+	    found=0;
 	//procura por uma vari‡vel com o mesmo nome
 	for(aux=last=stmp; aux; last=aux, aux=aux->next)
-		if(strcmp(ia->nome, aux->name)!=0){
-			printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
-			return stmp;
-		}
-	
-	return stmp;
+		if(strcmp(ia->nome, aux->name)==0)
+			return;
+	if(found==0)
+	    printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
 }
 
 void semantic_analysis_argumento_list(int scope, prog_env* pe, table_element* env, is_argumento_list* ial)
@@ -173,21 +169,24 @@ void semantic_analysis_argumento_list(int scope, prog_env* pe, table_element* en
 }
 
 //An‡lise sem‰ntica de listas de statements
-void semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl)
+table_element* semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl)
 {
 	is_statement_list* aux;
+    table_element* stmp = env;
 	
 	for(aux=isl; aux; aux=aux->next)
-		semantic_analysis_statement(pe, env, aux->stt);
+		stmp=semantic_analysis_statement(pe, stmp, aux->stt);
+	
+	return stmp;
 }
 
 //Triagem por tipo de statement
-void semantic_analysis_statement(prog_env *pe, table_element* env, is_statement* is)
+table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_statement* is)
 {
 	switch(is->tipo)
 	{
-		case d_s_atribuicao: break;
-		case d_s_declaracao: break;
+		case d_s_atribuicao: semantic_analysis_atribuicao(pe, env, (is_atributo *)(is->conteudo.u_atributo));break;
+		case d_s_declaracao: return semantic_analysis_declaration(LOCALSCOPE, pe, env,(is_declaracao *)(is->conteudo.u_declaracao));
 		case d_print: break;
 		case d_if: break;
 		case d_while: break;
@@ -197,6 +196,7 @@ void semantic_analysis_statement(prog_env *pe, table_element* env, is_statement*
 	case d_call_stat:	semantic_analysis_call_stat(pe, env, is->data_statement.u_call_stat);break;
 	*/
 	}
+	return env;
 		
 }
 
