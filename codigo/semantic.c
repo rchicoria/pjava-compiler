@@ -232,21 +232,38 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 		
 }
 
-is_expressao* semantic_analysis_expression(prog_env* pe, is_expressao* ie)
+void semantic_analysis_expression(prog_env* pe, is_expressao* ie)
 {
-	return ie;
+	switch(ie->tipo)
+	{
+		case d_infix_exp: semantic_analysis_infix_exp(pe, (is_infix_expression*)(ie->conteudo.u_infix_exp));break;
+		case d_unary_exp: semantic_analysis_unary_exp(pe, (is_unary_expression*)(ie->conteudo.u_unary_exp));break;
+		case d_number: semantic_analysis_number(pe, ie->conteudo.number);break;
+		case d_var: semantic_analysis_var(pe, ie->conteudo.var);break;
+	}
+}
+
+void semantic_analysis_infix_exp(prog_env* pe, is_infix_expression* iie)
+{
+}
+
+void semantic_analysis_unary_exp(prog_env* pe, is_unary_expression* iue)
+{
+}
+
+void semantic_analysis_number(prog_env* pe, int number)
+{
+}
+
+void semantic_analysis_var(prog_env* pe, char* var)
+{
 }
 
 void semantic_analysis_print(prog_env* pe, is_print* ip)
 {
 	switch(ip->tipo)
 	{
-		case d_expression: if(!semantic_analysis_expression(pe, (is_expressao*)(ip->conteudo.u_p_exp)))
-							{
-								printf("line %d: error in expression of print\n", ip->codeline);
-								errors++;
-							}
-							break;
+		case d_expression: semantic_analysis_expression(pe, (is_expressao*)(ip->conteudo.u_p_exp));break;
 	}
 }
 
