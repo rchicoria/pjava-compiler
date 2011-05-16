@@ -78,7 +78,7 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 
 		//faz an‡lise sem‰ntica do procedimento
 		// Ž aqui que vai adicionando os s’mbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
-		semantic_analysis_argumento_list(LOCALSCOPE, pe, pl->locals, (is_argumento_list *)(im->arg_list));
+		semantic_analysis_argumento_list(pe, pl->locals, (is_argumento_list *)(im->arg_list), im->nome);
 		semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
@@ -168,8 +168,31 @@ table_element* semantic_analysis_atribuicao(prog_env* pe, table_element* stable,
 	return stmp;
 }
 
-void semantic_analysis_argumento_list(int scope, prog_env* pe, table_element* env, is_argumento_list* ial)
+void semantic_analysis_argumento_list(prog_env* pe, table_element* env, is_argumento_list* ial, char* metodo)
 {
+	is_argumento_list* aux;
+	int offset=0;
+	table_element* stmp=env;
+
+	for(aux=ial; aux; aux=aux->next)
+		stmp=semantic_analysis_argumento(offset++, pe, stmp, aux->arg, metodo);
+}
+
+table_element* semantic_analysis_argumento(int offset, prog_env* pe, table_element* stmp, is_argumento* arg, char* metodo)
+{
+	table_element *aux, *last;
+	
+	for(aux=last=stmp; aux; last=aux, aux=aux->next)
+		if(strcmp(arg->nome, aux->name)==0){
+			printf("error in declaration of %s: %s already defined!\n", metodo, arg->nome);
+			return stmp;
+		}
+	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
+		stmp=create_symbol(offset, arg->nome, arg->tipo);	//criar um símbolo na cabeça da lista de símbolos, stable
+	else
+		last->next=create_symbol(offset, arg->nome, arg->tipo);	//nao existe mas tabela tem elementos - coloca no final da stable
+	
+	return stmp;
 }
 
 //An‡lise sem‰ntica de listas de statements
@@ -253,9 +276,6 @@ char* typeToString(is_tipo type)
 {
 	switch(type)
 	{
-		/*case integer: return "integer";
-		case character: return "char";
-		case doub: return "double";*/
 		case is_INT:		return "int";
 		case is_STRING:		return "String";
 		case is_VOID:		return "void";

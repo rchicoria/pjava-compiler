@@ -8,7 +8,8 @@ void semantic_analysis_declaration(prog_env*, is_declaracao*);
 table_element* semantic_analysis_atribuicao_list(int, prog_env*, table_element*, is_atribuicao_list*, is_tipo);
 table_element* semantic_analysis_atribuicao_dec(int, prog_env*, table_element*, is_atributo*, is_tipo);
 table_element* semantic_analysis_atribuicao(prog_env*, table_element*, is_atributo*);
-void semantic_analysis_argumento_list(int, prog_env*, table_element*, is_argumento_list*);
+void semantic_analysis_argumento_list(prog_env*, table_element*, is_argumento_list*, char*);
+table_element* semantic_analysis_argumento(int, prog_env*, table_element*, is_argumento*, char*);
 void semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*);
 void semantic_analysis_statement(prog_env*, table_element*, is_statement*);
 
