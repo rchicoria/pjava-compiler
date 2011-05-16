@@ -219,7 +219,7 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 	{
 		case d_s_atribuicao: semantic_analysis_atribuicao(pe, env, (is_atributo *)(is->conteudo.u_atributo));break;
 		case d_s_declaracao: return semantic_analysis_declaration(LOCALSCOPE, pe, env,(is_declaracao *)(is->conteudo.u_declaracao));
-		case d_print: break;//semantic_analysis(pe, (is_print*)(is->conteudo.u_print)); break;
+		case d_print: semantic_analysis_print(pe, (is_print*)(is->conteudo.u_print)); break;
 		case d_if: break;
 		case d_while: break;
 		case d_for: break;
