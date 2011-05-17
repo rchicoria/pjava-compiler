@@ -297,7 +297,9 @@ void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw)
 
 void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf)
 {
-	semantic_analysis_statement_list(pe, env, isf->stt);
+	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->attr));
+	semantic_analysis_expression(pe, (is_expressao*)(isf->exp));
+	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->stt));
 }
 
 /*******************************************************
