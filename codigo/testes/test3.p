@@ -13,7 +13,7 @@ class test3
 		if(true && a==1 || !false)
 		    int c=0;
 		for(a=1; a<10; a++)
-		    int a=1;
+		    int aa=1;
 		b=33;
 		int c=2;
 		System.out.println(2+4);
