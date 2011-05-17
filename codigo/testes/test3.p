@@ -9,7 +9,7 @@ class test3
 
 	public static void main(String args) {
 		int a=2, b=3;
-		b=1;
+		float d=1.0;
 		if(true && a==1 || !false)
 		    int c=0;
 		for(a=1; a<10; a++)

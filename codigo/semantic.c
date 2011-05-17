@@ -125,9 +125,13 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia, is_tipo tipo)
 {
 	table_element *aux, *last, *stmp=stable;
-
+    if( ia->exp != NULL && tipo!=check_expression_type(pe,stable,(is_expressao*)ia->exp)){
+        printf("line %d: error: trying to define %s (%s) as %s!\n", ia->codeline, ia->nome, typeToString(tipo), typeToString(check_expression_type(pe,stable,(is_expressao*)ia->exp)));
+        errors++;
+        return stmp;
+    }
 	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
-
+    
 	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
 	{
 		printf("line %d: error: Cannot define %s, already defined as method!\n", ia->codeline, ia->nome);
@@ -156,23 +160,29 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atributo* ia)
 {
 	table_element *aux, *last, *stmp=stable;
-    int found=1;
-	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
+    int found=0;
+	
+	for(aux=last=stmp; aux; last=aux, aux=aux->next)
+		if(strcmp(ia->nome, aux->name)==0){
+			found=1;
+			break;
+		}
+	
+	if(found==0){
+	    aux=lookup(pe->global, ia->nome);
+	    if(aux==0){
+	        printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
+            errors++;
+            return;
+        }
+    }
 
-	if(aux!=0 && aux->type!=ia->tipo){		//se existir e nao for do mesmo tipo, temos um erro!
-		printf("line %d: error: %s is not defined as a %s!\n", ia->codeline, ia->nome, typeToString(ia->tipo));
+	if(aux->stype != is_METHOD && aux->type!=check_expression_type(pe, stable, (is_expressao*) ia->exp)){		//se existir e nao for do mesmo tipo, temos um erro!
+		printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(check_expression_type(pe, stable, (is_expressao*) ia->exp)));
 	    errors++;
 	}
-	else if (aux==0)
-	    found=0;
 	//procura por uma vari‡vel com o mesmo nome
-	for(aux=last=stmp; aux; last=aux, aux=aux->next)
-		if(strcmp(ia->nome, aux->name)==0)
-			return;
-	if(found==0){
-	    printf("line %d: error: %s is not defined!\n", ia->codeline, ia->nome);
-        errors++;
-    }
+	
 }
 
 table_element* semantic_analysis_argumento_list(prog_env* pe, table_element* env, is_argumento_list* ial, char* metodo)
@@ -242,6 +252,7 @@ void semantic_analysis_expression(prog_env* pe, is_expressao* ie)
 		case d_infix_exp: semantic_analysis_infix_exp(pe, (is_infix_expression*)(ie->conteudo.u_infix_exp));break;
 		case d_unary_exp: semantic_analysis_unary_exp(pe, (is_unary_expression*)(ie->conteudo.u_unary_exp));break;
 		case d_number: semantic_analysis_number(pe, ie->conteudo.number);break;
+		case d_float: semantic_analysis_float(pe, ie->conteudo.num_float);break;
 		case d_var: semantic_analysis_var(pe, ie->conteudo.var);break;
 	}
 }
@@ -255,6 +266,10 @@ void semantic_analysis_unary_exp(prog_env* pe, is_unary_expression* iue)
 }
 
 void semantic_analysis_number(prog_env* pe, int number)
+{
+}
+
+void semantic_analysis_float(prog_env* pe, float num_float)
 {
 }
 

@@ -10,6 +10,9 @@
 					return NUMBER;
 				}
 
+[0-9]+\.[0-9]+		{yylval.fnum=atof(yytext);
+						return FLOAT_NUM;}
+
 "class"			{// Recebe a declaração da classe
 					return CLASS;
 				}

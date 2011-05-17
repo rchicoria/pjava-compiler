@@ -342,6 +342,19 @@ is_expressao* insert_NUMBER(int line, int number )
 }
 
 /*
+ *	insert_FLOAT_NUM
+ *	cria uma expressão a partir de um número
+ */
+is_expressao* insert_FLOAT_NUM(int line, float number )
+{
+	is_expressao* ie = (is_expressao*) malloc( sizeof(is_expressao) );
+	ie->tipo = d_float;				//Coloca etiqueta a informar que é um numero
+	ie->conteudo.num_float = number;	//Guarda o conteúdo
+    ie->codeline = line;
+	return ie;
+}
+
+/*
  *	insert_VAR
  *	cria uma expressão a partir de uma var
  */

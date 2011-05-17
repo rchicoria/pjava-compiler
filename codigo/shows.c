@@ -91,6 +91,8 @@ void show_expression(is_expressao* ie)
 			  break;
 	case d_number:	printf("NUMBER(%d)", ie->conteudo.number);
 			break;
+	case d_float:	printf("FLOAT(%f)", ie->conteudo.num_float);
+			break;
 	case d_var:	printf("VAR(%s)", ie->conteudo.var);
 			break;
 	}

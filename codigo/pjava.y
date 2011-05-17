@@ -32,6 +32,7 @@ prog_env* prog_environment;
 	is_b_expressao* ibe;
 	is_while* iw;
 	int num;
+	float fnum;
 	char* var;
 	is_if* ii;
 	is_for* isf;
@@ -67,6 +68,7 @@ prog_env* prog_environment;
 
 %token<var>VAR
 %token<num>NUMBER
+%token<fnum>FLOAT_NUM
 %type<isl>statics
 %type<isl>static
 %type<ia>attribution
@@ -157,6 +159,7 @@ expression:	infix_expression	{$$=insert_i_expression(line, $1);}
 		|	unary_expression	{$$=insert_u_expression(line, $1);}
 		|	NUMBER				{$$=insert_NUMBER(line, $1);}
 		|   VAR                 {$$=insert_VAR(line, $1);}
+		|   FLOAT_NUM           {$$=insert_FLOAT_NUM(line, $1);}
 		;
 
 infix_expression:	expression '+' expression	{$$=insert_infix_expression($1, is_PLUS, $3);}

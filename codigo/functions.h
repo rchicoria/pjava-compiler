@@ -18,6 +18,7 @@ is_expressao_list* insert_expression_list( is_expressao_list* list, is_expressao
 is_expressao* insert_i_expression(int line, is_infix_expression*);
 is_expressao* insert_u_expression(int line, is_unary_expression*);
 is_expressao* insert_NUMBER(int line, int);
+is_expressao* insert_FLOAT_NUM(int line, float number );
 is_expressao* insert_VAR(int line, char* var );
 is_infix_expression* insert_infix_expression(is_expressao*, is_operador, is_expressao*);
 is_unary_expression* insert_unary_expression(is_expressao*);
