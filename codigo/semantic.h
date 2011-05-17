@@ -12,6 +12,9 @@ table_element* semantic_analysis_argumento_list(prog_env*, table_element*, is_ar
 table_element* semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*);
 table_element* semantic_analysis_statement(prog_env*, table_element*, is_statement*);
 table_element* semantic_analysis_argumento(int, prog_env*, table_element*, is_argumento*, char*);
+is_tipo check_expression_type(prog_env* pe, table_element* stable, is_expressao* exp);
+is_tipo check_infix_exp_type(prog_env* pe, table_element* stable, is_infix_expression* exp);
+is_tipo check_var_type(prog_env* pe, table_element* stable, is_expressao* exp);
 
 /*prog_env* semantic_analysis(is_block_list* ipl);
 void semantic_analysis_block(prog_env *pe, is_block* ip);

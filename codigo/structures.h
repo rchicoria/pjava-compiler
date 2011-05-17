@@ -22,7 +22,7 @@ typedef enum {d_expression} tipo_print;
 /*is_ expression  -> is_infix_ expression  or is_unary_expression 
 			   or is_NUMBER*/
 
-typedef enum {d_infix_exp, d_unary_exp, d_number, d_var} tipo_expressao;
+typedef enum {d_infix_exp, d_unary_exp, d_number, d_float, d_var} tipo_expressao;
 
 typedef enum {d_tf, d_comparison, d_infix_b_exp, d_not_b_exp} tipo_b_expressao;
 
@@ -56,6 +56,7 @@ typedef struct _a3 {
 		struct is_infix_expression* u_infix_exp;
 		struct is_unary_expression* u_unary_exp;
 		int number;
+		float num_float;
 		char* var;
 	} conteudo;
 	int codeline;

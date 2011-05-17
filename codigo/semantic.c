@@ -331,3 +331,51 @@ table_element *lookup(table_element* table, char *str)
 	return 0;
 }
 
+
+is_tipo check_expression_type(prog_env* pe, table_element* stable, is_expressao* exp)
+{
+    switch(exp->tipo)
+    {
+        case d_infix_exp:   return check_infix_exp_type(pe, stable, (is_infix_expression*)exp->conteudo.u_infix_exp);
+        case d_unary_exp:   return check_expression_type(pe,stable, (is_expressao*)((is_unary_expression*)exp->conteudo.u_unary_exp)->exp);
+        case d_number:      return is_INT;
+        case d_float:       return is_FLOAT;
+        case d_var:         return check_var_type(pe, stable, exp);
+    }
+    return is_INT;
+}
+
+is_tipo check_infix_exp_type(prog_env* pe, table_element* stable, is_infix_expression* exp)
+{
+    is_tipo tipo1 = check_expression_type(pe, stable, exp->exp1);
+    is_tipo tipo2 = check_expression_type(pe, stable, exp->exp2);
+    
+    if(tipo1==is_FLOAT || tipo2==is_FLOAT )
+        return is_FLOAT;
+    return is_INT;
+}
+
+is_tipo check_var_type(prog_env* pe, table_element* stable, is_expressao* exp)
+{
+    table_element *aux, *last, *stmp=stable;
+    int found=1;
+	aux=lookup(pe->global, exp->conteudo.var); 	//verifica na tabela global
+    
+    is_tipo tipo=is_INT;
+    
+	if(aux!=0 && aux->stype!= is_METHOD){
+		tipo = aux->type;
+	}
+	else if (aux==0)
+	    found=0;
+	//procura por uma vari‡vel com o mesmo nome
+	for(aux=last=stmp; aux; last=aux, aux=aux->next)
+		if(strcmp(exp->conteudo.var, aux->name)==0)
+			return aux->type;
+	if(found==0){
+	    printf("line %d: error: %s is not defined!\n", exp->codeline, exp->conteudo.var);
+        errors++;
+    }
+    return tipo;
+}
+

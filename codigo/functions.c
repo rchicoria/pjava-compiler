@@ -20,7 +20,6 @@ is_static_list* insert_static_list( is_static_list* list, is_static_list* stat )
 	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
 	aux->next = stat;					//adiciona no final da lista
 	
-	
 	return list;
 }
 
