@@ -125,7 +125,7 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia, is_tipo tipo)
 {
 	table_element *aux, *last, *stmp=stable;
-    if( ia->exp != NULL && tipo!=check_expression_type(pe,stable,(is_expressao*)ia->exp)){
+    if( ia->exp != NULL && (tipo==is_INT && check_expression_type(pe,stable,(is_expressao*)ia->exp)!=is_INT)){
         printf("line %d: error: trying to define %s (%s) as %s!\n", ia->codeline, ia->nome, typeToString(tipo), typeToString(check_expression_type(pe,stable,(is_expressao*)ia->exp)));
         errors++;
         return stmp;
@@ -177,7 +177,7 @@ void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atribu
         }
     }
 
-	if(aux->stype != is_METHOD && aux->type!=check_expression_type(pe, stable, (is_expressao*) ia->exp)){		//se existir e nao for do mesmo tipo, temos um erro!
+	if(aux->stype != is_METHOD && (aux->type==is_INT && check_expression_type(pe, stable, (is_expressao*) ia->exp)!=is_INT)){		//se existir e nao for do mesmo tipo, temos um erro!
 		printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(check_expression_type(pe, stable, (is_expressao*) ia->exp)));
 	    errors++;
 	}
