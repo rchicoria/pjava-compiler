@@ -35,7 +35,10 @@ prog_env* prog_environment;
 	float fnum;
 	char* var;
 	is_if* ii;
+	is_else* iiel;
 	is_for* isf;
+	is_func_call* ifc;
+	is_func_arg_list* ifal;
 }
 
 %token CLASS
@@ -48,6 +51,7 @@ prog_env* prog_environment;
 %token BOOLEAN
 %token CHAR
 %token IF
+%token ELSE
 %token WHILE
 %token FOR
 %token DO
@@ -86,12 +90,17 @@ prog_env* prog_environment;
 %type<istl>statements
 %type<ibe>b_expression
 %type<ii>if
+%type<iiel>else
 %type<iw>while
 %type<isf>for
 %type<istl>for_first_camp
+%type<ifc>func_call
+%type<ifal>func_arg
 
 %left '+' '-' '*' '/' AND OR
 %nonassoc UMINUS
+%nonassoc IFX
+%nonassoc ELSE
 %%
 
 initclass:	CLASS VAR '{' statics '}'
@@ -148,6 +157,7 @@ statement:	declaration     {$$=insert_d_statement($1);}
         |   if              {$$=insert_i_statement($1);}
         |   while           {$$=insert_w_statement($1);}
         |   for             {$$=insert_f_statement($1);}
+        |   func_call       {$$=insert_fc_statement($1);}
         ;
 
 
@@ -186,8 +196,14 @@ b_expression:       b_expression AND b_expression       {$$=insert_b_i_expressao
         |           FALSE                               {$$=insert_b_tf_expressao(line, '0');}
         ;
 
-if:     IF '(' b_expression ')' '{' statements '}'      {$$=insert_if(line, $3, $6);}
-    |   IF '(' b_expression ')' statement               {$$=insert_if(line, $3, $5);}
+if:     IF '(' b_expression ')' '{' statements '}' %prec IFX     {$$=insert_if(line, $3, $6, NULL);}
+    |   IF '(' b_expression ')' statement    %prec IFX           {$$=insert_if(line, $3, $5, NULL);}
+    |   IF '(' b_expression ')' '{' statements '}' else          {$$=insert_if(line, $3, $6, $8);}
+    |   IF '(' b_expression ')' statement else                   {$$=insert_if(line, $3, $5, $6);}
+    ;
+
+else:   ELSE '{' statements '}'                                  {$$=insert_else(line, $3);}
+    |   ELSE statement                                           {$$=insert_else(line, $2);}
     ;
 
 while:  WHILE '(' b_expression ')' '{' statements '}'      {$$=insert_while(line, $3, $6);}
@@ -200,6 +216,16 @@ for:    FOR '(' for_first_camp b_expression ';' expression ')' '{' statements '}
     
 for_first_camp: attributions ';'    {$$=insert_as_statement($1);}
     |           declaration         {$$=insert_d_statement($1);}
+    ;
+
+func_call: VAR '(' func_arg ')' ';' {$$=insert_func_call(line, $1, $3);}
+    |      VAR '('  ')' ';' {$$=insert_func_call(line, $1, NULL);}
+    ;
+
+func_arg: func_arg ',' expression   {$$=insert_func_arg_list($1, insert_func_arg_exp(line, $3));}
+    |     func_arg ',' b_expression {$$=insert_func_arg_list($1, insert_func_arg_b_exp(line, $3));}
+    |     expression                {$$=insert_func_arg_exp(line, $1);}
+    |     b_expression              {$$=insert_func_arg_b_exp(line, $1);}    
     ;
 
 %%
@@ -245,3 +271,4 @@ void show_table(table_element* table)
 		    printf("\n");
 	}
 }
+

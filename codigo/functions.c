@@ -236,6 +236,23 @@ is_statement_list* insert_f_statement( is_for* isf)
 }
 
 /*
+ *	insert_fc_statement
+ *	cria um statement a partir de uma func_call
+ */
+is_statement_list* insert_fc_statement( is_func_call* ifc)
+{
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	
+	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
+	is->tipo = d_func_call;				//Coloca etiqueta a informar que é uma "atribuicao"
+	is->conteudo.u_func_call = (struct is_func_call*) ifc;	//Guarda o conteúdo
+	
+	istl->stt=is;
+		
+	return istl;		
+}
+
+/*
  *	insert_statement_list
  *	adiciona à lista list os statements da lista stts
  */
@@ -512,13 +529,26 @@ is_b_expressao* insert_b_i_expressao(int line, is_b_expressao* exp1, is_b_operat
  *  insert_if
  *  adiciona um is_if
  */
-is_if* insert_if(int line, is_b_expressao* exp, is_statement_list* stt)
+is_if* insert_if(int line, is_b_expressao* exp, is_statement_list* stt, is_else* ifelse)
 {
     is_if* ii = (is_if*) malloc (sizeof(is_if));
     ii->exp = (is_b_expressao*)exp;
     ii->stt = (is_statement_list*)stt;
     ii->codeline = line;
+    ii->ifelse = (is_else*)ifelse;
     return ii;
+}
+
+/*
+ *  insert_if
+ *  adiciona um is_else
+ */
+is_else* insert_else(int line, is_statement_list* stt)
+{
+    is_else* iiel = (is_else*) malloc (sizeof(is_else));
+    iiel->stt = (is_statement_list*)stt;
+    iiel->codeline = line;
+    return iiel;
 }
 
 /*
@@ -547,4 +577,70 @@ is_for* insert_for(int line, is_statement_list* att, is_b_expressao* ibe, is_exp
     isf->stt = (is_statement_list*) stt;
     isf->codeline = line;
     return isf;
+}
+
+/*
+ *	insert_func_arg_list
+ *	adiciona à lista list o argumento arg
+ */
+is_func_arg_list* insert_func_arg_list( is_func_arg_list* list, is_func_arg_list* arg )
+{
+	
+	if(list==NULL)		//Se a lista estiver vazia
+		return arg;		//Devolve o nó criado
+
+	is_func_arg_list* aux;
+			
+	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
+	aux->next = arg;					//adiciona no final da lista
+	return list;
+}
+
+/*
+ *  insert_func_arg_exp
+ *  adiciona um func_arg que é uma expressao
+ */
+is_func_arg_list* insert_func_arg_exp(int line, is_expressao* exp)
+{
+    is_func_arg_list* ifal = (is_func_arg_list*) malloc (sizeof(is_func_arg_list)); 
+    
+    is_func_arg* ifa = (is_func_arg*) malloc (sizeof(is_func_arg));
+    ifa->tipo = d_f_expression;
+    ifa->conteudo.exp = (is_expressao*) exp;
+    ifa->codeline=line;
+    
+    ifal->func_arg = ifa;
+    
+    return ifal;
+}
+
+/*
+ *  insert_func_arg_b_exp
+ *  adiciona um func_arg que é uma b_expressao
+ */
+is_func_arg_list* insert_func_arg_b_exp(int line, is_b_expressao* b_exp)
+{
+    is_func_arg_list* ifal = (is_func_arg_list*) malloc (sizeof(is_func_arg_list)); 
+    
+    is_func_arg* ifa = (is_func_arg*) malloc (sizeof(is_func_arg));
+    ifa->tipo = d_f_b_expression;
+    ifa->conteudo.b_exp = (is_b_expressao*) b_exp;
+    ifa->codeline=line;
+    
+    ifal->func_arg = ifa;
+    
+    return ifal;
+}
+
+/*
+ *  insert func_call
+ *  adiciona uma func_call a partir de um nome e lista de argumentos
+ */
+is_func_call* insert_func_call(int line, char* nome, is_func_arg_list* args)
+{
+    is_func_call* ifc = (is_func_call*) malloc (sizeof(is_func_call));
+    ifc->nome = nome;
+    ifc->func_arg = (is_func_arg_list*) args;
+    ifc->codeline = line;
+    return ifc;
 }

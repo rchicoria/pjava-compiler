@@ -19,6 +19,8 @@ void show_comparator(is_comparator);
 void show_comparison(is_comparison*);
 void show_b_operator(is_b_operator);
 void show_if(is_if*);
+void show_else(is_else* iiel);
 void show_while(is_while* iw);
 void show_for(is_for* isf);
-
+void show_func_call(is_func_call* ifc);
+void show_func_arg(is_func_arg* ifa);

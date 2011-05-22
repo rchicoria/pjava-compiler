@@ -15,9 +15,11 @@ typedef enum {is_GREATER, is_LESSER, is_GREATEQ, is_LESSEQ, is_EQUALS, is_DIFERE
 
 typedef enum {d_declaracao, d_metodo} tipo_static;
 
-typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for} tipo_statement;
+typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for, d_func_call} tipo_statement;
 
 typedef enum {d_expression} tipo_print;
+
+typedef enum {d_f_expression, d_f_b_expression} tipo_func_arg;
 
 /*is_ expression  -> is_infix_ expression  or is_unary_expression 
 			   or is_NUMBER*/
@@ -109,6 +111,7 @@ typedef struct _a12 {
 		struct is_if* u_if;
 		struct is_while* u_while;
 		struct is_for* u_for;
+		struct is_func_call* u_func_call;
 	} conteudo;
 } is_statement;
 
@@ -159,9 +162,15 @@ typedef struct _a19 {
     is_b_expressao* exp;
 } is_b_not_expressao;
 
+typedef struct _a23 {
+    is_statement_list* stt;
+    int codeline;
+} is_else;
+
 typedef struct _a20 {
     is_b_expressao* exp;
     is_statement_list* stt;
+    is_else* ifelse;
     int codeline;
 } is_if;
 
@@ -178,5 +187,26 @@ typedef struct _a22 {
     is_statement_list* stt;
     int codeline;
 } is_for;
+
+typedef struct _a24 {
+    tipo_func_arg tipo;
+    union
+    {
+        is_expressao* exp;
+        is_b_expressao* b_exp;
+    } conteudo;
+    int codeline;
+} is_func_arg;
+
+typedef struct _a25 {
+    is_func_arg* func_arg;
+    struct _a25* next;
+} is_func_arg_list;
+
+typedef struct _a26 {
+    char* nome;
+    is_func_arg_list* func_arg;
+    int  codeline;
+} is_func_call;
 
 #endif

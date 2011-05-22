@@ -168,6 +168,10 @@ void show_statement(is_statement* stt)
 		case d_for:	            printf("for("); 
 		                        show_for((is_for*)stt->conteudo.u_for); 
 		                        printf(")\n");break;
+		                        
+		case d_func_call:       printf("func_call("); 
+		                        show_func_call((is_func_call*)stt->conteudo.u_func_call); 
+		                        printf(")\n");break;
 	}
 }
 
@@ -287,6 +291,21 @@ void show_if(is_if* ii)
 	{
 		show_statement(aux1->stt);
 	}
+	if(ii->ifelse != NULL){
+	    printf("else( ");
+	    show_else(ii->ifelse);
+	    printf(")");
+	}
+}
+
+void show_else(is_else* iiel)
+{
+	is_statement_list* aux1;
+	
+	for(aux1=(is_statement_list*)(iiel->stt); aux1!=NULL; aux1=aux1->next)
+	{
+		show_statement(aux1->stt);
+	}
 }
 
 void show_while(is_while* iw)
@@ -328,5 +347,32 @@ void show_for(is_for* isf)
 	for(aux1=(is_statement_list*)(isf->stt); aux1!=NULL; aux1=aux1->next)
 	{
 		show_statement(aux1->stt);
+	}
+}
+
+void show_func_call(is_func_call* ifc)
+{
+    printf("name(%s)\n",ifc->nome);
+    is_func_arg_list* ifal = (is_func_arg_list*) malloc (sizeof(is_func_arg_list));
+    printf("args(");
+    for(ifal=ifc->func_arg; ifal; ifal=ifal->next)
+    {
+        show_func_arg(ifal->func_arg);
+    }
+    printf(")");
+}
+
+void show_func_arg(is_func_arg* ifa)
+{
+    switch(ifa->tipo)
+	{
+	case d_f_expression: printf("expression("); 
+          show_expression(ifa->conteudo.exp);
+          printf(")\n");
+          break;
+	case d_f_b_expression: printf("b_expression("); 
+		  show_b_expression(ifa->conteudo.b_exp) ;
+		  printf(")");
+		  break;
 	}
 }
