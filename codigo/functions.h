@@ -2,9 +2,9 @@
 
 is_static_list* insert_static_list( is_static_list* list, is_static_list* stat );
 is_static_list* insert_d_static( is_declaracao* dec );
-is_static_list* insert_a_static( is_atributo* atributo );
 is_static_list* insert_m_static( is_metodo* metodo );
-is_atributo* insert_atributo( int line, char* nome, is_expressao *exp );
+is_atributo* insert_atributo_b_exp( int line, char* nome, is_b_expressao *exp );
+is_atributo* insert_atributo_exp( int line, char* nome, is_expressao *exp );
 is_atribuicao_list* insert_atribuicao_list( is_atribuicao_list* list, is_atributo* attr );
 is_statement_list* insert_a_statement( is_atributo* attr );
 is_statement_list* insert_d_statement( is_declaracao* dec );

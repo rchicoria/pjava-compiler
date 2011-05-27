@@ -28,7 +28,7 @@
 "void"			{return VOID;}
 "float"			{return FLOAT;}
 "double"		{return DOUBLE;}
-"Boolean"		{return BOOLEAN;}
+"boolean"		{return BOOLEAN;}
 "char"			{return CHAR;}
 
 "if"            {return IF;}

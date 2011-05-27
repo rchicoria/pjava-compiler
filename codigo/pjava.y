@@ -78,7 +78,9 @@ prog_env* prog_environment;
 %type<isl>statics
 %type<isl>static
 %type<ia>attribution
+%type<ia>b_attribution
 %type<ial>attributions
+%type<ial>b_attributions
 %type<id>declaration
 %type<im>method
 %type<it>type
@@ -118,20 +120,33 @@ static:		STATIC declaration      {$$=insert_d_static($2);}
 		;
 
 declaration: type attributions ';'  {$$=insert_declaracao(line, $2,$1);}
+        |    BOOLEAN b_attributions ';'   {$$=insert_declaracao(line, $2, is_BOOLEAN);}
         ;
-
+        
+b_attributions:   b_attributions ',' b_attribution        {$$=insert_atribuicao_list($1, $3);}
+        |         b_attribution                         {$$=insert_atribuicao_list(NULL, $1);}
+        ;          
+        
 attributions:   attributions ',' attribution        {$$=insert_atribuicao_list($1, $3);}
         |       attribution                         {$$=insert_atribuicao_list(NULL, $1);}
         ;
 
-attribution:	VAR                                 {$$=insert_atributo(line, $1, NULL);}
-        |       VAR '=' expression                  {$$=insert_atributo(line, $1, $3);}
+attribution:	VAR                                 {$$=insert_atributo_exp(line, $1, NULL);}
+        |       VAR '=' expression                  {$$=insert_atributo_exp(line, $1, $3);}
+		;
+
+b_attribution:	VAR                                 {$$=insert_atributo_b_exp(line, $1, NULL);}
+        |       VAR '=' b_expression                {$$=insert_atributo_b_exp(line, $1, $3);}
 		;
 
 method:		STATIC type VAR '(' args ')' '{' statements return_val '}'	{$$=insert_metodo(line, $2, $3, $5, $8, $9);}
 		|	STATIC type VAR '(' args ')' '{' return_val '}'			{$$=insert_metodo(line, $2, $3, $5, NULL, $8);}
 		|	STATIC type VAR '(' ')' '{' statements return_val '}'		{$$=insert_metodo(line, $2, $3, NULL, $7, $8);}
 		|	STATIC type VAR '(' ')' '{' return_val '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL, $7);}
+		|   STATIC BOOLEAN VAR '(' args ')' '{' statements return_val '}'	{$$=insert_metodo(line, is_BOOLEAN, $3, $5, $8, $9);}
+		|	STATIC BOOLEAN VAR '(' args ')' '{' return_val '}'			    {$$=insert_metodo(line, is_BOOLEAN, $3, $5, NULL, $8);}
+		|	STATIC BOOLEAN VAR '(' ')' '{' statements return_val '}'		{$$=insert_metodo(line, is_BOOLEAN, $3, NULL, $7, $8);}
+		|	STATIC BOOLEAN VAR '(' ')' '{' return_val '}'	    			{$$=insert_metodo(line, is_BOOLEAN, $3, NULL, NULL, $7);}
 		;
 
 return_val:     RETURN ';'                  {$$=insert_return_void(line);}
@@ -144,6 +159,7 @@ args:		args ',' arg    {$$=insert_argumento_list($1, $3);}
 		;
 
 arg:        type VAR        {$$=insert_argumento($1, $2);}
+        |   BOOLEAN VAR     {$$=insert_argumento(is_BOOLEAN, $2);}
         ;
 
 type:		INT		{$$=is_INT;}
@@ -151,7 +167,6 @@ type:		INT		{$$=is_INT;}
 		|	VOID	{$$=is_VOID;}
 		|	FLOAT	{$$=is_FLOAT;}
 		|	DOUBLE	{$$=is_DOUBLE;}
-		|	BOOLEAN	{$$=is_BOOLEAN;}
 		|	CHAR	{$$=is_CHAR;}
 		;
 

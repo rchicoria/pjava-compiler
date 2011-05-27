@@ -152,11 +152,11 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia, is_tipo tipo)
 {
 	table_element *aux, *last, *stmp=stable;
-    if( ia->exp != NULL){
-        is_tipo temp = check_expression_type(pe,stable,(is_expressao*)ia->exp);
+    if(ia->tipo == d_a_expression && ia->conteudo.exp != NULL){
+        is_tipo temp = check_expression_type(pe,stable,(is_expressao*)ia->conteudo.exp);
         if(temp==-1)
             return stmp;
-        if(tipo==is_INT && temp!=is_INT){
+        if(tipo!=temp){
             printf("line %d: error: trying to define %s (%s) as %s!\n", ia->codeline, ia->nome, typeToString(tipo), typeToString(temp));
             errors++;
             return stmp;
@@ -181,9 +181,6 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
 	if(last==NULL)	//se n‹o existe e a tabela est‡ vazia
 		stmp=create_symbol(offset, ia->nome, tipo,is_VAR);	//criar um símbolo na cabeça da lista de símbolos, stable
 	else {
-		//aux = stmp;
-		//stmp=create_symbol(offset, ia->nome, tipo,is_VAR);	//nao existe mas tabela tem elementos - coloca no final da stable
-		//stmp->next = aux;
 		last->next=create_symbol(offset, ia->nome, tipo,is_VAR);
 	}
 	
@@ -209,12 +206,14 @@ void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atribu
             return;
         }
     }
-    is_tipo temp = check_expression_type(pe, stable, (is_expressao*) ia->exp);
-	if(temp==-1)
-	    return;
-	if(aux->stype != is_METHOD && (aux->type==is_INT && temp!=is_INT)){		//se existir e nao for do mesmo tipo, temos um erro!
-		printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(temp));
-	    errors++;
+    if(ia->tipo==d_a_expression){
+        is_tipo temp = check_expression_type(pe, stable, (is_expressao*) ia->conteudo.exp);
+	    if(temp==-1)
+	        return;
+	    if(aux->stype != is_METHOD && (aux->type==is_INT && temp!=is_INT)){		//se existir e nao for do mesmo tipo, temos um erro!
+		    printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(temp));
+	        errors++;
+	    }
 	}
 	//procura por uma vari‡vel com o mesmo nome
 	
@@ -271,10 +270,6 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 		case d_while: semantic_analysis_while(pe, env, (is_while*)(is->conteudo.u_while));break;
 		case d_for: semantic_analysis_for(pe, env, (is_for*)(is->conteudo.u_for));break;
 		case d_func_call: semantic_analysis_func_call(pe, env, (is_func_call*)(is->conteudo.u_func_call));break;
-	/*case d_write_stat:	semantic_analysis_write_stat(pe, env, is->data_statement.u_write_stat);break;
-	case d_assgn_stat:	semantic_analysis_assgn_stat(pe, env, is->data_statement.u_assgn_stat);break;
-	case d_call_stat:	semantic_analysis_call_stat(pe, env, is->data_statement.u_call_stat);break;
-	*/
 	}
 	return env;
 		
@@ -285,19 +280,17 @@ void semantic_analysis_expression(prog_env* pe, table_element* env, is_expressao
 	switch(ie->tipo)
 	{
 		case d_infix_exp: semantic_analysis_infix_exp(pe, env, (is_infix_expression*)(ie->conteudo.u_infix_exp));break;
-		case d_unary_exp: semantic_analysis_unary_exp(pe, env, (is_unary_expression*)(ie->conteudo.u_unary_exp));break;
+		case d_unary_exp: semantic_analysis_expression(pe,env, (is_expressao*)((is_unary_expression*)ie->conteudo.u_unary_exp)->exp);break;
 		case d_number: semantic_analysis_number(pe, env, ie->conteudo.number);break;
 		case d_float: semantic_analysis_float(pe, env, ie->conteudo.num_float);break;
 		case d_var: semantic_analysis_var(pe, env, ie->conteudo.var, ie->codeline);break;
 	}
 }
 
-void semantic_analysis_infix_exp(prog_env* pe, table_element* env, is_infix_expression* iie)
+void semantic_analysis_infix_exp(prog_env* pe, table_element* env, is_infix_expression* exp)
 {
-}
-
-void semantic_analysis_unary_exp(prog_env* pe, table_element* env, is_unary_expression* iue)
-{
+    semantic_analysis_expression(pe, env, exp->exp1);
+    semantic_analysis_expression(pe, env, exp->exp2);
 }
 
 void semantic_analysis_number(prog_env* pe, table_element* env, int number)
@@ -547,7 +540,7 @@ is_tipo check_expression_type(prog_env* pe, table_element* stable, is_expressao*
 {
     switch(exp->tipo)
     {
-        case d_infix_exp:   return check_infix_exp_type(pe, stable, (is_infix_expression*)exp->conteudo.u_infix_exp);
+        case d_infix_exp:   return check_infix_exp_type(pe, stable, (is_infix_expression*)exp->conteudo.u_infix_exp, line);
         case d_unary_exp:   return check_expression_type(pe,stable, (is_expressao*)((is_unary_expression*)exp->conteudo.u_unary_exp)->exp);
         case d_number:      return is_INT;
         case d_float:       return is_FLOAT;
@@ -556,10 +549,10 @@ is_tipo check_expression_type(prog_env* pe, table_element* stable, is_expressao*
     return 0;
 }
 
-is_tipo check_infix_exp_type(prog_env* pe, table_element* stable, is_infix_expression* exp)
+is_tipo check_infix_exp_type(prog_env* pe, table_element* stable, is_infix_expression* exp, int line)
 {
     is_tipo tipo1 = check_expression_type(pe, stable, exp->exp1);
-    is_tipo tipo2 = check_expression_type(pe, stable, exp->exp2);
+    is_tipo tipo2 = check_expression_type(pe, stable, exp->exp2); 
     
     if(tipo1==-1 || tipo2==-1)
         return -1;

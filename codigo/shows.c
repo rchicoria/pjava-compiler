@@ -38,10 +38,12 @@ void show_attribute(is_atributo* ia)
 {
 	printf("%s = ", ia->nome);
 	
-	if (ia->exp == NULL)
+	if (ia->conteudo.exp == NULL && ia->conteudo.b_exp == NULL)
 		printf("NULL");
-	else
-		show_expression((is_expressao*)ia->exp);
+	else if(ia->tipo==d_a_expression)
+		show_expression((is_expressao*)ia->conteudo.exp);
+	else if(ia->tipo==d_a_b_expression)
+		show_b_expression((is_b_expressao*)ia->conteudo.b_exp);
 }
 
 void show_method(is_metodo* im)

@@ -9,8 +9,6 @@
  */
 is_static_list* insert_static_list( is_static_list* list, is_static_list* stat )
 {
-/*	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );	//Cria novo nó na lista*/
-/*	isl->stat = stat;				//Preenche-o*/
 	
 	if(list==NULL)		//Se a lista estiver vazia
 		return stat;		//Devolve o nó criado
@@ -21,23 +19,6 @@ is_static_list* insert_static_list( is_static_list* list, is_static_list* stat )
 	aux->next = stat;					//adiciona no final da lista
 	
 	return list;
-}
-
-/*
- *	insert_a_static
- *	cria um static a partir de um atributo
- */
-is_static_list* insert_a_static( is_atributo* atributo )
-{
-	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );	//Cria novo nó na lista
-	
-	/*is_static* is = (is_static*) malloc( sizeof(is_static) );
-	is->tipo = d_atribuicao;				//Coloca etiqueta a informar que é um "metodo"
-	is->conteudo.u_atributo = (struct is_atributo*) atributo;	//Guarda o conteúdo
-	
-	isl->stat=is;*/
-		
-	return isl;		
 }
 
 /*
@@ -78,11 +59,26 @@ is_static_list* insert_m_static( is_metodo* metodo )
  *	insert_atributo
  *	cria um atributo a partir de um nome e uma expressão
  */
-is_atributo* insert_atributo( int line, char* nome, is_expressao *exp )
+is_atributo* insert_atributo_exp( int line, char* nome, is_expressao *exp )
 {
     is_atributo *ia = (is_atributo*) malloc( sizeof(is_atributo) );
     ia->nome = nome;		//Guarda nome
-    ia->exp = (struct is_expressao*) exp;			//Guarda expressão
+    ia->tipo = d_a_expression;
+    ia->conteudo.exp = (struct is_expressao*) exp;			//Guarda expressão
+    ia->codeline = line;
+    return ia;
+}
+
+/*
+ *	insert_atributo
+ *	cria um atributo a partir de um nome e uma boolean expressão
+ */
+is_atributo* insert_atributo_b_exp( int line, char* nome, is_b_expressao *exp )
+{
+    is_atributo *ia = (is_atributo*) malloc( sizeof(is_atributo) );
+    ia->nome = nome;		//Guarda nome
+    ia->tipo = d_a_b_expression;
+    ia->conteudo.b_exp = (struct is_b_expressao*) exp;			//Guarda expressão
     ia->codeline = line;
     return ia;
 }

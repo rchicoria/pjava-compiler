@@ -23,6 +23,8 @@ typedef enum {d_f_expression, d_f_b_expression} tipo_func_arg;
 
 typedef enum {d_r_expression, d_r_b_expression, d_r_void} tipo_return;
 
+typedef enum {d_a_expression, d_a_b_expression} tipo_atribuicao;
+
 /*is_ expression  -> is_infix_ expression  or is_unary_expression 
 			   or is_NUMBER*/
 
@@ -40,9 +42,12 @@ typedef struct _a0 {
 } is_static;
 
 typedef struct _a1 {
-	is_tipo tipo;
+	tipo_atribuicao tipo;
 	char* nome;
-	struct is_expressao* exp;
+	union{
+	    struct is_expressao* exp;
+	    struct is_b_expressao* b_exp;
+	} conteudo;
 	int codeline;
 } is_atributo;
 
