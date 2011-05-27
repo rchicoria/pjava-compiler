@@ -45,7 +45,6 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 {
 	environment_list *aux;
 	table_element *te;	
-	
 	environment_list *pl;
 
 	if(lookup(pe->global, im->nome))
@@ -80,8 +79,8 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//  aqui que vai adicionando os s’mbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
 		pl->locals=semantic_analysis_argumento_list(pe, pl->locals, (is_argumento_list *)(im->arg_list), im->nome);
 		pl->locals=semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
-		if(im->return_val)
-		    semantic_analysis_return(pe, pl->locals, (is_return*)(im->return_val), im->tipo);
+		semantic_analysis_return(pe, pl->locals, (is_return*)(im->return_val), im->tipo);
+		
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
 		semantic_analysis_statement_list(pe, pl->locals, im->slist);
@@ -100,16 +99,25 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 
 void semantic_analysis_return(prog_env *pe, table_element* stable, is_return* return_val, is_tipo tipo)
 {
-    if(return_val->tipo==d_f_b_expression && tipo!=is_BOOLEAN){
+    if(return_val->tipo==d_r_void && tipo!=is_VOID){
+        errors++;
+        printf("line %d: error: method return type is %s but found void!\n", return_val->codeline, typeToString(tipo));
+    }
+    else if(return_val->tipo==d_r_b_expression && tipo!=is_BOOLEAN){
         errors++;
         printf("line %d: error: method return type is %s but found boolean!\n", return_val->codeline, typeToString(tipo));
     }
-    else if(return_val->tipo==d_f_expression && tipo==is_BOOLEAN){
+    else if(return_val->tipo==d_r_expression && tipo==is_BOOLEAN){
+        is_tipo temp=check_expression_type(pe, stable, return_val->conteudo.exp);
+        if(temp==-1)
+            return;
+        printf("line %d: error: method return type is boolean but found %s!\n", return_val->codeline, typeToString(temp));
         errors++;
-        printf("line %d: error: method return type is boolean but found %s!\n", return_val->codeline, typeToString(check_expression_type(pe, stable, return_val->conteudo.exp)));
     }
-    else if(return_val->tipo==d_f_expression && tipo!=is_BOOLEAN){
+    else if(return_val->tipo==d_r_expression && tipo!=is_BOOLEAN){
         is_tipo temp = check_expression_type(pe, stable, return_val->conteudo.exp);
+        if(temp==-1)
+            return;
         if(temp != tipo){
             printf("line %d: error: method return type is %s but found %s!\n", return_val->codeline, typeToString(tipo), typeToString(temp));            
             errors++;
@@ -144,10 +152,15 @@ table_element* semantic_analysis_atribuicao_list(int scope, prog_env *pe, table_
 table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_element* stable, is_atributo* ia, is_tipo tipo)
 {
 	table_element *aux, *last, *stmp=stable;
-    if( ia->exp != NULL && (tipo==is_INT && check_expression_type(pe,stable,(is_expressao*)ia->exp)!=is_INT)){
-        printf("line %d: error: trying to define %s (%s) as %s!\n", ia->codeline, ia->nome, typeToString(tipo), typeToString(check_expression_type(pe,stable,(is_expressao*)ia->exp)));
-        errors++;
-        return stmp;
+    if( ia->exp != NULL){
+        is_tipo temp = check_expression_type(pe,stable,(is_expressao*)ia->exp);
+        if(temp==-1)
+            return stmp;
+        if(tipo==is_INT && temp!=is_INT){
+            printf("line %d: error: trying to define %s (%s) as %s!\n", ia->codeline, ia->nome, typeToString(tipo), typeToString(temp));
+            errors++;
+            return stmp;
+        }
     }
 	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
     
@@ -196,9 +209,11 @@ void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atribu
             return;
         }
     }
-
-	if(aux->stype != is_METHOD && (aux->type==is_INT && check_expression_type(pe, stable, (is_expressao*) ia->exp)!=is_INT)){		//se existir e nao for do mesmo tipo, temos um erro!
-		printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(check_expression_type(pe, stable, (is_expressao*) ia->exp)));
+    is_tipo temp = check_expression_type(pe, stable, (is_expressao*) ia->exp);
+	if(temp==-1)
+	    return;
+	if(aux->stype != is_METHOD && (aux->type==is_INT && temp!=is_INT)){		//se existir e nao for do mesmo tipo, temos um erro!
+		printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(temp));
 	    errors++;
 	}
 	//procura por uma vari‡vel com o mesmo nome
@@ -411,6 +426,8 @@ void semantic_analysis_func_arg(prog_env* pe, table_element* env, is_func_arg* i
     {
     case d_f_expression: 
         var = check_expression_type(pe, env, ifa->conteudo.exp);
+        if(var==-1)
+            return;
         if(arg->type!=var){
             printf("line %d: error: (argument %d) expected %s but found %s!\n", ifa->codeline, arg_num, typeToString(arg->type), typeToString(var));
             errors++;
@@ -544,6 +561,9 @@ is_tipo check_infix_exp_type(prog_env* pe, table_element* stable, is_infix_expre
     is_tipo tipo1 = check_expression_type(pe, stable, exp->exp1);
     is_tipo tipo2 = check_expression_type(pe, stable, exp->exp2);
     
+    if(tipo1==-1 || tipo2==-1)
+        return -1;
+    
     if(tipo1==is_FLOAT || tipo2==is_FLOAT )
         return is_FLOAT;
     return is_INT;
@@ -569,6 +589,7 @@ is_tipo check_var_type(prog_env* pe, table_element* stable, is_expressao* exp)
 	if(found==0){
 	    printf("line %d: error: %s is not defined!\n", exp->codeline, exp->conteudo.var);
         errors++;
+        return -1;
     }
     return tipo;
 }

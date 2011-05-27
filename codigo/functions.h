@@ -42,3 +42,4 @@ is_func_call* insert_func_call(int line, char* nome, is_func_arg_list* args);
 is_statement_list* insert_fc_statement( is_func_call* ifc);
 is_return* insert_return_exp(is_expressao* exp, int);
 is_return* insert_return_b_exp(is_b_expressao* exp, int);
+is_return* insert_return_void(int line);

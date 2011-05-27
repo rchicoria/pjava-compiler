@@ -134,7 +134,7 @@ method:		STATIC type VAR '(' args ')' '{' statements return_val '}'	{$$=insert_m
 		|	STATIC type VAR '(' ')' '{' return_val '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL, $7);}
 		;
 
-return_val:     RETURN ';'                  {$$=NULL;}
+return_val:     RETURN ';'                  {$$=insert_return_void(line);}
         |       RETURN b_expression ';'     {$$=insert_return_b_exp($2, line);}
         |       RETURN expression ';'       {$$=insert_return_exp($2, line);}
         ;

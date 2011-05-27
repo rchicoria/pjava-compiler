@@ -24,3 +24,4 @@ void show_while(is_while* iw);
 void show_for(is_for* isf);
 void show_func_call(is_func_call* ifc);
 void show_func_arg(is_func_arg* ifa);
+void show_return(is_return* ir);

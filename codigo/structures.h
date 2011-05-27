@@ -21,6 +21,8 @@ typedef enum {d_expression} tipo_print;
 
 typedef enum {d_f_expression, d_f_b_expression} tipo_func_arg;
 
+typedef enum {d_r_expression, d_r_b_expression, d_r_void} tipo_return;
+
 /*is_ expression  -> is_infix_ expression  or is_unary_expression 
 			   or is_NUMBER*/
 
@@ -155,7 +157,7 @@ typedef struct _a19 {
 } is_b_not_expressao;
 
 typedef struct _a27 {
-    tipo_func_arg tipo;
+    tipo_return tipo;
     int codeline;
     union
     {   
@@ -201,8 +203,7 @@ typedef struct _a22 {
 
 typedef struct _a24 {
     tipo_func_arg tipo;
-    union
-    {
+    union {
         is_expressao* exp;
         is_b_expressao* b_exp;
     } conteudo;

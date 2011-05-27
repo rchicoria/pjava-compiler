@@ -75,6 +75,21 @@ void show_method(is_metodo* im)
 	{
 		show_statement(aux1->stt);
 	}
+	
+	printf("return( ");
+	show_return(im->return_val);
+	printf(" )\n");
+}
+
+void show_return(is_return* ir)
+{
+    switch(ir->tipo)
+    {
+        case d_r_void: printf("void"); return;
+        case d_r_expression: show_expression(ir->conteudo.exp); return;
+        case d_r_b_expression: show_b_expression(ir->conteudo.b_exp); return;
+    }
+    return;
 }
 
 void show_expression(is_expressao* ie)

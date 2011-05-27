@@ -1719,7 +1719,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 137 "pjava.y"
-    {(yyval.ir)=NULL;}
+    {(yyval.ir)=insert_return_void(line);}
     break;
 
   case 17:

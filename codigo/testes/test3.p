@@ -1,14 +1,14 @@
 class test3
 {
 
-	static int b = 0;
+	static int b = 1;
 	static String texto;
 	
 	public static int func(int a, float b, int c) {
-	    return;
+	    return a;
 	}
 
-	public static void main(String args) {
+	public static int main(String args) {
 		int a=2, b=3+4+5;
 		float d=1.0+3+5;
 		if(true && a==1 || !false)
@@ -22,6 +22,6 @@ class test3
 		b=33;
 		System.out.println(2+4);
 		func(a, d, 2);
-		return tt;
+		return 5*3/34;
 	}
 }

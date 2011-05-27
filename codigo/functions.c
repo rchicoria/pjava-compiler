@@ -648,12 +648,24 @@ is_func_call* insert_func_call(int line, char* nome, is_func_arg_list* args)
 
 /*
  *  insert return
+ *  adiciona um return vazio
+ */
+is_return* insert_return_void(int line)
+{
+    is_return* ir = (is_return*) malloc (sizeof(is_return));
+    ir->tipo=d_r_void;
+    ir->codeline=line;
+    return ir;
+}
+
+/*
+ *  insert return
  *  adiciona um return a partir de uma expressao
  */
 is_return* insert_return_exp(is_expressao* exp, int line)
 {
     is_return* ir = (is_return*) malloc (sizeof(is_return));
-    ir->tipo=d_f_expression;
+    ir->tipo=d_r_expression;
     ir->conteudo.exp = (is_expressao*) exp;
     ir->codeline=line;
     return ir;
@@ -666,7 +678,7 @@ is_return* insert_return_exp(is_expressao* exp, int line)
 is_return* insert_return_b_exp(is_b_expressao* exp, int line)
 {
     is_return* ir = (is_return*) malloc (sizeof(is_return));
-    ir->tipo = d_f_b_expression;
+    ir->tipo = d_r_b_expression;
     ir->conteudo.b_exp = (is_b_expressao*) exp;
     ir->codeline=line;
     return ir;
