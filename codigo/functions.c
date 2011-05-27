@@ -287,7 +287,7 @@ is_declaracao* insert_declaracao(int line, is_atribuicao_list* list, is_tipo tip
  *	insert_metodo
  *	cria um método a partir de um tipo, um nome e uma expressão
  */
-is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list *arg_list, is_statement_list *list )
+is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list *arg_list, is_statement_list *list , is_return *ret_val)
 {
     is_metodo *im = (is_metodo*) malloc( sizeof(is_metodo) );
     im->tipo = tipo;		//Guarda tipo
@@ -295,6 +295,7 @@ is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list 
     im->arg_list = (struct is_argumento_list*) arg_list;
     im->list = (struct is_statement_list*) list;			//Guarda expressão
     im->codeline = line;
+    im->return_val = (is_return*) ret_val;
     
     return im;
 }
@@ -643,4 +644,30 @@ is_func_call* insert_func_call(int line, char* nome, is_func_arg_list* args)
     ifc->func_arg = (is_func_arg_list*) args;
     ifc->codeline = line;
     return ifc;
+}
+
+/*
+ *  insert return
+ *  adiciona um return a partir de uma expressao
+ */
+is_return* insert_return_exp(is_expressao* exp, int line)
+{
+    is_return* ir = (is_return*) malloc (sizeof(is_return));
+    ir->tipo=d_f_expression;
+    ir->conteudo.exp = (is_expressao*) exp;
+    ir->codeline=line;
+    return ir;
+}
+
+/*
+ *  insert return
+ *  adiciona um return a partir de uma expressao
+ */
+is_return* insert_return_b_exp(is_b_expressao* exp, int line)
+{
+    is_return* ir = (is_return*) malloc (sizeof(is_return));
+    ir->tipo = d_f_b_expression;
+    ir->conteudo.b_exp = (is_b_expressao*) exp;
+    ir->codeline=line;
+    return ir;
 }

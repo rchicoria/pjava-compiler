@@ -52,6 +52,8 @@
 "true"          {return TRUE;}
 "false"         {return FALSE;}
 
+"return"        {return RETURN;}
+
 "System.out.print"  	{return PRINT;}
 "System.out.println"	{return PRINTLN;}
 

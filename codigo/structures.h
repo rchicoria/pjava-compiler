@@ -44,14 +44,6 @@ typedef struct _a1 {
 	int codeline;
 } is_atributo;
 
-typedef struct _a2 {
-	is_tipo tipo;
-	char* nome;
-	struct is_argumento_list* arg_list;
-	struct is_statement_list* list;
-	int codeline;
-} is_metodo;
-
 typedef struct _a3 {
 	tipo_expressao tipo;
 	union {
@@ -161,6 +153,25 @@ typedef struct _a18 {
 typedef struct _a19 {
     is_b_expressao* exp;
 } is_b_not_expressao;
+
+typedef struct _a27 {
+    tipo_func_arg tipo;
+    int codeline;
+    union
+    {   
+        is_expressao* exp;
+        is_b_expressao* b_exp;
+    } conteudo;
+} is_return;
+
+typedef struct _a2 {
+	is_tipo tipo;
+	char* nome;
+	struct is_argumento_list* arg_list;
+	struct is_statement_list* list;
+	int codeline;
+	is_return* return_val;
+} is_metodo;
 
 typedef struct _a23 {
     is_statement_list* stt;

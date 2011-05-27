@@ -5,6 +5,7 @@ class test3
 	static String texto;
 	
 	public static int func(int a, float b, int c) {
+	    return;
 	}
 
 	public static void main(String args) {
@@ -21,5 +22,6 @@ class test3
 		b=33;
 		System.out.println(2+4);
 		func(a, d, 2);
+		return tt;
 	}
 }

@@ -39,6 +39,7 @@ prog_env* prog_environment;
 	is_for* isf;
 	is_func_call* ifc;
 	is_func_arg_list* ifal;
+	is_return* ir;
 }
 
 %token CLASS
@@ -69,6 +70,7 @@ prog_env* prog_environment;
 %token LESSEQ
 %token AND
 %token OR
+%token RETURN
 
 %token<var>VAR
 %token<num>NUMBER
@@ -96,6 +98,7 @@ prog_env* prog_environment;
 %type<istl>for_first_camp
 %type<ifc>func_call
 %type<ifal>func_arg
+%type<ir>return_val
 
 %left '+' '-' '*' '/' AND OR
 %nonassoc UMINUS
@@ -125,11 +128,16 @@ attribution:	VAR                                 {$$=insert_atributo(line, $1, N
         |       VAR '=' expression                  {$$=insert_atributo(line, $1, $3);}
 		;
 
-method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_metodo(line, $2, $3, $5, $8);}
-		|	STATIC type VAR '(' args ')' '{' '}'			{$$=insert_metodo(line, $2, $3, $5, NULL);}
-		|	STATIC type VAR '(' ')' '{' statements '}'		{$$=insert_metodo(line, $2, $3, NULL, $7);}
-		|	STATIC type VAR '(' ')' '{' '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL);}
+method:		STATIC type VAR '(' args ')' '{' statements return_val '}'	{$$=insert_metodo(line, $2, $3, $5, $8, $9);}
+		|	STATIC type VAR '(' args ')' '{' return_val '}'			{$$=insert_metodo(line, $2, $3, $5, NULL, $8);}
+		|	STATIC type VAR '(' ')' '{' statements return_val '}'		{$$=insert_metodo(line, $2, $3, NULL, $7, $8);}
+		|	STATIC type VAR '(' ')' '{' return_val '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL, $7);}
 		;
+
+return_val:     RETURN ';'                  {$$=NULL;}
+        |       RETURN b_expression ';'     {$$=insert_return_b_exp($2, line);}
+        |       RETURN expression ';'       {$$=insert_return_exp($2, line);}
+        ;
 
 args:		args ',' arg    {$$=insert_argumento_list($1, $3);}
 		|	arg             {$$=insert_argumento_list(NULL, $1);}                                 

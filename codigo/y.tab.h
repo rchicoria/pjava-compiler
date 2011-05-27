@@ -67,11 +67,12 @@
      LESSEQ = 283,
      AND = 284,
      OR = 285,
-     VAR = 286,
-     NUMBER = 287,
-     FLOAT_NUM = 288,
-     UMINUS = 289,
-     IFX = 290
+     RETURN = 286,
+     VAR = 287,
+     NUMBER = 288,
+     FLOAT_NUM = 289,
+     UMINUS = 290,
+     IFX = 291
    };
 #endif
 /* Tokens.  */
@@ -103,11 +104,12 @@
 #define LESSEQ 283
 #define AND 284
 #define OR 285
-#define VAR 286
-#define NUMBER 287
-#define FLOAT_NUM 288
-#define UMINUS 289
-#define IFX 290
+#define RETURN 286
+#define VAR 287
+#define NUMBER 288
+#define FLOAT_NUM 289
+#define UMINUS 290
+#define IFX 291
 
 
 
@@ -143,11 +145,12 @@ typedef union YYSTYPE
 	is_for* isf;
 	is_func_call* ifc;
 	is_func_arg_list* ifal;
+	is_return* ir;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 151 "y.tab.h"
+#line 154 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

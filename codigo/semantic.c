@@ -65,11 +65,11 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//Serve apenas para facilitar na pesquisa (na realidade, é uma redundncia, pois
 		//haverá também uma entrada na lista de ambientes)
 		if(te==NULL)
-			pe->global=create_symbol(-1, im->nome, is_VOID,is_METHOD);
+			pe->global=create_symbol(-1, im->nome, im->tipo,is_METHOD);
 		else
 		{
 			for(; te->next; te=te->next);					
-			te->next=create_symbol(-1, im->nome, is_VOID,is_METHOD);
+			te->next=create_symbol(-1, im->nome, im->tipo,is_METHOD);
 		}
 		
 		//preenche entrada para o procedimento na lista de ambientes
@@ -80,6 +80,8 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		// é aqui que vai adicionando os símbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
 		pl->locals=semantic_analysis_argumento_list(pe, pl->locals, (is_argumento_list *)(im->arg_list), im->nome);
 		pl->locals=semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
+		if(im->return_val)
+		    semantic_analysis_return(pe, pl->locals, (is_return*)(im->return_val), im->tipo);
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
 		semantic_analysis_statement_list(pe, pl->locals, im->slist);
@@ -96,6 +98,24 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 	}
 }
 
+void semantic_analysis_return(prog_env *pe, table_element* stable, is_return* return_val, is_tipo tipo)
+{
+    if(return_val->tipo==d_f_b_expression && tipo!=is_BOOLEAN){
+        errors++;
+        printf("line %d: error: method return type is %s but found boolean!\n", return_val->codeline, typeToString(tipo));
+    }
+    else if(return_val->tipo==d_f_expression && tipo==is_BOOLEAN){
+        errors++;
+        printf("line %d: error: method return type is boolean but found %s!\n", return_val->codeline, typeToString(check_expression_type(pe, stable, return_val->conteudo.exp)));
+    }
+    else if(return_val->tipo==d_f_expression && tipo!=is_BOOLEAN){
+        is_tipo temp = check_expression_type(pe, stable, return_val->conteudo.exp);
+        if(temp != tipo){
+            printf("line %d: error: method return type is %s but found %s!\n", return_val->codeline, typeToString(tipo), typeToString(temp));            
+            errors++;
+        }
+    }
+}
 //Análise das declarações de variáveis globais
 table_element* semantic_analysis_declaration(int scope, prog_env *pe, table_element* env, is_declaracao* id)
 {

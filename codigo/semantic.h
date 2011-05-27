@@ -32,6 +32,7 @@ void semantic_analysis_func_call(prog_env* pe, table_element* env, is_func_call*
 void semantic_analysis_func_arg_list(prog_env* pe, table_element* env, is_func_arg_list* ifal, char* nome, int line);
 void semantic_analysis_func_arg(prog_env* pe, table_element* env, is_func_arg* ifa, table_element* arg, int arg_num);
 table_element* searchMethod(prog_env* pe, char* nome);
+void semantic_analysis_return(prog_env *pe, table_element* stable, is_return* return_val, is_tipo tipo);
 
 /*prog_env* semantic_analysis(is_block_list* ipl);
 void semantic_analysis_block(prog_env *pe, is_block* ip);
