@@ -78,9 +78,7 @@ prog_env* prog_environment;
 %type<isl>statics
 %type<isl>static
 %type<ia>attribution
-%type<ia>b_attribution
 %type<ial>attributions
-%type<ial>b_attributions
 %type<id>declaration
 %type<im>method
 %type<it>type
@@ -120,12 +118,7 @@ static:		STATIC declaration      {$$=insert_d_static($2);}
 		;
 
 declaration: type attributions ';'  {$$=insert_declaracao(line, $2,$1);}
-        |    BOOLEAN b_attributions ';'   {$$=insert_declaracao(line, $2, is_BOOLEAN);}
         ;
-        
-b_attributions:   b_attributions ',' b_attribution        {$$=insert_atribuicao_list($1, $3);}
-        |         b_attribution                         {$$=insert_atribuicao_list(NULL, $1);}
-        ;          
         
 attributions:   attributions ',' attribution        {$$=insert_atribuicao_list($1, $3);}
         |       attribution                         {$$=insert_atribuicao_list(NULL, $1);}
@@ -133,20 +126,13 @@ attributions:   attributions ',' attribution        {$$=insert_atribuicao_list($
 
 attribution:	VAR                                 {$$=insert_atributo_exp(line, $1, NULL);}
         |       VAR '=' expression                  {$$=insert_atributo_exp(line, $1, $3);}
-		;
-
-b_attribution:	VAR                                 {$$=insert_atributo_b_exp(line, $1, NULL);}
         |       VAR '=' b_expression                {$$=insert_atributo_b_exp(line, $1, $3);}
 		;
 
-method:		STATIC type VAR '(' args ')' '{' statements return_val '}'	{$$=insert_metodo(line, $2, $3, $5, $8, $9);}
-		|	STATIC type VAR '(' args ')' '{' return_val '}'			{$$=insert_metodo(line, $2, $3, $5, NULL, $8);}
-		|	STATIC type VAR '(' ')' '{' statements return_val '}'		{$$=insert_metodo(line, $2, $3, NULL, $7, $8);}
-		|	STATIC type VAR '(' ')' '{' return_val '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL, $7);}
-		|   STATIC BOOLEAN VAR '(' args ')' '{' statements return_val '}'	{$$=insert_metodo(line, is_BOOLEAN, $3, $5, $8, $9);}
-		|	STATIC BOOLEAN VAR '(' args ')' '{' return_val '}'			    {$$=insert_metodo(line, is_BOOLEAN, $3, $5, NULL, $8);}
-		|	STATIC BOOLEAN VAR '(' ')' '{' statements return_val '}'		{$$=insert_metodo(line, is_BOOLEAN, $3, NULL, $7, $8);}
-		|	STATIC BOOLEAN VAR '(' ')' '{' return_val '}'	    			{$$=insert_metodo(line, is_BOOLEAN, $3, NULL, NULL, $7);}
+method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_metodo(line, $2, $3, $5, $8);}
+		|	STATIC type VAR '(' args ')' '{' '}'			{$$=insert_metodo(line, $2, $3, $5, NULL);}
+		|	STATIC type VAR '(' ')' '{' statements '}'		{$$=insert_metodo(line, $2, $3, NULL, $7);}
+		|	STATIC type VAR '(' ')' '{' '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL);}
 		;
 
 return_val:     RETURN ';'                  {$$=insert_return_void(line);}
@@ -159,7 +145,6 @@ args:		args ',' arg    {$$=insert_argumento_list($1, $3);}
 		;
 
 arg:        type VAR        {$$=insert_argumento($1, $2);}
-        |   BOOLEAN VAR     {$$=insert_argumento(is_BOOLEAN, $2);}
         ;
 
 type:		INT		{$$=is_INT;}
@@ -168,19 +153,21 @@ type:		INT		{$$=is_INT;}
 		|	FLOAT	{$$=is_FLOAT;}
 		|	DOUBLE	{$$=is_DOUBLE;}
 		|	CHAR	{$$=is_CHAR;}
+		|   BOOLEAN {$$=is_BOOLEAN;}
 		;
 
 statements: statements statement    {insert_statement_list($1,$2);}
         |   statement               {insert_statement_list(NULL, $1);}
         ;
 
-statement:	declaration     {$$=insert_d_statement($1);}
-        |   attribution ';' {$$=insert_a_statement($1);}
-        |   print           {$$=insert_p_statement($1);}
-        |   if              {$$=insert_i_statement($1);}
-        |   while           {$$=insert_w_statement($1);}
-        |   for             {$$=insert_f_statement($1);}
-        |   func_call       {$$=insert_fc_statement($1);}
+statement:	declaration         {$$=insert_d_statement($1);}
+        |   attribution ';'     {$$=insert_a_statement($1);}
+        |   print               {$$=insert_p_statement($1);}
+        |   if                  {$$=insert_i_statement($1);}
+        |   while               {$$=insert_w_statement($1);}
+        |   for                 {$$=insert_f_statement($1);}
+        |   func_call           {$$=insert_fc_statement($1);}
+        |   return_val          {$$=insert_r_statement($1);}
         ;
 
 
@@ -207,7 +194,7 @@ unary_expression:	'-' expression	%prec UMINUS	{$$=insert_unary_expression($2);}
 		;
 
 b_expression:       b_expression AND b_expression       {$$=insert_b_i_expressao(line, $1, is_AND, $3);}
-        |           b_expression OR b_expression        {$$=insert_b_i_expressao(line, $3, is_OR, $3);}
+        |           b_expression OR b_expression        {$$=insert_b_i_expressao(line, $1, is_OR, $3);}
         |           '!' b_expression  %prec UMINUS      {$$=insert_b_n_expressao(line, $2);}
         |           expression EQUALS expression        {$$=insert_comparacao(line, $1, is_EQUALS, $3);}
         |           expression DIFERENT expression      {$$=insert_comparacao(line, $1, is_DIFERENT, $3);}

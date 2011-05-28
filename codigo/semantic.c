@@ -78,8 +78,7 @@ void semantic_analysis_method(prog_env *pe, is_metodo* im)
 		//faz an‡lise sem‰ntica do procedimento
 		// Ž aqui que vai adicionando os s’mbolos encontrados dentro do procedimento ao ambiente (representado por pl->locals)
 		pl->locals=semantic_analysis_argumento_list(pe, pl->locals, (is_argumento_list *)(im->arg_list), im->nome);
-		pl->locals=semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list));
-		semantic_analysis_return(pe, pl->locals, (is_return*)(im->return_val), im->tipo);
+		pl->locals=semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->list), im->tipo);
 		
 		/*
 		semantic_analysis_vardeclist(LOCALSCOPE, pe, pl->locals, im->vlist);	
@@ -162,6 +161,13 @@ table_element* semantic_analysis_atribuicao_dec(int offset, prog_env* pe, table_
             return stmp;
         }
     }
+    else if(ia->tipo == d_a_b_expression){
+        if(tipo!=is_BOOLEAN){
+            printf("line %d: error: trying to define %s (%s) as boolean!\n", ia->codeline, ia->nome, typeToString(tipo));
+            errors++;
+            return stmp;
+        }
+    }
 	aux=lookup(pe->global, ia->nome); 	//verifica na tabela global
     
 	if(aux!=0 && aux->type==method)		//se existir e for um procedimento, temos um erro!
@@ -210,10 +216,19 @@ void semantic_analysis_atribuicao(prog_env* pe, table_element* stable, is_atribu
         is_tipo temp = check_expression_type(pe, stable, (is_expressao*) ia->conteudo.exp);
 	    if(temp==-1)
 	        return;
-	    if(aux->stype != is_METHOD && (aux->type==is_INT && temp!=is_INT)){		//se existir e nao for do mesmo tipo, temos um erro!
-		    printf("line %d: error: %s is not defined as %s!\n", ia->codeline, ia->nome, typeToString(temp));
+	    if(aux->stype != is_METHOD && (aux->type!=temp)){		//se existir e nao for do mesmo tipo, temos um erro!
+		    printf("line %d: error: trying to define %s (%s) as %s!\n", ia->codeline, ia->nome, typeToString(aux->type), typeToString(temp));
 	        errors++;
+	        return;
 	    }
+	}
+	else{
+	    if(aux->stype != is_METHOD && (aux->type!=is_BOOLEAN)){
+	        printf("line %d: error: trying to define %s (%s) as boolean!\n", ia->codeline, ia->nome, typeToString(aux->type));
+	        errors++;
+	        return;
+	    }
+	    
 	}
 	//procura por uma vari‡vel com o mesmo nome
 	
@@ -248,28 +263,29 @@ table_element* semantic_analysis_argumento(int offset, prog_env* pe, table_eleme
 }
 
 //An‡lise sem‰ntica de listas de statements
-table_element* semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl)
+table_element* semantic_analysis_statement_list(prog_env *pe, table_element* env, is_statement_list* isl, is_tipo tipo)
 {
 	is_statement_list* aux;
     table_element* stmp = env;
 	for(aux=isl; aux; aux=aux->next){
-		stmp=semantic_analysis_statement(pe, stmp, aux->stt);
+		stmp=semantic_analysis_statement(pe, stmp, aux->stt, tipo);
 	}
 	return stmp;
 }
 
 //Triagem por tipo de statement
-table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_statement* is)
+table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_statement* is, is_tipo tipo)
 {
 	switch(is->tipo)
 	{
 		case d_s_atribuicao: semantic_analysis_atribuicao(pe, env, (is_atributo *)(is->conteudo.u_atributo));break;
 		case d_s_declaracao: return semantic_analysis_declaration(LOCALSCOPE, pe, env,(is_declaracao *)(is->conteudo.u_declaracao));
 		case d_print: semantic_analysis_print(pe, env, (is_print*)(is->conteudo.u_print)); break;
-		case d_if: semantic_analysis_if(pe, env, (is_if*)(is->conteudo.u_if));break;
-		case d_while: semantic_analysis_while(pe, env, (is_while*)(is->conteudo.u_while));break;
-		case d_for: semantic_analysis_for(pe, env, (is_for*)(is->conteudo.u_for));break;
+		case d_if: semantic_analysis_if(pe, env, (is_if*)(is->conteudo.u_if), tipo);break;
+		case d_while: semantic_analysis_while(pe, env, (is_while*)(is->conteudo.u_while), tipo);break;
+		case d_for: semantic_analysis_for(pe, env, (is_for*)(is->conteudo.u_for), tipo);break;
 		case d_func_call: semantic_analysis_func_call(pe, env, (is_func_call*)(is->conteudo.u_func_call));break;
+		case d_return: semantic_analysis_return(pe, env, (is_return*)(is->conteudo.u_return), tipo);break;
 	}
 	return env;
 		
@@ -317,7 +333,25 @@ void semantic_analysis_var(prog_env* pe, table_element* env, char* var, int line
 
 void semantic_analysis_b_expression(prog_env* pe, table_element* env, is_b_expressao* ibe)
 {
-    
+    switch(ibe->tipo)
+	{
+		case d_infix_b_exp: semantic_analysis_b_infix_exp(pe, env, (is_b_infix_expressao*)(ibe->conteudo.u_infix_b_exp));break;
+		case d_not_b_exp: semantic_analysis_b_expression(pe, env, (is_b_expressao*)((is_b_not_expressao*)ibe->conteudo.u_not_b_exp)->exp);break;
+		case d_tf: break;
+		case d_comparison: semantic_analysis_comparison(pe, env, (is_comparison*)(ibe->conteudo.u_comp));break;
+	}
+}
+
+void semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_infix_expressao* ibe)
+{
+    semantic_analysis_b_expression(pe, env, ibe->exp1);
+    semantic_analysis_b_expression(pe, env, ibe->exp2);
+}
+
+void semantic_analysis_comparison(prog_env* pe, table_element* env, is_comparison* comp)
+{
+    semantic_analysis_expression(pe, env, comp->exp1);
+    semantic_analysis_expression(pe, env, comp->exp2);
 }
 
 void semantic_analysis_print(prog_env* pe, table_element* env, is_print* ip)
@@ -328,35 +362,38 @@ void semantic_analysis_print(prog_env* pe, table_element* env, is_print* ip)
 	}
 }
 
-void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii)
+void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii, is_tipo tipo)
 {
     table_element* aux;
+    semantic_analysis_b_expression(pe, env, (is_b_expressao*)(ii->exp));
     for(aux=env; aux->next; aux=aux->next);
-	semantic_analysis_statement_list(pe, env, ii->stt);
-	semantic_analysis_else(pe, env, ii->ifelse);
+	semantic_analysis_statement_list(pe, env, ii->stt, tipo);
+	semantic_analysis_else(pe, env, ii->ifelse, tipo);
 	aux->next=NULL;
 }
 
-void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel)
+void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_tipo tipo)
 {
-	semantic_analysis_statement_list(pe, env, iiel->stt);
+	semantic_analysis_statement_list(pe, env, iiel->stt, tipo);
 }
 
-void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw)
+void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw, is_tipo tipo)
 {
 	table_element* aux;
     for(aux=env; aux->next; aux=aux->next);
-	semantic_analysis_statement_list(pe, env, iw->stt);
+    semantic_analysis_b_expression(pe, env, (is_b_expressao*)(iw->exp));
+	semantic_analysis_statement_list(pe, env, iw->stt, tipo);
 	aux->next=NULL;
 }
 
-void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf)
+void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf, is_tipo tipo)
 {
 	table_element* aux;
     for(aux=env; aux->next; aux=aux->next);
-	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->attr));
+	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->attr), tipo);
 	semantic_analysis_expression(pe, env, (is_expressao*)(isf->exp));
-	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->stt));
+	semantic_analysis_b_expression(pe, env, (is_b_expressao*)(isf->b_exp));
+	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->stt), tipo);
 	aux->next=NULL;
 }
 

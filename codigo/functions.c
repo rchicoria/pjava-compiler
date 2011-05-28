@@ -249,6 +249,23 @@ is_statement_list* insert_fc_statement( is_func_call* ifc)
 }
 
 /*
+ *	insert_r_statement
+ *	cria um statement a partir de um return
+ */
+is_statement_list* insert_r_statement( is_return* ir)
+{
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	
+	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
+	is->tipo = d_return;				//Coloca etiqueta a informar que é uma "atribuicao"
+	is->conteudo.u_return = (struct is_return*) ir;	//Guarda o conteúdo
+	
+	istl->stt=is;
+		
+	return istl;		
+}
+
+/*
  *	insert_statement_list
  *	adiciona à lista list os statements da lista stts
  */
@@ -283,7 +300,7 @@ is_declaracao* insert_declaracao(int line, is_atribuicao_list* list, is_tipo tip
  *	insert_metodo
  *	cria um método a partir de um tipo, um nome e uma expressão
  */
-is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list *arg_list, is_statement_list *list , is_return *ret_val)
+is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list *arg_list, is_statement_list *list)
 {
     is_metodo *im = (is_metodo*) malloc( sizeof(is_metodo) );
     im->tipo = tipo;		//Guarda tipo
@@ -291,7 +308,6 @@ is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list 
     im->arg_list = (struct is_argumento_list*) arg_list;
     im->list = (struct is_statement_list*) list;			//Guarda expressão
     im->codeline = line;
-    im->return_val = (is_return*) ret_val;
     
     return im;
 }

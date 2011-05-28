@@ -19,10 +19,6 @@ void show_static(is_static* is)
 {
 	switch(is->tipo)
 	{
-		/*case d_atribuicao:	printf("atributo(");
-							show_attribute((is_atributo*)is->conteudo.u_atributo);
-							printf(")");
-							break;*/
 		case d_metodo:		printf("metodo(");
 							show_method((is_metodo*)is->conteudo.u_metodo);
 							printf(")");
@@ -77,10 +73,6 @@ void show_method(is_metodo* im)
 	{
 		show_statement(aux1->stt);
 	}
-	
-	printf("return( ");
-	show_return(im->return_val);
-	printf(" )\n");
 }
 
 void show_return(is_return* ir)
@@ -188,6 +180,9 @@ void show_statement(is_statement* stt)
 		                        
 		case d_func_call:       printf("func_call("); 
 		                        show_func_call((is_func_call*)stt->conteudo.u_func_call); 
+		                        printf(")\n");break;
+		case d_return   :       printf("return("); 
+		                        show_return((is_return*)stt->conteudo.u_return); 
 		                        printf(")\n");break;
 	}
 }

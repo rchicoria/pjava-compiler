@@ -9,8 +9,8 @@ table_element* semantic_analysis_atribuicao_list(int, prog_env*, table_element*,
 table_element* semantic_analysis_atribuicao_dec(int, prog_env*, table_element*, is_atributo*, is_tipo);
 void semantic_analysis_atribuicao(prog_env*, table_element*, is_atributo*);
 table_element* semantic_analysis_argumento_list(prog_env*, table_element*, is_argumento_list*, char*);
-table_element* semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*);
-table_element* semantic_analysis_statement(prog_env*, table_element*, is_statement*);
+table_element* semantic_analysis_statement_list(prog_env*, table_element*, is_statement_list*, is_tipo);
+table_element* semantic_analysis_statement(prog_env*, table_element*, is_statement*, is_tipo);
 table_element* semantic_analysis_argumento(int, prog_env*, table_element*, is_argumento*, char*);
 
 is_tipo check_expression_type(prog_env* pe, table_element* stable, is_expressao* exp);
@@ -23,11 +23,13 @@ void semantic_analysis_number(prog_env*, table_element* env, int);
 void semantic_analysis_float(prog_env* pe, table_element* env, float num_float);
 void semantic_analysis_var(prog_env*, table_element* env, char*, int codeline);
 void semantic_analysis_b_expression(prog_env* pe, table_element* env, is_b_expressao* ibe);
+void semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_infix_expressao* ibe);
+void semantic_analysis_comparison(prog_env* pe, table_element* env, is_comparison* comp);
 void semantic_analysis_print(prog_env*, table_element*, is_print*);
-void semantic_analysis_if(prog_env*, table_element*, is_if*);
-void semantic_analysis_while(prog_env*, table_element*, is_while*);
-void semantic_analysis_for(prog_env*, table_element*, is_for*);
-void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel);
+void semantic_analysis_if(prog_env*, table_element*, is_if*, is_tipo);
+void semantic_analysis_while(prog_env*, table_element*, is_while*, is_tipo);
+void semantic_analysis_for(prog_env*, table_element*, is_for*, is_tipo);
+void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_tipo);
 void semantic_analysis_func_call(prog_env* pe, table_element* env, is_func_call* ifc);
 void semantic_analysis_func_arg_list(prog_env* pe, table_element* env, is_func_arg_list* ifal, char* nome, int line);
 void semantic_analysis_func_arg(prog_env* pe, table_element* env, is_func_arg* ifa, table_element* arg, int arg_num);

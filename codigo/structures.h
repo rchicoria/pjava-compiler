@@ -15,7 +15,7 @@ typedef enum {is_GREATER, is_LESSER, is_GREATEQ, is_LESSEQ, is_EQUALS, is_DIFERE
 
 typedef enum {d_declaracao, d_metodo} tipo_static;
 
-typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for, d_func_call} tipo_statement;
+typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for, d_func_call, d_return} tipo_statement;
 
 typedef enum {d_expression} tipo_print;
 
@@ -111,6 +111,7 @@ typedef struct _a12 {
 		struct is_while* u_while;
 		struct is_for* u_for;
 		struct is_func_call* u_func_call;
+		struct is_return* u_return;
 	} conteudo;
 } is_statement;
 
@@ -177,7 +178,6 @@ typedef struct _a2 {
 	struct is_argumento_list* arg_list;
 	struct is_statement_list* list;
 	int codeline;
-	is_return* return_val;
 } is_metodo;
 
 typedef struct _a23 {
