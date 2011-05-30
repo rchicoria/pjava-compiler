@@ -6,12 +6,12 @@
 %%
 
 [0-9]+			{//	Recebe os numeros
-					yylval.num=atoi(yytext);
-					return NUMBER;
+					yylval.inum=atoi(yytext);
+					return NUM_INT;
 				}
 
 [0-9]+\.[0-9]+		{yylval.fnum=atof(yytext);
-						return FLOAT_NUM;}
+						return NUM_FLOAT;}
 
 "class"			{// Recebe a declaração da classe
 					return CLASS;

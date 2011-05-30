@@ -4,14 +4,13 @@
 #include <stdio.h>
 
 /*
- *	insert_static_list
- *	adiciona à lista list o static stat
+ *	adiciona Ã  is_static_list list um is_static stat convertido em is_static_list
  */
 is_static_list* insert_static_list( is_static_list* list, is_static_list* stat )
 {
 	
 	if(list==NULL)		//Se a lista estiver vazia
-		return stat;		//Devolve o nó criado
+		return stat;		//Devolve o nÃ³ criado
 	
 	is_static_list* aux;
 	
@@ -22,16 +21,15 @@ is_static_list* insert_static_list( is_static_list* list, is_static_list* stat )
 }
 
 /*
- *	insert_d_static
- *	cria um static a partir de uma declaracao
+ *	cria um is_static a partir da is_declaration dec
  */
-is_static_list* insert_d_static( is_declaracao* dec )
+is_static_list* insert_d_static( is_declaration* dec )
 {
-	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );	//Cria novo nó na lista
+	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );
 	
 	is_static* is = (is_static*) malloc( sizeof(is_static) );
-	is->tipo = d_declaracao;				//Coloca etiqueta a informar que é um "metodo"
-	is->conteudo.u_declaracao = (struct is_declaracao*) dec;	//Guarda o conteúdo
+	is->type = stat_declaration;
+	is->content.dec = (struct is_declaration*) dec;
 	
 	isl->stat=is;
 		
@@ -39,16 +37,15 @@ is_static_list* insert_d_static( is_declaracao* dec )
 }
 
 /*
- *	insert_m_static
- *	cria um static a partir de um método
+ *	cria um is_static a partir do is_method methodfunc
  */
-is_static_list* insert_m_static( is_metodo* metodo )
+is_static_list* insert_m_static( is_method* method )
 {
-	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );	//Cria novo nó na lista
+	is_static_list* isl = (is_static_list*) malloc( sizeof(is_static_list) );
 	
 	is_static* is = (is_static*) malloc( sizeof(is_static) );
-	is->tipo = d_metodo;				//Coloca etiqueta a informar que é um "metodo"
-	is->conteudo.u_metodo = (struct is_metodo*) metodo;	//Guarda o conteúdo
+	is->type = stat_method;
+	is->content.method = (struct is_method*) method;
 	
 	isl->stat=is;
 		
@@ -56,87 +53,66 @@ is_static_list* insert_m_static( is_metodo* metodo )
 }
 
 /*
- *	insert_atributo
- *	cria um atributo a partir de um nome e uma expressão
+ *	cria um is_attribution a partir de um char name e uma expression exp
  */
-is_atributo* insert_atributo_exp( int line, char* nome, is_expressao *exp )
+is_attribution* insert_attribution_exp( int line, char* name, is_expression *exp )
 {
-    is_atributo *ia = (is_atributo*) malloc( sizeof(is_atributo) );
-    ia->nome = nome;		//Guarda nome
-    ia->tipo = d_a_expression;
-    ia->conteudo.exp = (struct is_expressao*) exp;			//Guarda expressão
+    is_attribution *ia = (is_attribution*) malloc( sizeof(is_attribution) );
+    ia->name = name;
+    ia->type = attr_expression;
+    ia->content.exp = (struct is_expression*) exp;
     ia->codeline = line;
     return ia;
 }
 
 /*
- *	insert_atributo
- *	cria um atributo a partir de um nome e uma boolean expressão
+ *	cria um is_attribution a partir de um char name e uma is_b_expression exp
  */
-is_atributo* insert_atributo_b_exp( int line, char* nome, is_b_expressao *exp )
+is_attribution* insert_attribution_b_exp( int line, char* name, is_b_expression *exp )
 {
-    is_atributo *ia = (is_atributo*) malloc( sizeof(is_atributo) );
-    ia->nome = nome;		//Guarda nome
-    ia->tipo = d_a_b_expression;
-    ia->conteudo.b_exp = (struct is_b_expressao*) exp;			//Guarda expressão
+    is_attribution *ia = (is_attribution*) malloc( sizeof(is_attribution) );
+    ia->name = name;
+    ia->type = attr_b_expression;
+    ia->content.b_exp = (struct is_b_expression*) exp;
     ia->codeline = line;
     return ia;
 }
 
 /*
- *	insert_atributo_list
- *	adiciona à lista list o atributo att
+ *	adiciona Ã  is_attribution_list list o is_attribution attr
  */
-is_atribuicao_list* insert_atribuicao_list( is_atribuicao_list* list, is_atributo* attr )
+is_attribution_list* insert_attribution_list( is_attribution_list* list, is_attribution* attr )
 {
-	is_atribuicao_list* ial = (is_atribuicao_list*) malloc( sizeof(is_atribuicao_list) );	//Cria novo nó na lista
-	ial->attr = attr;				//Preenche-o
+	is_attribution_list* ial = (is_attribution_list*) malloc( sizeof(is_attribution_list) );
+	ial->attr = attr;
 	
-	if(list==NULL)		//Se a lista estiver vazia
-		return ial;		//Devolve o nó criado
+	if(list==NULL)
+		return ial;
 
-	is_atribuicao_list* aux;
+	is_attribution_list* aux;
 			
-	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
-	aux->next = ial;					//adiciona no final da lista
+	for(aux=list; aux->next!=NULL; aux=aux->next);
+	aux->next = ial;
 	return list;
-}
-
-/*
- *	insert_a_statement
- *	cria um statement a partir de uma atribuicao
- */
-is_statement_list* insert_a_statement( is_atributo* attr )
-{
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
-	
-	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_s_atribuicao;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_atributo = (struct is_atributo*) attr;	//Guarda o conteúdo
-	
-	istl->stt=is;
-		
-	return istl;		
 }
 
 /*
  *	insert_as_statement
  *	cria um statement a partir de uma lista de atribuicoes
  */
-is_statement_list* insert_as_statement( is_atribuicao_list* attr )
+is_statement_list* insert_as_statement( is_attribution_list* attr )
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
-	
-	is_atribuicao_list* aux;
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nï¿½ lista
+
+	is_attribution_list* aux;
 	is_statement_list* aux1;
-	
+
 	aux1 = istl;
-	
+
 	for(aux=attr; aux!=NULL; aux=aux->next){	//procura pelo final da lista
 	    is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	    is->tipo = d_s_atribuicao;				//Coloca etiqueta a informar que é uma "atribuicao"
-	    is->conteudo.u_atributo = (struct is_atributo*) attr->attr;	//Guarda o conteúdo
-	    
+	    is->type = stt_attribution;				//Coloca etiqueta a informar que ï¿½ma "atribuicao"
+	    is->content.attr = (struct is_attribution*) attr->attr;	//Guarda o conteï¿½    
 	    aux1->stt=is;
 	    if(aux->next!=NULL){
 	        aux1->next = (is_statement_list*) malloc( sizeof(is_statement_list) );
@@ -147,16 +123,31 @@ is_statement_list* insert_as_statement( is_atribuicao_list* attr )
 }
 
 /*
- *	insert_d_statement
- *	cria um statement a partir de uma declaracao
+ *	cria um is_statement convertido em is_statement_list a partir de um is_attribution attr
  */
-is_statement_list* insert_d_statement( is_declaracao* dec )
+is_statement_list* insert_a_statement( is_attribution* attr )
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_s_declaracao;				//Coloca etiqueta a informar que é uma "declaracao"
-	is->conteudo.u_declaracao = (struct is_declaracao*) dec;	//Guarda o conteúdo
+	is->type = stt_attribution;
+	is->content.attr = (struct is_attribution*) attr;	//Guarda o conteÃºdo
+	
+	istl->stt=is;
+		
+	return istl;		
+}
+
+/*
+ *	cria um is_statement convertido em is_statement_list a partir de uma is_declaration dec
+ */
+is_statement_list* insert_d_statement( is_declaration* dec )
+{
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
+	
+	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
+	is->type = stt_declaration;
+	is->content.dec = (struct is_declaration*) dec;
 	
 	istl->stt=is;
 		
@@ -164,16 +155,15 @@ is_statement_list* insert_d_statement( is_declaracao* dec )
 }
 
 /*
- *	insert_p_statement
- *	cria um statement a partir de um print
+ *	cria um is_statement convertido em is_statement_list a partir de um is_print ip
  */
-is_statement_list* insert_p_statement( is_print* print)
+is_statement_list* insert_p_statement( is_print* ip)
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_print;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_print = (struct is_print*) print;	//Guarda o conteúdo
+	is->type = stt_print;
+	is->content._print = (struct is_print*) ip;
 	
 	istl->stt=is;
 		
@@ -181,16 +171,15 @@ is_statement_list* insert_p_statement( is_print* print)
 }
 
 /*
- *	insert_i_statement
- *	cria um statement a partir de um if
+ *	cria um is_statement convertido em is_statement_list a partir de um is_if ii
  */
 is_statement_list* insert_i_statement( is_if* ii)
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_if;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_if = (struct is_if*) ii;	//Guarda o conteúdo
+	is->type = stt_if;
+	is->content._if = (struct is_if*) ii;
 	
 	istl->stt=is;
 		
@@ -198,16 +187,15 @@ is_statement_list* insert_i_statement( is_if* ii)
 }
 
 /*
- *	insert_w_statement
- *	cria um statement a partir de um while
+ *	cria um is_statement convertido em is_statement_list a partir de um is_while iw
  */
 is_statement_list* insert_w_statement( is_while* iw)
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_while;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_while = (struct is_while*) iw;	//Guarda o conteúdo
+	is->type = stt_while;	
+	is->content._while = (struct is_while*) iw;
 	
 	istl->stt=is;
 		
@@ -215,16 +203,15 @@ is_statement_list* insert_w_statement( is_while* iw)
 }
 
 /*
- *	insert_f_statement
- *	cria um statement a partir de um for
+ *	cria um is_statement convertido em is_statement_list a partir de um is_for isf
  */
 is_statement_list* insert_f_statement( is_for* isf)
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_for;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_for = (struct is_for*) isf;	//Guarda o conteúdo
+	is->type = stt_for;
+	is->content._for = (struct is_for*) isf;
 	
 	istl->stt=is;
 		
@@ -232,16 +219,15 @@ is_statement_list* insert_f_statement( is_for* isf)
 }
 
 /*
- *	insert_fc_statement
- *	cria um statement a partir de uma func_call
+ *	cria um is_statement convertido em is_statement_list a partir de um is_method_call imc
  */
-is_statement_list* insert_fc_statement( is_func_call* ifc)
+is_statement_list* insert_mc_statement( is_method_call* imc)
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_func_call;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_func_call = (struct is_func_call*) ifc;	//Guarda o conteúdo
+	is->type = stt_m_call;
+	is->content.m_call = (struct is_method_call*) imc;
 	
 	istl->stt=is;
 		
@@ -249,16 +235,15 @@ is_statement_list* insert_fc_statement( is_func_call* ifc)
 }
 
 /*
- *	insert_r_statement
- *	cria um statement a partir de um return
+ *	cria um is_statement convertido em is_statement_list a partir de um is_return ir
  */
 is_statement_list* insert_r_statement( is_return* ir)
 {
-	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );	//Cria novo nó na lista
+	is_statement_list* istl = (is_statement_list*) malloc( sizeof(is_statement_list) );
 	
 	is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	is->tipo = d_return;				//Coloca etiqueta a informar que é uma "atribuicao"
-	is->conteudo.u_return = (struct is_return*) ir;	//Guarda o conteúdo
+	is->type = stt_return;
+	is->content._return = (struct is_return*) ir;
 	
 	istl->stt=is;
 		
@@ -266,30 +251,27 @@ is_statement_list* insert_r_statement( is_return* ir)
 }
 
 /*
- *	insert_statement_list
- *	adiciona à lista list os statements da lista stts
+ *	adiciona Ã  is_statement_list list os statements da is_statement_list stts
  */
 is_statement_list* insert_statement_list( is_statement_list* list, is_statement_list* stts )
 {
-	
-	if(list==NULL)		//Se a lista estiver vazia
-		return stts;		//Devolve o nó criado
+	if(list==NULL)
+		return stts;
 
 	is_statement_list* aux;
 			
-	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
-	aux->next = stts;					//adiciona no final da lista
+	for(aux=list; aux->next!=NULL; aux=aux->next);
+	aux->next = stts;
 	return list;
 }
 
 /*
- *  insert_declaracao
- *  adiciona o tipo de atributo a uma lista de atributos
+ *  cria um is_declaration a partir de uma is_attribution_list list e de um is_type type
  */
-is_declaracao* insert_declaracao(int line, is_atribuicao_list* list, is_tipo tipo)
+is_declaration* insert_declaration(int line, is_attribution_list* list, is_type type)
 {
-    is_declaracao* id = (is_declaracao*) malloc(sizeof(is_declaracao));
-    id->tipo = tipo;
+    is_declaration* id = (is_declaration*) malloc(sizeof(is_declaration));
+    id->type = type;
     id->list = list;
     id->codeline = line;
 
@@ -297,255 +279,250 @@ is_declaracao* insert_declaracao(int line, is_atribuicao_list* list, is_tipo tip
 }
 
 /*
- *	insert_metodo
- *	cria um método a partir de um tipo, um nome e uma expressão
+ *	cria um is_method a partir de um is_type type, um char name, uma is_argument_list arg_list e uma is_statement_list list
  */
-is_metodo* insert_metodo( int line, is_tipo tipo, char* nome, is_argumento_list *arg_list, is_statement_list *list)
+is_method* insert_method( int line, is_type type, char* name, is_argument_list *arg_list, is_statement_list *stt_list)
 {
-    is_metodo *im = (is_metodo*) malloc( sizeof(is_metodo) );
-    im->tipo = tipo;		//Guarda tipo
-    im->nome = nome;		//Guarda nome
-    im->arg_list = (struct is_argumento_list*) arg_list;
-    im->list = (struct is_statement_list*) list;			//Guarda expressão
+    is_method *im = (is_method*) malloc( sizeof(is_method) );
+    im->type = type;
+    im->name = name;
+    im->arg_list = (struct is_argument_list*) arg_list;
+    im->stt_list = (struct is_statement_list*) stt_list;
     im->codeline = line;
     
     return im;
 }
 
 /*
- *	insert_expression_list
- *	adiciona à lista list a expressão exp
+ *	adiciona Ã  is_expression_list list a is_expression exp
  */
-is_expressao_list* insert_expression_list( is_expressao_list* list, is_expressao* exp )
+is_expression_list* insert_expression_list( is_expression_list* list, is_expression* exp )
 {
-	is_expressao_list* iel = (is_expressao_list*) malloc( sizeof(is_expressao_list) );	//Cria novo nó na lista
-	iel->expr = exp;				//Preenche-o
+	is_expression_list* iel = (is_expression_list*) malloc( sizeof(is_expression_list) );
+	iel->exp = exp;
 	
-	if(list==NULL)		//Se a lista estiver vazia
-		return iel;		//Devolve o nó criado
+	if(list==NULL)
+		return iel;
 
-	is_expressao_list* aux;
+	is_expression_list* aux;
 			
-	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
-	aux->next = iel;					//adiciona no final da lista
+	for(aux=list; aux->next!=NULL; aux=aux->next);
+	aux->next = iel;
 	
 	return list;
 }
 
 /*
- *	insert_i_expression
- *	cria uma expression a partir de uma infix_expression
+ *	cria uma is_expression a partir de uma is_infix_expression exp
  */
-is_expressao* insert_i_expression(int line,  is_infix_expression* expression )
+is_expression* insert_i_expression(int line,  is_infix_expression* exp )
 {
-	is_expressao* ie = (is_expressao*) malloc( sizeof(is_expressao) );
-	ie->tipo = d_infix_exp;				//Coloca etiqueta a informar que é um "infix expression"
-	ie->conteudo.u_infix_exp = (struct is_infix_expression*) expression;	//Guarda o conteúdo
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_infix;
+	ie->content.infix_exp = (struct is_infix_expression*) exp;
 	ie->codeline = line;
 	return ie;		
 }
 
 /*
- *	insert_u_expression
- *	cria uma expression a partir de uma unary_expression
+ *	cria uma is_expression a partir de uma is_unary_expression exp
  */
-is_expressao* insert_u_expression(int line, is_unary_expression* expression )
+is_expression* insert_u_expression(int line, is_unary_expression* exp )
 {
-	is_expressao* ie = (is_expressao*) malloc( sizeof(is_expressao) );
-	ie->tipo = d_unary_exp;				//Coloca etiqueta a informar que é um "unary expression"
-	ie->conteudo.u_unary_exp = (struct is_unary_expression*) expression;	//Guarda o conteúdo
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_unary;
+	ie->content.unary_exp = (struct is_unary_expression*) exp;
 	ie->codeline = line;
 	return ie;		
 }
 
 /*
- *	insert_NUMBER
- *	cria uma expressão a partir de um número
+ *	cria uma is_expression a partir de uma is_method_call imc
  */
-is_expressao* insert_NUMBER(int line, int number )
+is_expression* insert_mc_expression(int line, is_method_call* imc )
 {
-	is_expressao* ie = (is_expressao*) malloc( sizeof(is_expressao) );
-	ie->tipo = d_number;				//Coloca etiqueta a informar que é um numero
-	ie->conteudo.number = number;	//Guarda o conteúdo
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_m_call;
+	ie->content.m_call = (struct is_method_call*) imc;
+	ie->codeline = line;
+	return ie;		
+}
+
+/*
+ *	cria uma is_expression a partir de um int num_int
+ */
+is_expression* insert_INT(int line, int num_int )
+{
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_int;
+	ie->content.num_int = num_int;
     ie->codeline = line;
 	return ie;
 }
 
 /*
- *	insert_FLOAT_NUM
- *	cria uma expressão a partir de um número
+ *	cria uma is_expression a partir de um float num_float
  */
-is_expressao* insert_FLOAT_NUM(int line, float number )
+is_expression* insert_FLOAT(int line, float num_float )
 {
-	is_expressao* ie = (is_expressao*) malloc( sizeof(is_expressao) );
-	ie->tipo = d_float;				//Coloca etiqueta a informar que é um numero
-	ie->conteudo.num_float = number;	//Guarda o conteúdo
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_float;
+	ie->content.num_float = num_float;
     ie->codeline = line;
 	return ie;
 }
 
 /*
- *	insert_VAR
- *	cria uma expressão a partir de uma var
+ *	cria uma is_expression a partir de um float num_float
  */
-is_expressao* insert_VAR(int line, char* var )
+is_expression* insert_VAR(int line, char* var )
 {
-	is_expressao* ie = (is_expressao*) malloc( sizeof(is_expressao) );
-	ie->tipo = d_var;				//Coloca etiqueta a informar que é um numero
-	ie->conteudo.var = var;	//Guarda o conteúdo
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_var;
+	ie->content.var = var;
     ie->codeline=line;
 	return ie;		
 }
 
 /*
- *	insert_infix_expression
- *	cria uma infix_expression a partir de duas expressões e um operador
+ *	cria uma is_infix_expression a partir de duas is_expression exp1 e exp2 e um is_operator op
  */
-is_infix_expression* insert_infix_expression( is_expressao *op1, is_operador operador, is_expressao *op2 )
+is_infix_expression* insert_infix_expression( is_expression *exp1, is_operator op, is_expression *exp2 )
 {
-        is_infix_expression *iie = (is_infix_expression*) malloc( sizeof(is_infix_expression) );
-        iie->exp1 = op1;			//Guarda operando 1
-        iie->operador = operador;	//Guarda operador
-        iie->exp2 = op2;			//Guarda operando 2
+    is_infix_expression *iie = (is_infix_expression*) malloc( sizeof(is_infix_expression) );
+    iie->exp1 = exp1;
+    iie->op = op;
+    iie->exp2 = exp2;
 
-        return iie;
+    return iie;
 }
 
 /*
- *	insert_unary_expression
- *	cria uma unary_expression a partir de uma expressão
+ *	cria uma is_unary_expression a partir de uma is_infix_expression exp
  */
-is_unary_expression* insert_unary_expression( is_expressao* expression )
+is_unary_expression* insert_unary_expression( is_expression* exp )
 {
-        is_unary_expression *iue = (is_unary_expression*) malloc( sizeof(is_unary_expression) );
-        iue->exp = expression;			//Guarda operando
+    is_unary_expression *iue = (is_unary_expression*) malloc( sizeof(is_unary_expression) );
+    iue->exp = exp;
 
-        return iue;
+    return iue;
 }
 
 /*
- *	insert_argumento
- *	cria um argumento a partir de um tipo e um nome
+ *	cria um is_argument a partir de um is_type type e de um char name
  */
-is_argumento* insert_argumento( is_tipo tipo, char* nome )
+is_argument* insert_argument( is_type type, char* name )
 {
-    is_argumento *ia = (is_argumento*) malloc( sizeof(is_argumento) );
-    ia->tipo = tipo;		//Guarda tipo
-    ia->nome = nome;		//Guarda nome
+    is_argument *ia = (is_argument*) malloc( sizeof(is_argument) );
+    ia->type = type;
+    ia->name = name;
 
     return ia;
 }
 
 /*
- *	insert_argumento_list
- *	adiciona à lista list a expressão arg
+ *	adiciona Ã  is_argument_list list o is_argument arg
  */
-is_argumento_list* insert_argumento_list( is_argumento_list* list, is_argumento* arg )
+is_argument_list* insert_argument_list( is_argument_list* list, is_argument* arg )
 {
-	is_argumento_list* ial = (is_argumento_list*) malloc( sizeof(is_argumento_list) );	//Cria novo nó na lista
-	ial->arg = arg;				//Preenche-o
+	is_argument_list* ial = (is_argument_list*) malloc( sizeof(is_argument_list) );
+	ial->arg = arg;
 	
-	if(list==NULL)		//Se a lista estiver vazia
-		return ial;		//Devolve o nó criado
+	if(list==NULL)
+		return ial;
 
-	is_argumento_list* aux;
+	is_argument_list* aux;
 			
-	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
-	aux->next = ial;					//adiciona no final da lista
+	for(aux=list; aux->next!=NULL; aux=aux->next);
+	aux->next = ial;
 	
 	return list;
 }
 
 /*
- *  insert_print
- *  adiciona um print
+ *   cria um is_print a partir de uma is_expression exp e de um char end que corresponde a fazer ou nÃ£o quebra de linha
  */
-is_print* insert_print(int line, is_expressao* exp, char fim)
+is_print* insert_print(int line, is_expression* exp, char end)
 {
     is_print* print = (is_print*) malloc (sizeof (is_print));
-    print->tipo = d_expression;
-    print->fim = fim;
-    print->conteudo.u_p_exp = (struct is_expressao*)exp;
+    print->type = print_expression;
+    print->end = end;
+    print->content.exp = (struct is_expression*)exp;
     print->codeline=line;
     return print;
 }
 
 /*
- *  insert_b_tf_expressao
- *  adiciona uma b_tf_expressao
+ *   cria uma is_b_expression a partir de um char boolean
  */
-is_b_expressao* insert_b_tf_expressao(int line, char boolean  )
+is_b_expression* insert_b_bool_expression(int line, char boolean  )
 {
-    is_b_expressao* ibe = (is_b_expressao*) malloc(sizeof(is_b_expressao));
-    ibe->tipo = d_tf;
-    ibe->conteudo.boolean = boolean;
+    is_b_expression* ibe = (is_b_expression*) malloc(sizeof(is_b_expression));
+    ibe->type = b_exp_bool;
+    ibe->content.boolean = boolean;
     ibe->codeline = line;
     return ibe;
 }
 
 /*
- *  insert_comparacao
- *  adiciona uma comparacao a partir de duas expressoes 
+ *   cria uma is_b_expression a partir de duas is_expression exp1 e exp2 e de um is_comparator op
  */
-is_b_expressao* insert_comparacao(int line, is_expressao* exp1, is_comparator comp, is_expressao* exp2)
+is_b_expression* insert_comparison(int line, is_expression* exp1, is_comparator op, is_expression* exp2)
 {
-    is_b_expressao* ibe = (is_b_expressao*) malloc(sizeof(is_b_expressao));
-    ibe->tipo = d_comparison;
+    is_b_expression* ibe = (is_b_expression*) malloc(sizeof(is_b_expression));
+    ibe->type = b_exp_comp;
     
     is_comparison* ic = (is_comparison*) malloc(sizeof(is_comparison));
-    ic->exp1 = (is_expressao*) exp1;
-    ic->op = comp;
-    ic->exp2 = (is_expressao*) exp2;
+    ic->exp1 = (is_expression*) exp1;
+    ic->op = op;
+    ic->exp2 = (is_expression*) exp2;
     
-    ibe->conteudo.u_comp = (struct is_comparison*)ic;
+    ibe->content.comp = (struct is_comparison*)ic;
     ibe->codeline = line;
     return ibe;
 }
 
 /*
- *  insert_b_n_expressao
- *  adiciona uma b_not_expressao
+ *   cria uma is_b_expression a partir de uma is_b_expression exp
  */
-is_b_expressao* insert_b_n_expressao(int line, is_b_expressao* exp)
+is_b_expression* insert_b_not_expression(int line, is_b_expression* exp)
 {
-    is_b_expressao* ibe = (is_b_expressao*) malloc(sizeof(is_b_expressao));
-    ibe->tipo = d_not_b_exp;
+    is_b_expression* ibe = (is_b_expression*) malloc(sizeof(is_b_expression));
+    ibe->type = b_exp_not;
     
-    is_b_not_expressao* ibne = (is_b_not_expressao*) malloc(sizeof(is_b_not_expressao));
-    ibne->exp = (is_b_expressao*) exp;
+    is_b_not_expression* ibne = (is_b_not_expression*) malloc(sizeof(is_b_not_expression));
+    ibne->exp = (is_b_expression*) exp;
     
-    ibe->conteudo.u_not_b_exp = (struct is_b_not_expressao*)ibne;
+    ibe->content.not_b_exp = (struct is_b_not_expression*)ibne;
     ibe->codeline = line;
     return ibe;
 }
 
 /*
- *  insert_b_i_expressao
- *  adiciona uma b_infix_expressao a partir de duas b_expressoes 
+ *   cria uma is_b_expression a partir de duas is_b_expression exp1 e exp2 e de um is_b_operator op
  */
-is_b_expressao* insert_b_i_expressao(int line, is_b_expressao* exp1, is_b_operator op, is_b_expressao* exp2)
+is_b_expression* insert_b_infix_expression(int line, is_b_expression* exp1, is_b_operator op, is_b_expression* exp2)
 {
-    is_b_expressao* ibe = (is_b_expressao*) malloc(sizeof(is_b_expressao));
-    ibe->tipo = d_infix_b_exp;
+    is_b_expression* ibe = (is_b_expression*) malloc(sizeof(is_b_expression));
+    ibe->type = b_exp_infix;
     
-    is_b_infix_expressao* ibie = (is_b_infix_expressao*) malloc(sizeof(is_b_infix_expressao));
-    ibie->exp1 = (is_b_expressao*) exp1;
+    is_b_infix_expression* ibie = (is_b_infix_expression*) malloc(sizeof(is_b_infix_expression));
+    ibie->exp1 = (is_b_expression*) exp1;
     ibie->op = op;
-    ibie->exp2 = (is_b_expressao*) exp2;
+    ibie->exp2 = (is_b_expression*) exp2;
     
-    ibe->conteudo.u_infix_b_exp = (struct is_b_infix_expressao*)ibie;
+    ibe->content.infix_b_exp = (struct is_b_infix_expression*)ibie;
     ibe->codeline = line;
     return ibe;
 }
 
 /*
- *  insert_if
- *  adiciona um is_if
+ *   cria um is_if a partir de uma is_expression exp, uma is_statement_list stt e um is_else ifelse
  */
-is_if* insert_if(int line, is_b_expressao* exp, is_statement_list* stt, is_else* ifelse)
+is_if* insert_if(int line, is_b_expression* exp, is_statement_list* stt, is_else* ifelse)
 {
     is_if* ii = (is_if*) malloc (sizeof(is_if));
-    ii->exp = (is_b_expressao*)exp;
+    ii->exp = (is_b_expression*)exp;
     ii->stt = (is_statement_list*)stt;
     ii->codeline = line;
     ii->ifelse = (is_else*)ifelse;
@@ -553,8 +530,7 @@ is_if* insert_if(int line, is_b_expressao* exp, is_statement_list* stt, is_else*
 }
 
 /*
- *  insert_if
- *  adiciona um is_else
+ *   cria um is_else a partir de uma is_statement_list stt
  */
 is_else* insert_else(int line, is_statement_list* stt)
 {
@@ -565,133 +541,124 @@ is_else* insert_else(int line, is_statement_list* stt)
 }
 
 /*
- *  insert_while
- *  adiciona um is_while
+ *   cria um is_while a partir de uma is_b_expression exp e uma is_statement_list stt
  */
-is_while* insert_while(int line, is_b_expressao* exp, is_statement_list* stt)
+is_while* insert_while(int line, is_b_expression* exp, is_statement_list* stt)
 {
     is_while* iw = (is_while*) malloc (sizeof(is_while));
-    iw->exp = (is_b_expressao*)exp;
+    iw->exp = (is_b_expression*)exp;
     iw->stt = (is_statement_list*)stt;
     iw->codeline = line;
     return iw;
 }
 
 /*
- *  insert_for
- *  adiciona um is_for
+ *   cria um is_for a partir de uma is_statement_list attr, is_b_expression b_exp, is_expression exp e uma is_statement_list stt
  */
-is_for* insert_for(int line, is_statement_list* att, is_b_expressao* ibe, is_expressao* ie, is_statement_list* stt)
+is_for* insert_for(int line, is_statement_list* attr, is_b_expression* b_exp, is_expression* exp, is_statement_list* stt)
 {
     is_for* isf = (is_for*) malloc (sizeof(is_for));
-    isf->attr = (is_statement_list*)att;
-    isf->b_exp = (is_b_expressao*)ibe;
-    isf->exp = (is_expressao*)ie;
+    isf->attr = (is_statement_list*)attr;
+    isf->b_exp = (is_b_expression*)b_exp;
+    isf->exp = (is_expression*)exp;
     isf->stt = (is_statement_list*) stt;
     isf->codeline = line;
     return isf;
 }
 
 /*
- *	insert_func_arg_list
- *	adiciona à lista list o argumento arg
+ *   adiciona Ã  is_method_arg_list list a is_expression ou is_b_expression arg convertido em is_method_arg_list
  */
-is_func_arg_list* insert_func_arg_list( is_func_arg_list* list, is_func_arg_list* arg )
+is_method_arg_list* insert_method_arg_list( is_method_arg_list* list, is_method_arg_list* arg )
 {
 	
-	if(list==NULL)		//Se a lista estiver vazia
-		return arg;		//Devolve o nó criado
+	if(list==NULL)
+		return arg;
 
-	is_func_arg_list* aux;
+	is_method_arg_list* aux;
 			
-	for(aux=list; aux->next!=NULL; aux=aux->next);	//procura pelo final da lista
-	aux->next = arg;					//adiciona no final da lista
+	for(aux=list; aux->next!=NULL; aux=aux->next);
+	aux->next = arg;
 	return list;
 }
 
 /*
- *  insert_func_arg_exp
- *  adiciona um func_arg que é uma expressao
+ *  cria um is_method_arg_list a partir de uma is_expression exp
  */
-is_func_arg_list* insert_func_arg_exp(int line, is_expressao* exp)
+is_method_arg_list* insert_method_arg_exp(int line, is_expression* exp)
 {
-    is_func_arg_list* ifal = (is_func_arg_list*) malloc (sizeof(is_func_arg_list)); 
+    is_method_arg_list* imal = (is_method_arg_list*) malloc (sizeof(is_method_arg_list)); 
     
-    is_func_arg* ifa = (is_func_arg*) malloc (sizeof(is_func_arg));
-    ifa->tipo = d_f_expression;
-    ifa->conteudo.exp = (is_expressao*) exp;
-    ifa->codeline=line;
+    is_method_arg* ima = (is_method_arg*) malloc (sizeof(is_method_arg));
+    ima->type = arg_expression;
+    ima->content.exp = (is_expression*) exp;
+    ima->codeline=line;
     
-    ifal->func_arg = ifa;
+    imal->m_arg = ima;
     
-    return ifal;
+    return imal;
 }
 
 /*
- *  insert_func_arg_b_exp
- *  adiciona um func_arg que é uma b_expressao
+ *  cria um is_method_arg_list a partir de uma is_b_expression b_exp
  */
-is_func_arg_list* insert_func_arg_b_exp(int line, is_b_expressao* b_exp)
+is_method_arg_list* insert_method_arg_b_exp(int line, is_b_expression* b_exp)
 {
-    is_func_arg_list* ifal = (is_func_arg_list*) malloc (sizeof(is_func_arg_list)); 
+    is_method_arg_list* imal = (is_method_arg_list*) malloc (sizeof(is_method_arg_list)); 
     
-    is_func_arg* ifa = (is_func_arg*) malloc (sizeof(is_func_arg));
-    ifa->tipo = d_f_b_expression;
-    ifa->conteudo.b_exp = (is_b_expressao*) b_exp;
-    ifa->codeline=line;
+    is_method_arg* ima = (is_method_arg*) malloc (sizeof(is_method_arg));
+    ima->type = arg_b_expression;
+    ima->content.b_exp = (is_b_expression*) b_exp;
+    ima->codeline=line;
     
-    ifal->func_arg = ifa;
+    imal->m_arg = ima;
     
-    return ifal;
+    return imal;
 }
 
 /*
- *  insert func_call
- *  adiciona uma func_call a partir de um nome e lista de argumentos
+ *  cria um is_method_call a partir de uma char name e de uma is_method_arg_list args
  */
-is_func_call* insert_func_call(int line, char* nome, is_func_arg_list* args)
+is_method_call* insert_method_call(int line, char* name, is_method_arg_list* args)
 {
-    is_func_call* ifc = (is_func_call*) malloc (sizeof(is_func_call));
-    ifc->nome = nome;
-    ifc->func_arg = (is_func_arg_list*) args;
-    ifc->codeline = line;
-    return ifc;
+    is_method_call* imc = (is_method_call*) malloc (sizeof(is_method_call));
+    imc->name = name;
+    imc->m_arg_list = (is_method_arg_list*) args;
+    imc->codeline = line;
+    return imc;
 }
 
 /*
- *  insert return
- *  adiciona um return vazio
+ *  cria um is_return vazio
  */
 is_return* insert_return_void(int line)
 {
     is_return* ir = (is_return*) malloc (sizeof(is_return));
-    ir->tipo=d_r_void;
+    ir->type=ret_void;
     ir->codeline=line;
     return ir;
 }
 
 /*
- *  insert return
- *  adiciona um return a partir de uma expressao
+ *  cria um is_return a partir de uma is_expression exp
  */
-is_return* insert_return_exp(is_expressao* exp, int line)
+is_return* insert_return_exp(is_expression* exp, int line)
 {
     is_return* ir = (is_return*) malloc (sizeof(is_return));
-    ir->tipo=d_r_expression;
-    ir->conteudo.exp = (is_expressao*) exp;
+    ir->type=ret_expression;
+    ir->content.exp = (is_expression*) exp;
     ir->codeline=line;
     return ir;
 }
 
 /*
- *  insert return
- *  adiciona um return a partir de uma expressao
+ *  cria um is_return a partir de uma is_b_expression exp
  */
-is_return* insert_return_b_exp(is_b_expressao* exp, int line)
+is_return* insert_return_b_exp(is_b_expression* exp, int line)
 {
     is_return* ir = (is_return*) malloc (sizeof(is_return));
-    ir->tipo = d_r_b_expression;
-    ir->conteudo.b_exp = (is_b_expressao*) exp;
+    ir->type = ret_b_expression;
+    ir->content.b_exp = (is_b_expression*) exp;
     ir->codeline=line;
     return ir;
 }

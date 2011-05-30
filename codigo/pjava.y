@@ -7,38 +7,37 @@
 #include "semantic.h"
 #include <string.h>
 
-void show_table(table_element*);
+void show_table(table_element* table);
 
-//is_atribuicao_list* myprogram;
 is_static_list* isl;
 prog_env* prog_environment;
 %}
 
 %union{
 	is_static_list* isl;
-	is_atribuicao_list* ial;
-	is_atributo* ia;
-	is_metodo* im;
-	is_tipo it;
-	is_expressao_list* iel;
-	is_expressao* ie;
+	is_attribution_list* ial;
+	is_attribution* ia;
+	is_method* im;
+	is_type it;
+	is_expression_list* iel;
+	is_expression* ie;
 	is_infix_expression* iie;
 	is_unary_expression* iue;
-	is_argumento* iar;
-	is_argumento_list* iarl;
+	is_argument* iar;
+	is_argument_list* iarl;
 	is_print* ip;
 	is_statement_list* istl;
-	is_declaracao* id;
-	is_b_expressao* ibe;
+	is_declaration* id;
+	is_b_expression* ibe;
 	is_while* iw;
-	int num;
+	int inum;
 	float fnum;
 	char* var;
 	is_if* ii;
 	is_else* iiel;
 	is_for* isf;
-	is_func_call* ifc;
-	is_func_arg_list* ifal;
+	is_method_call* imc;
+	is_method_arg_list* imal;
 	is_return* ir;
 }
 
@@ -73,8 +72,8 @@ prog_env* prog_environment;
 %token RETURN
 
 %token<var>VAR
-%token<num>NUMBER
-%token<fnum>FLOAT_NUM
+%token<inum>NUM_INT
+%token<fnum>NUM_FLOAT
 %type<isl>statics
 %type<isl>static
 %type<ia>attribution
@@ -96,8 +95,8 @@ prog_env* prog_environment;
 %type<iw>while
 %type<isf>for
 %type<istl>for_first_camp
-%type<ifc>func_call
-%type<ifal>func_arg
+%type<imc>method_call
+%type<imal>method_arg
 %type<ir>return_val
 
 %left '+' '-' '*' '/' AND OR
@@ -117,22 +116,22 @@ static:		STATIC declaration      {$$=insert_d_static($2);}
 		|	method			        {$$=insert_m_static($1);}
 		;
 
-declaration: type attributions ';'  {$$=insert_declaracao(line, $2,$1);}
+declaration: type attributions ';'  {$$=insert_declaration(line, $2,$1);}
         ;
         
-attributions:   attributions ',' attribution        {$$=insert_atribuicao_list($1, $3);}
-        |       attribution                         {$$=insert_atribuicao_list(NULL, $1);}
+attributions:   attributions ',' attribution        {$$=insert_attribution_list($1, $3);}
+        |       attribution                         {$$=insert_attribution_list(NULL, $1);}
         ;
 
-attribution:	VAR                                 {$$=insert_atributo_exp(line, $1, NULL);}
-        |       VAR '=' expression                  {$$=insert_atributo_exp(line, $1, $3);}
-        |       VAR '=' b_expression                {$$=insert_atributo_b_exp(line, $1, $3);}
+attribution:	VAR                                 {$$=insert_attribution_exp(line, $1, NULL);}
+        |       VAR '=' expression                  {$$=insert_attribution_exp(line, $1, $3);}
+        |       VAR '=' b_expression                {$$=insert_attribution_b_exp(line, $1, $3);}
 		;
 
-method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_metodo(line, $2, $3, $5, $8);}
-		|	STATIC type VAR '(' args ')' '{' '}'			{$$=insert_metodo(line, $2, $3, $5, NULL);}
-		|	STATIC type VAR '(' ')' '{' statements '}'		{$$=insert_metodo(line, $2, $3, NULL, $7);}
-		|	STATIC type VAR '(' ')' '{' '}'	    			{$$=insert_metodo(line, $2, $3, NULL, NULL);}
+method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_method(line, $2, $3, $5, $8);}
+		|	STATIC type VAR '(' args ')' '{' '}'			{$$=insert_method(line, $2, $3, $5, NULL);}
+		|	STATIC type VAR '(' ')' '{' statements '}'		{$$=insert_method(line, $2, $3, NULL, $7);}
+		|	STATIC type VAR '(' ')' '{' '}'	    			{$$=insert_method(line, $2, $3, NULL, NULL);}
 		;
 
 return_val:     RETURN ';'                  {$$=insert_return_void(line);}
@@ -140,11 +139,11 @@ return_val:     RETURN ';'                  {$$=insert_return_void(line);}
         |       RETURN expression ';'       {$$=insert_return_exp($2, line);}
         ;
 
-args:		args ',' arg    {$$=insert_argumento_list($1, $3);}
-		|	arg             {$$=insert_argumento_list(NULL, $1);}                                 
+args:		args ',' arg    {$$=insert_argument_list($1, $3);}
+		|	arg             {$$=insert_argument_list(NULL, $1);}                                 
 		;
 
-arg:        type VAR        {$$=insert_argumento($1, $2);}
+arg:        type VAR        {$$=insert_argument($1, $2);}
         ;
 
 type:		INT		{$$=is_INT;}
@@ -166,7 +165,7 @@ statement:	declaration         {$$=insert_d_statement($1);}
         |   if                  {$$=insert_i_statement($1);}
         |   while               {$$=insert_w_statement($1);}
         |   for                 {$$=insert_f_statement($1);}
-        |   func_call           {$$=insert_fc_statement($1);}
+        |   method_call ';'       {$$=insert_mc_statement($1);}
         |   return_val          {$$=insert_r_statement($1);}
         ;
 
@@ -177,33 +176,34 @@ print:      PRINT '(' expression ')' ';'    {$$=insert_print(line, $3, '\0');}
 
 expression:	infix_expression	{$$=insert_i_expression(line, $1);}
 		|	unary_expression	{$$=insert_u_expression(line, $1);}
-		|	NUMBER				{$$=insert_NUMBER(line, $1);}
+		|	NUM_INT				{$$=insert_INT(line, $1);}
 		|   VAR                 {$$=insert_VAR(line, $1);}
-		|   FLOAT_NUM           {$$=insert_FLOAT_NUM(line, $1);}
+		|   NUM_FLOAT           {$$=insert_FLOAT(line, $1);}
+		|   method_call         {$$=insert_mc_expression(line, $1);}
 		;
 
 infix_expression:	expression '+' expression	{$$=insert_infix_expression($1, is_PLUS, $3);}
 		|			expression '-' expression	{$$=insert_infix_expression($1, is_MINUS, $3);}
 		|			expression '*' expression	{$$=insert_infix_expression($1, is_MULT, $3);}
 		|			expression '/' expression	{$$=insert_infix_expression($1, is_DIVIDE, $3);}
-		|			expression '+''+'			{$$=insert_infix_expression($1, is_PLUS, insert_NUMBER(line, 1));}
-		|			expression '-''-'			{$$=insert_infix_expression($1, is_MINUS, insert_NUMBER(line, 1));}
+		|			expression '+''+'			{$$=insert_infix_expression($1, is_PLUS, insert_INT(line, 1));}
+		|			expression '-''-'			{$$=insert_infix_expression($1, is_MINUS, insert_INT(line, 1));}
 		;
 
 unary_expression:	'-' expression	%prec UMINUS	{$$=insert_unary_expression($2);}
 		;
 
-b_expression:       b_expression AND b_expression       {$$=insert_b_i_expressao(line, $1, is_AND, $3);}
-        |           b_expression OR b_expression        {$$=insert_b_i_expressao(line, $1, is_OR, $3);}
-        |           '!' b_expression  %prec UMINUS      {$$=insert_b_n_expressao(line, $2);}
-        |           expression EQUALS expression        {$$=insert_comparacao(line, $1, is_EQUALS, $3);}
-        |           expression DIFERENT expression      {$$=insert_comparacao(line, $1, is_DIFERENT, $3);}
-        |           expression GREATER expression       {$$=insert_comparacao(line, $1, is_GREATER, $3);}
-        |           expression LESSER expression        {$$=insert_comparacao(line, $1, is_LESSER, $3);}
-        |           expression GREATEQ expression       {$$=insert_comparacao(line, $1, is_GREATEQ, $3);}
-        |           expression LESSEQ expression        {$$=insert_comparacao(line, $1, is_LESSEQ, $3);}
-        |           TRUE                                {$$=insert_b_tf_expressao(line, '1');}
-        |           FALSE                               {$$=insert_b_tf_expressao(line, '0');}
+b_expression:       b_expression AND b_expression       {$$=insert_b_infix_expression(line, $1, is_AND, $3);}
+        |           b_expression OR b_expression        {$$=insert_b_infix_expression(line, $1, is_OR, $3);}
+        |           '!' b_expression  %prec UMINUS      {$$=insert_b_not_expression(line, $2);}
+        |           expression EQUALS expression        {$$=insert_comparison(line, $1, is_EQUALS, $3);}
+        |           expression DIFERENT expression      {$$=insert_comparison(line, $1, is_DIFERENT, $3);}
+        |           expression GREATER expression       {$$=insert_comparison(line, $1, is_GREATER, $3);}
+        |           expression LESSER expression        {$$=insert_comparison(line, $1, is_LESSER, $3);}
+        |           expression GREATEQ expression       {$$=insert_comparison(line, $1, is_GREATEQ, $3);}
+        |           expression LESSEQ expression        {$$=insert_comparison(line, $1, is_LESSEQ, $3);}
+        |           TRUE                                {$$=insert_b_bool_expression(line, '1');}
+        |           FALSE                               {$$=insert_b_bool_expression(line, '0');}
         ;
 
 if:     IF '(' b_expression ')' '{' statements '}' %prec IFX     {$$=insert_if(line, $3, $6, NULL);}
@@ -228,14 +228,14 @@ for_first_camp: attributions ';'    {$$=insert_as_statement($1);}
     |           declaration         {$$=insert_d_statement($1);}
     ;
 
-func_call: VAR '(' func_arg ')' ';' {$$=insert_func_call(line, $1, $3);}
-    |      VAR '('  ')' ';' {$$=insert_func_call(line, $1, NULL);}
+method_call:    VAR '(' method_arg ')'      {$$=insert_method_call(line, $1, $3);}
+    |           VAR '('  ')'                {$$=insert_method_call(line, $1, NULL);}
     ;
 
-func_arg: func_arg ',' expression   {$$=insert_func_arg_list($1, insert_func_arg_exp(line, $3));}
-    |     func_arg ',' b_expression {$$=insert_func_arg_list($1, insert_func_arg_b_exp(line, $3));}
-    |     expression                {$$=insert_func_arg_exp(line, $1);}
-    |     b_expression              {$$=insert_func_arg_b_exp(line, $1);}    
+method_arg: method_arg ',' expression {$$=insert_method_arg_list($1, insert_method_arg_exp(line, $3));}
+    |     method_arg ',' b_expression {$$=insert_method_arg_list($1, insert_method_arg_b_exp(line, $3));}
+    |     expression                {$$=insert_method_arg_exp(line, $1);}
+    |     b_expression              {$$=insert_method_arg_b_exp(line, $1);}    
     ;
 
 %%
@@ -270,7 +270,7 @@ void show_table(table_element* table)
 	environment_list* aux1 = (environment_list*) malloc(sizeof(environment_list));
 	aux1=prog_environment->procs;
 	for(aux=table; aux; aux=aux->next){
-		printf("symbol %s, type %s %s", aux->name, typeToString(aux->type), printSymType(aux->stype)); 
+		printf("symbol %s, type %s %s", aux->name, type_to_string(aux->type), sym_type_to_string(aux->stype)); 
 		if(aux->stype==is_METHOD){
 		    printf(":\n---------");
 		    show_table(aux1->locals);

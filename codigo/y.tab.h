@@ -69,8 +69,8 @@
      OR = 285,
      RETURN = 286,
      VAR = 287,
-     NUMBER = 288,
-     FLOAT_NUM = 289,
+     NUM_INT = 288,
+     NUM_FLOAT = 289,
      UMINUS = 290,
      IFX = 291
    };
@@ -106,8 +106,8 @@
 #define OR 285
 #define RETURN 286
 #define VAR 287
-#define NUMBER 288
-#define FLOAT_NUM 289
+#define NUM_INT 288
+#define NUM_FLOAT 289
 #define UMINUS 290
 #define IFX 291
 
@@ -119,32 +119,32 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 17 "pjava.y"
+#line 16 "pjava.y"
 
 	is_static_list* isl;
-	is_atribuicao_list* ial;
-	is_atributo* ia;
-	is_metodo* im;
-	is_tipo it;
-	is_expressao_list* iel;
-	is_expressao* ie;
+	is_attribution_list* ial;
+	is_attribution* ia;
+	is_method* im;
+	is_type it;
+	is_expression_list* iel;
+	is_expression* ie;
 	is_infix_expression* iie;
 	is_unary_expression* iue;
-	is_argumento* iar;
-	is_argumento_list* iarl;
+	is_argument* iar;
+	is_argument_list* iarl;
 	is_print* ip;
 	is_statement_list* istl;
-	is_declaracao* id;
-	is_b_expressao* ibe;
+	is_declaration* id;
+	is_b_expression* ibe;
 	is_while* iw;
-	int num;
+	int inum;
 	float fnum;
 	char* var;
 	is_if* ii;
 	is_else* iiel;
 	is_for* isf;
-	is_func_call* ifc;
-	is_func_arg_list* ifal;
+	is_method_call* imc;
+	is_method_arg_list* imal;
 	is_return* ir;
 
 

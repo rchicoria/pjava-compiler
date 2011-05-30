@@ -812,15 +812,15 @@ case 1:
 YY_RULE_SETUP
 #line 8 "pjava.l"
 {//	Recebe os numeros
-					yylval.num=atoi(yytext);
-					return NUMBER;
+					yylval.inum=atoi(yytext);
+					return NUM_INT;
 				}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 13 "pjava.l"
 {yylval.fnum=atof(yytext);
-						return FLOAT_NUM;}
+						return NUM_FLOAT;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP

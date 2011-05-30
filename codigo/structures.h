@@ -3,83 +3,77 @@
 
 #include "symbol_table.h"
 
-int line;
-int errors;
+int line; //guarda a linha de cada instrucao
+int errors; //guarda o numero de erros detectados
 
-/*is_operador -> is_PLUS or is_MINUS or is_MULT or is_DIVIDE*/
-typedef enum {is_PLUS, is_MINUS, is_MULT, is_DIVIDE} is_operador;
+typedef enum {is_PLUS, is_MINUS, is_MULT, is_DIVIDE} is_operator;
 
 typedef enum {is_AND, is_OR, is_NOT} is_b_operator;
 
 typedef enum {is_GREATER, is_LESSER, is_GREATEQ, is_LESSEQ, is_EQUALS, is_DIFERENT} is_comparator;
 
-typedef enum {d_declaracao, d_metodo} tipo_static;
+typedef enum {stat_declaration, stat_method} type_static;
 
-typedef enum {d_s_atribuicao, d_s_declaracao, d_print, d_if, d_while, d_for, d_func_call, d_return} tipo_statement;
+typedef enum {stt_attribution, stt_declaration, stt_print, stt_if, stt_while, stt_for, stt_m_call, stt_return} type_statement;
 
-typedef enum {d_expression} tipo_print;
+typedef enum {print_expression} type_print;
 
-typedef enum {d_f_expression, d_f_b_expression} tipo_func_arg;
+typedef enum {arg_expression, arg_b_expression} type_m_arg;
 
-typedef enum {d_r_expression, d_r_b_expression, d_r_void} tipo_return;
+typedef enum {ret_expression, ret_b_expression, ret_void} type_return;
 
-typedef enum {d_a_expression, d_a_b_expression} tipo_atribuicao;
+typedef enum {attr_expression, attr_b_expression} type_attribution;
 
-/*is_ expression  -> is_infix_ expression  or is_unary_expression 
-			   or is_NUMBER*/
+typedef enum {exp_infix, exp_unary, exp_int, exp_float, exp_var, exp_m_call} type_expression;
 
-typedef enum {d_infix_exp, d_unary_exp, d_number, d_float, d_var} tipo_expressao;
-
-typedef enum {d_tf, d_comparison, d_infix_b_exp, d_not_b_exp} tipo_b_expressao;
+typedef enum {b_exp_bool, b_exp_comp, b_exp_infix, b_exp_not} type_b_expression;
 
 typedef struct _a0 {
-	tipo_static tipo;
+	type_static type;
 	union {
-		struct is_atributo* u_atributo;
-		struct is_declaracao* u_declaracao;
-		struct is_metodo* u_metodo;
-	} conteudo;
+		struct is_attribution* attr;
+		struct is_declaration* dec;
+		struct is_method* method;
+	} content;
 } is_static;
 
 typedef struct _a1 {
-	tipo_atribuicao tipo;
-	char* nome;
+	type_attribution type;
+	char* name;
 	union{
-	    struct is_expressao* exp;
-	    struct is_b_expressao* b_exp;
-	} conteudo;
+	    struct is_expression* exp;
+	    struct is_b_expression* b_exp;
+	} content;
 	int codeline;
-} is_atributo;
+} is_attribution;
 
 typedef struct _a3 {
-	tipo_expressao tipo;
+	type_expression type;
 	union {
-		struct is_infix_expression* u_infix_exp;
-		struct is_unary_expression* u_unary_exp;
-		int number;
+		struct is_infix_expression* infix_exp;
+		struct is_unary_expression* unary_exp;
+		int num_int;
 		float num_float;
 		char* var;
-	} conteudo;
+		struct is_method_call* m_call;
+	} content;
 	int codeline;
-} is_expressao;
+} is_expression;
 
-/*is_infix_expression  -> 
-	(<exp1: is_expressao><operador:is_operador><exp2:is_expressao>)*/
 typedef struct _a4 {
-	is_expressao  *exp1;
-	is_operador operador;
-	is_expressao  *exp2;
+	is_expression* exp1;
+	is_operator op;
+	is_expression* exp2;
 } is_infix_expression;
 
-/*is_unary_expression  -> (<exp: is_expressao>)*/
 typedef struct _a5 {
-	is_expressao  *exp;
+	is_expression* exp;
 } is_unary_expression;
 
 typedef struct _a6 {
-	is_expressao* expr;
+	is_expression* exp;
 	struct _a6* next;
-} is_expressao_list;
+} is_expression_list;
 
 typedef struct _a7 {
 	is_static* stat;
@@ -87,32 +81,32 @@ typedef struct _a7 {
 } is_static_list;
 
 typedef struct _a8 {
-    is_tipo tipo;
-    char* nome;
-} is_argumento;
+    is_type type;
+    char* name;
+} is_argument;
 
 typedef struct _a9 {
-    is_argumento* arg;
+    is_argument* arg;
     struct _a9* next;
-} is_argumento_list;
+} is_argument_list;
 
 typedef struct _a11 {
-    is_atributo* attr;
+    is_attribution* attr;
     struct _a11* next;
-} is_atribuicao_list;
+} is_attribution_list;
 
 typedef struct _a12 {
-    tipo_statement tipo;
+    type_statement type;
     union {
-		struct is_atributo* u_atributo;
-		struct is_declaracao* u_declaracao;
-		struct is_print* u_print;
-		struct is_if* u_if;
-		struct is_while* u_while;
-		struct is_for* u_for;
-		struct is_func_call* u_func_call;
-		struct is_return* u_return;
-	} conteudo;
+		struct is_attribution* attr;
+		struct is_declaration* dec;
+		struct is_print* _print;
+		struct is_if* _if;
+		struct is_while* _while;
+		struct is_for* _for;
+		struct is_method_call* m_call;
+		struct is_return* _return;
+	} content;
 } is_statement;
 
 typedef struct _a13 {
@@ -121,64 +115,64 @@ typedef struct _a13 {
 } is_statement_list;
 
 typedef struct _a14 {
-    tipo_print tipo;
-    char fim;
+    type_print type;
+    char end;
     union {
-        struct is_expressao* u_p_exp;
-    } conteudo;
+        struct is_expression* exp;
+    } content;
     int codeline;
 } is_print;
 
 typedef struct _a15 {
-    is_tipo tipo;
-    is_atribuicao_list* list;
+    is_type type;
+    is_attribution_list* list;
     int codeline;
-} is_declaracao;
+} is_declaration;
 
 typedef struct _a16 {
-    tipo_b_expressao tipo;
+    type_b_expression type;
     union {
         char boolean;
-        struct is_b_infix_expressao* u_infix_b_exp;
-        struct is_b_not_expressao* u_not_b_exp;
-        struct is_comparison* u_comp;
-    } conteudo;
+        struct is_b_infix_expression* infix_b_exp;
+        struct is_b_not_expression* not_b_exp;
+        struct is_comparison* comp;
+    } content;
     int codeline;
-} is_b_expressao;
+} is_b_expression;
 
 typedef struct _a17 {
-    is_b_expressao* exp1;
+    is_b_expression* exp1;
     is_b_operator op;
-    is_b_expressao* exp2;
-} is_b_infix_expressao;
+    is_b_expression* exp2;
+} is_b_infix_expression;
 
 typedef struct _a18 {
-    is_expressao* exp1;
+    is_expression* exp1;
     is_comparator op;
-    is_expressao* exp2;
+    is_expression* exp2;
 } is_comparison;
 
 typedef struct _a19 {
-    is_b_expressao* exp;
-} is_b_not_expressao;
+    is_b_expression* exp;
+} is_b_not_expression;
 
 typedef struct _a27 {
-    tipo_return tipo;
+    type_return type;
     int codeline;
     union
     {   
-        is_expressao* exp;
-        is_b_expressao* b_exp;
-    } conteudo;
+        is_expression* exp;
+        is_b_expression* b_exp;
+    } content;
 } is_return;
 
 typedef struct _a2 {
-	is_tipo tipo;
-	char* nome;
-	struct is_argumento_list* arg_list;
-	struct is_statement_list* list;
+	is_type type;
+	char* name;
+	struct is_argument_list* arg_list;
+	struct is_statement_list* stt_list;
 	int codeline;
-} is_metodo;
+} is_method;
 
 typedef struct _a23 {
     is_statement_list* stt;
@@ -186,44 +180,44 @@ typedef struct _a23 {
 } is_else;
 
 typedef struct _a20 {
-    is_b_expressao* exp;
+    is_b_expression* exp;
     is_statement_list* stt;
     is_else* ifelse;
     int codeline;
 } is_if;
 
 typedef struct _a21 {
-    is_b_expressao* exp;
+    is_b_expression* exp;
     is_statement_list* stt;
     int codeline;
 } is_while;
 
 typedef struct _a22 {
     is_statement_list* attr;
-    is_b_expressao* b_exp;
-    is_expressao* exp;
+    is_b_expression* b_exp;
+    is_expression* exp;
     is_statement_list* stt;
     int codeline;
 } is_for;
 
 typedef struct _a24 {
-    tipo_func_arg tipo;
+    type_m_arg type;
     union {
-        is_expressao* exp;
-        is_b_expressao* b_exp;
-    } conteudo;
+        is_expression* exp;
+        is_b_expression* b_exp;
+    } content;
     int codeline;
-} is_func_arg;
+} is_method_arg;
 
 typedef struct _a25 {
-    is_func_arg* func_arg;
+    is_method_arg* m_arg;
     struct _a25* next;
-} is_func_arg_list;
+} is_method_arg_list;
 
 typedef struct _a26 {
-    char* nome;
-    is_func_arg_list* func_arg;
+    char* name;
+    is_method_arg_list* m_arg_list;
     int  codeline;
-} is_func_call;
+} is_method_call;
 
 #endif
