@@ -10,8 +10,12 @@
 					return NUM_INT;
 				}
 
-[0-9]+\.[0-9]+		{yylval.fnum=atof(yytext);
-						return NUM_FLOAT;}
+[0-9]+\.[0-9]+	{yylval.dnum=atof(yytext);
+				return NUM_DOUBLE;}
+
+\'.\'           {yylval.vchar=yytext[0];
+                    return VAL_CHAR;
+                }
 
 "class"			{// Recebe a declaração da classe
 					return CLASS;
@@ -53,6 +57,8 @@
 "false"         {return FALSE;}
 
 "return"        {return RETURN;}
+
+"[]"            {return ARRAY;}
 
 "System.out.print"  	{return PRINT;}
 "System.out.println"	{return PRINTLN;}

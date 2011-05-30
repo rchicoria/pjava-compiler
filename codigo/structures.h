@@ -6,7 +6,7 @@
 int line; //guarda a linha de cada instrucao
 int errors; //guarda o numero de erros detectados
 
-typedef enum {is_PLUS, is_MINUS, is_MULT, is_DIVIDE} is_operator;
+typedef enum {is_PLUS, is_MINUS, is_MULT, is_DIVIDE, is_MOD} is_operator;
 
 typedef enum {is_AND, is_OR, is_NOT} is_b_operator;
 
@@ -24,7 +24,7 @@ typedef enum {ret_expression, ret_b_expression, ret_void} type_return;
 
 typedef enum {attr_expression, attr_b_expression} type_attribution;
 
-typedef enum {exp_infix, exp_unary, exp_int, exp_float, exp_var, exp_m_call} type_expression;
+typedef enum {exp_infix, exp_unary, exp_int, exp_double, exp_char, exp_var, exp_m_call} type_expression;
 
 typedef enum {b_exp_bool, b_exp_comp, b_exp_infix, b_exp_not} type_b_expression;
 
@@ -53,7 +53,8 @@ typedef struct _a3 {
 		struct is_infix_expression* infix_exp;
 		struct is_unary_expression* unary_exp;
 		int num_int;
-		float num_float;
+		double num_double;
+		char val_char;
 		char* var;
 		struct is_method_call* m_call;
 	} content;

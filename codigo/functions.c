@@ -109,10 +109,10 @@ is_statement_list* insert_as_statement( is_attribution_list* attr )
 
 	aux1 = istl;
 
-	for(aux=attr; aux!=NULL; aux=aux->next){	//procura pelo final da lista
+	for(aux=attr; aux!=NULL; aux=aux->next){
 	    is_statement* is = (is_statement*) malloc( sizeof(is_statement) );
-	    is->type = stt_attribution;				//Coloca etiqueta a informar que �ma "atribuicao"
-	    is->content.attr = (struct is_attribution*) attr->attr;	//Guarda o conte�    
+	    is->type = stt_attribution;
+	    is->content.attr = (struct is_attribution*) attr->attr;
 	    aux1->stt=is;
 	    if(aux->next!=NULL){
 	        aux1->next = (is_statement_list*) malloc( sizeof(is_statement_list) );
@@ -361,19 +361,31 @@ is_expression* insert_INT(int line, int num_int )
 }
 
 /*
- *	cria uma is_expression a partir de um float num_float
+ *	cria uma is_expression a partir de um double num_double
  */
-is_expression* insert_FLOAT(int line, float num_float )
+is_expression* insert_DOUBLE(int line, double num_double )
 {
 	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
-	ie->type = exp_float;
-	ie->content.num_float = num_float;
+	ie->type = exp_double;
+	ie->content.num_double = num_double;
     ie->codeline = line;
 	return ie;
 }
 
 /*
- *	cria uma is_expression a partir de um float num_float
+ *	cria uma is_expression a partir de um char val_char
+ */
+is_expression* insert_CHAR(int line, char val_char )
+{
+	is_expression* ie = (is_expression*) malloc( sizeof(is_expression) );
+	ie->type = exp_char;
+	ie->content.val_char = val_char;
+    ie->codeline = line;
+	return ie;
+}
+
+/*
+ *	cria uma is_expression a partir de um char var
  */
 is_expression* insert_VAR(int line, char* var )
 {

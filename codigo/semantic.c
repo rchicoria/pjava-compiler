@@ -58,6 +58,13 @@ void semantic_analysis_method(prog_env *pe, is_method* im)
 	{
 		//cria uma nova entrada para a environment_list que corresponde ao ambiente do proprio metodo
 		pl=(environment_list*)malloc(sizeof(environment_list));
+		if(pe->procs==NULL)
+		    pe->procs=pl;
+	    else
+	    {
+		    for(aux=pe->procs; aux->next; aux=aux->next);
+		    aux->next=pl;
+	    }
 		//guarda o simbolo correspondente ao metodo verificando se a lista de simbolos esta ou nao vazia
 		te=pe->global;
 		if(te==NULL)
@@ -73,13 +80,6 @@ void semantic_analysis_method(prog_env *pe, is_method* im)
 		pl->locals=semantic_analysis_statement_list(pe, pl->locals, (is_statement_list *)(im->stt_list), im->type);
 	}
     //guarda o novo ambiente na environment_list verificando se esta se encontra ou nao vazia
-	if(pe->procs==NULL)
-		pe->procs=pl;
-	else
-	{
-		for(aux=pe->procs; aux->next; aux=aux->next);
-		aux->next=pl;
-	}
 }
 
 /*
@@ -100,7 +100,7 @@ void semantic_analysis_return(prog_env *pe, table_element* env, is_return* retur
     //se o tipo do return_val for uma expression mas o respectivo metodo retornar um boolean imprime o erro
     else if(return_val->type==ret_expression && type==is_BOOLEAN){
         //verifica o tipo da expression
-        is_type temp = check_expression_type(pe, env, return_val->content.exp);
+        is_type temp = semantic_analysis_expression(pe, env, return_val->content.exp);
         if(temp==-1)
             return;
         printf("line %d: error: method return type is boolean but found %s!\n", return_val->codeline, type_to_string(temp));
@@ -109,7 +109,7 @@ void semantic_analysis_return(prog_env *pe, table_element* env, is_return* retur
     //se o tipo do return_val for uma expression e o respectivo metodo nao retornar um boolean imprime o erro caso nao sejam do mesmo tipo
     else if(return_val->type==ret_expression && type!=is_BOOLEAN){
         //verifica o tipo da expression
-        is_type temp = check_expression_type(pe, env, return_val->content.exp);
+        is_type temp = semantic_analysis_expression(pe, env, return_val->content.exp);
         if(temp==-1)
             return;
         if(temp != type){
@@ -137,7 +137,16 @@ table_element* semantic_analysis_declaration(int scope, prog_env *pe, table_elem
 table_element* semantic_analysis_attribution_list(int scope, prog_env *pe, table_element* env, is_attribution_list* ial, is_type type)
 {
 	is_attribution_list* aux;
-	int offset=0;
+	table_element* aux1;
+	int offset;
+	if(env==NULL)
+	    offset=0;
+	else if(env->stype==is_ARGUMENT){
+	    for(aux1=env; aux1->next; aux1=aux1->next);
+	    offset=aux1->offset+1;
+	}
+	else
+	    offset=env->offset+1;
 	table_element* stmp=env;
 
 	for(aux=ial; aux; aux=aux->next)
@@ -155,7 +164,7 @@ table_element* semantic_analysis_attribution_dec(int offset, prog_env* pe, table
 	//se o tipo da is_attribution ia for uma is_expression e esta nao for nula
     if(ia->type == attr_expression && ia->content.exp != NULL){
         //verifica o tipo da expression e imprime o erro se forem diferentes
-        is_type temp = check_expression_type(pe,env,(is_expression*)ia->content.exp);
+        is_type temp = semantic_analysis_expression(pe,env,(is_expression*)ia->content.exp);
         if(temp==-1)
             return stmp;
         if(type!=temp){
@@ -191,10 +200,10 @@ table_element* semantic_analysis_attribution_dec(int offset, prog_env* pe, table
 	}
 	//nao havendo problemas adiciona a variavel à tabela de simbolos do metodo
 	if(stmp==NULL)
-		stmp=create_symbol(offset, ia->name, type,is_VAR);
+		env=create_symbol(offset, ia->name, type,is_VAR);
 	else {
-	    for(; stmp->next; stmp=stmp->next);
-		stmp->next=create_symbol(offset, ia->name, type,is_VAR);
+	    env=create_symbol(offset, ia->name, type,is_VAR);
+		env->next=stmp;
 	}
 	return env;
 }
@@ -223,7 +232,7 @@ void semantic_analysis_attribution(prog_env* pe, table_element* env, is_attribut
     //se o tipo da atribuicao for um expression
     if(ia->type==attr_expression){
         //verifica o tipo da is_expression e caso sejam de tipos diferentes imprime o erro
-        is_type temp = check_expression_type(pe, env, (is_expression*) ia->content.exp);
+        is_type temp = semantic_analysis_expression(pe, env, (is_expression*) ia->content.exp);
 	    if(temp==-1)
 	        return;
 	    if(aux->type!=temp){
@@ -251,9 +260,9 @@ table_element* semantic_analysis_argument_list(prog_env* pe, table_element* env,
 	is_argument_list* aux;
 	int offset=0;
 	table_element* stmp=env;
-    
-	for(aux=ial; aux; aux=aux->next)
+	for(aux=ial; aux; aux=aux->next){
 		stmp=semantic_analysis_argument(offset++, pe, stmp, aux->arg, method, line);
+	}
 	return stmp;
 }
 
@@ -332,93 +341,119 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
 /*
  *  faz a analise semantica de uma is_expression
  */
-void semantic_analysis_expression(prog_env* pe, table_element* env, is_expression* ie)
+is_type semantic_analysis_expression(prog_env* pe, table_element* env, is_expression* ie)
 {
 	switch(ie->type)
 	{
 		case exp_infix: 
-		    semantic_analysis_infix_exp(pe, env, (is_infix_expression*)(ie->content.infix_exp));
+		    return semantic_analysis_infix_exp(pe, env, (is_infix_expression*)(ie->content.infix_exp));
 		    break;
 		case exp_unary: 
-		    semantic_analysis_expression(pe,env, (is_expression*)((is_unary_expression*)ie->content.unary_exp)->exp);
+		    return semantic_analysis_expression(pe,env, (is_expression*)((is_unary_expression*)ie->content.unary_exp)->exp);
 		    break;
 		case exp_int: 
+		    return is_INT;
 		    break;
-		case exp_float: 
+		case exp_double: 
+		    return is_DOUBLE;
+		    break;
+		case exp_char:
+		    return is_CHAR; 
 		    break;
 		case exp_var: 
-		    semantic_analysis_var(pe, env, ie->content.var, ie->codeline);
+		    return semantic_analysis_var(pe, env, ie);
 		    break;
 		case exp_m_call: 
-		    semantic_analysis_method_call(pe, env, (is_method_call*)(ie->content.m_call));
+		    return semantic_analysis_method_call(pe, env, (is_method_call*)(ie->content.m_call));
 		    break;
 	}
+	return -1;
 }
 
 /*
  *  faz a analise semantica de uma is_infix_expression
  */
-void semantic_analysis_infix_exp(prog_env* pe, table_element* env, is_infix_expression* exp)
+is_type semantic_analysis_infix_exp(prog_env* pe, table_element* env, is_infix_expression* exp)
 {
-    semantic_analysis_expression(pe, env, exp->exp1);
-    semantic_analysis_expression(pe, env, exp->exp2);
+    is_type type1 = semantic_analysis_expression(pe, env, exp->exp1);
+    is_type type2 = semantic_analysis_expression(pe, env, exp->exp2);
+    
+    if(type1==-1 || type2==-1)
+        return -1;
+
+    if(type1==is_DOUBLE || type2==is_DOUBLE )
+        return is_DOUBLE;
+        
+     if(type1==is_INT || type2==is_INT )
+        return is_INT;
+
+    return is_CHAR;
 }
 
 /*
  *  faz a analise semantica de uma variavel. o int line corresponde à linha da expressao correspondente
  */
-void semantic_analysis_var(prog_env* pe, table_element* env, char* var, int line)
+is_type semantic_analysis_var(prog_env* pe, table_element* env, is_expression* exp)
 {
-    table_element* aux = (table_element*) malloc (sizeof(table_element));
-    //verifica se a variavel existe no ambiente do metodo, nao existindo verifica se ela existe no ambiente global. se nao imprime o erro
-    aux = lookup(env, var);
-    if(aux==0){
-        aux=lookup(pe->global, var);
-        if(aux==0 || aux->stype==is_METHOD){
-            printf("line %d: error: %s is not defined!\n", line, var);
+    table_element *aux;
+    
+	aux=lookup(env, exp->content.var);
+	if(aux==0){
+	    aux=lookup(pe->global, exp->content.var);
+		if(aux==0 || aux->stype==is_METHOD){
+		    printf("line %d: error: %s is not defined!\n", exp->codeline, exp->content.var);
             errors++;
-            return;
+            return -1;
+        }
+	    else if(aux!=0 && aux->stype!=is_METHOD){
+	        return aux->type;
         }
     }
+    
+    return aux->type;
 }
 
 /*
  *  faz a analise semantica de uma b_expression
  */
-void semantic_analysis_b_expression(prog_env* pe, table_element* env, is_b_expression* ibe)
+int semantic_analysis_b_expression(prog_env* pe, table_element* env, is_b_expression* ibe)
 {
     switch(ibe->type)
 	{
 		case b_exp_infix: 
-		    semantic_analysis_b_infix_exp(pe, env, (is_b_infix_expression*)(ibe->content.infix_b_exp));
-		    break;
+		    return semantic_analysis_b_infix_exp(pe, env, (is_b_infix_expression*)(ibe->content.infix_b_exp));
 		case b_exp_not: 
-		    semantic_analysis_b_expression(pe, env, (is_b_expression*)((is_b_not_expression*)ibe->content.not_b_exp)->exp);
-		    break;
+		    return semantic_analysis_b_expression(pe, env, (is_b_expression*)((is_b_not_expression*)ibe->content.not_b_exp)->exp);
 		case b_exp_bool:
-		    break;
+		    return 0;
 		case b_exp_comp: 
-		    semantic_analysis_comparison(pe, env, (is_comparison*)(ibe->content.comp));
-		    break;
+		    return semantic_analysis_comparison(pe, env, (is_comparison*)(ibe->content.comp));
 	}
+	return -1;
 }
 
 /*
  *  faz a analise semantica de uma b_infix_expression
  */
-void semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_infix_expression* ibe)
+int semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_infix_expression* ibe)
 {
-    semantic_analysis_b_expression(pe, env, ibe->exp1);
-    semantic_analysis_b_expression(pe, env, ibe->exp2);
+    int a = semantic_analysis_b_expression(pe, env, ibe->exp1);
+    int b = semantic_analysis_b_expression(pe, env, ibe->exp2);
+    if(a == -1 || b == -1)
+        return -1;
+    return 0;
 }
 
 /*
  *  faz a analise semantica de uma comparison
  */
-void semantic_analysis_comparison(prog_env* pe, table_element* env, is_comparison* comp)
+int semantic_analysis_comparison(prog_env* pe, table_element* env, is_comparison* comp)
 {
-    semantic_analysis_expression(pe, env, comp->exp1);
-    semantic_analysis_expression(pe, env, comp->exp2);
+    is_type a = semantic_analysis_expression(pe, env, comp->exp1);
+    is_type b = semantic_analysis_expression(pe, env, comp->exp2);
+    if(a == -1 || b == -1)
+        return -1;
+    return 0;
 }
 
 /*
@@ -437,11 +472,20 @@ void semantic_analysis_print(prog_env* pe, table_element* env, is_print* ip)
  */
 void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii, is_type type)
 {
-    table_element* aux;
+    environment_list* aux;
     semantic_analysis_b_expression(pe, env, (is_b_expression*)(ii->exp));
-    for(aux=env; aux->next; aux=aux->next);
-	semantic_analysis_statement_list(pe, env, ii->stt, type);
-	aux->next=NULL;
+	//cria uma nova entrada para a environment_list que corresponde ao ambiente do if
+	environment_list* pl=(environment_list*)malloc(sizeof(environment_list));
+	if(pe->procs==NULL)
+		pe->procs=pl;
+	else
+	{
+		for(aux=pe->procs; aux->next; aux=aux->next);
+		aux->next=pl;
+	}
+	pl->name=(char*)strdup("if");	
+	//faz a analise semantica dos arguments e statements do if
+	pl->locals = semantic_analysis_statement_list(pe, env, ii->stt, type);
 	if(ii->ifelse)
 	    semantic_analysis_else(pe, env, ii->ifelse, type);
 }
@@ -451,7 +495,20 @@ void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii, is_type t
  */
 void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_type type)
 {
-	semantic_analysis_statement_list(pe, env, iiel->stt, type);
+	environment_list* aux;
+	//cria uma nova entrada para a environment_list que corresponde ao ambiente do else
+	environment_list* pl=(environment_list*)malloc(sizeof(environment_list));
+	//guarda o novo ambiente na environment_list verificando se esta se encontra ou nao vazia
+	if(pe->procs==NULL)
+		pe->procs=pl;
+	else
+	{
+		for(aux=pe->procs; aux->next; aux=aux->next);
+		aux->next=pl;
+	}
+	pl->name=(char*)strdup("else");	
+	//faz a analise semantica dos arguments e statements do else
+	pl->locals=semantic_analysis_statement_list(pe, env, iiel->stt, type);
 }
 
 /*
@@ -459,10 +516,20 @@ void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_
  */
 void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw, is_type type)
 {
-	table_element* aux;
-    for(aux=env; aux->next; aux=aux->next);
+	environment_list* aux;
+    //cria uma nova entrada para a environment_list que corresponde ao ambiente do while
+	environment_list* pl=(environment_list*)malloc(sizeof(environment_list));
+	//guarda o novo ambiente na environment_list verificando se esta se encontra ou nao vazia
+	if(pe->procs==NULL)
+		pe->procs=pl;
+	else
+	{
+		for(aux=pe->procs; aux->next; aux=aux->next);
+		aux->next=pl;
+	}
+	pl->name=(char*)strdup("while");	
     semantic_analysis_b_expression(pe, env, (is_b_expression*)(iw->exp));
-	semantic_analysis_statement_list(pe, env, iw->stt, type);
+	pl->locals=semantic_analysis_statement_list(pe, env, iw->stt, type);
 	aux->next=NULL;
 }
 
@@ -471,33 +538,45 @@ void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw, is_
  */
 void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf, is_type type)
 {
-	table_element* aux;
-    for(aux=env; aux->next; aux=aux->next);
-	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->attr), type);
-	semantic_analysis_expression(pe, env, (is_expression*)(isf->exp));
+	environment_list* aux;
+    //cria uma nova entrada para a environment_list que corresponde ao ambiente do for
+	environment_list* pl=(environment_list*)malloc(sizeof(environment_list));
+	//guarda o novo ambiente na environment_list verificando se esta se encontra ou nao vazia
+	if(pe->procs==NULL)
+		pe->procs=pl;
+	else
+	{
+		for(aux=pe->procs; aux->next; aux=aux->next);
+		aux->next=pl;
+	}
+	pl->name=(char*)strdup("for");	
+	//faz a analise semantica dos arguments e statements do for
+	pl->locals=semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->attr), type);
 	semantic_analysis_b_expression(pe, env, (is_b_expression*)(isf->b_exp));
-	semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->stt), type);
-	aux->next=NULL;
+	semantic_analysis_expression(pe, env, (is_expression*)(isf->exp));
+	pl->locals=semantic_analysis_statement_list(pe, pl->locals, (is_statement_list*)(isf->stt), type);
 }
 
 /*
  *  faz a analise semantica de um method_call
  */
-void semantic_analysis_method_call(prog_env* pe, table_element* env, is_method_call* imc)
+is_type semantic_analysis_method_call(prog_env* pe, table_element* env, is_method_call* imc)
 {
     table_element* aux = lookup(pe->global, imc->name);
     if(aux==0 || aux->stype != is_METHOD){
         printf("line %d: error: %s is not defined!\n", imc->codeline, imc->name);
         errors++;
-        return;
+        return -1;
     }
-    semantic_analysis_method_arg_list(pe, env, imc->m_arg_list, imc->name, imc->codeline);
+    if(semantic_analysis_method_arg_list(pe, env, imc->m_arg_list, imc->name, imc->codeline)==-1)
+        return -1;
+    return aux->type;
 }
 
 /*
  *  faz a analise semantica de uma lista de argumentos de um metodo. o char name corresponde ao nome do metodo e o int line corresponde à linha da chamada do metodo
  */
-void semantic_analysis_method_arg_list(prog_env* pe, table_element* env, is_method_arg_list* imal, char* name, int line)
+int semantic_analysis_method_arg_list(prog_env* pe, table_element* env, is_method_arg_list* imal, char* name, int line)
 {
     is_method_arg_list* aux = (is_method_arg_list*) malloc (sizeof(is_method_arg_list));
     //procura o ambiente do metodo respectivo
@@ -508,11 +587,14 @@ void semantic_analysis_method_arg_list(prog_env* pe, table_element* env, is_meth
     for(aux=imal; aux; aux=aux->next)
     {
         //vai-se contabilizando o numero de argumentos colocados na chamada do metodo
-        if(aux2==NULL || aux2->stype!=is_ARGUMENT){
+        if(aux2->stype!=is_ARGUMENT)
+            continue;
+        if(aux2==NULL){
             err_count_sup++;
             continue;
         }
-        semantic_analysis_method_arg(pe, env, aux->m_arg, aux2, count);
+        if(semantic_analysis_method_arg(pe, env, aux->m_arg, aux2, count)==-1)
+            return -1;
         //avança-se tambem nos argumentos da declaracao do metodo
         aux2=aux2->next;
         count++;
@@ -526,11 +608,14 @@ void semantic_analysis_method_arg_list(prog_env* pe, table_element* env, is_meth
     if(err_count_sup!=0){
         printf("line %d: error: expected %d arguments but found %d!\n", line, count-1, count+err_count_sup-1);
         errors++;
+        return -1;
     }
     else if(err_count_inf!=0){
         printf("line %d: error: expected %d arguments but found %d!\n", line, count+err_count_inf-1, count-1);
         errors++;
+        return -1;
     }
+    return -1;
 }
 
 /*
@@ -548,28 +633,32 @@ table_element* search_method(prog_env* pe, char* name)
 /*
  *  faz a analise semantica do argumento de uma chamada de metodo, verificando se o tipo do argumento corresponde
  */
-void semantic_analysis_method_arg(prog_env* pe, table_element* env, is_method_arg* ima, table_element* arg, int arg_num)
+int semantic_analysis_method_arg(prog_env* pe, table_element* env, is_method_arg* ima, table_element* arg, int arg_num)
 {
     is_type temp;
     switch(ima->type)
     {
         case arg_expression: 
-            temp = check_expression_type(pe, env, ima->content.exp);
+            temp = semantic_analysis_expression(pe, env, ima->content.exp);
             if(temp==-1)
-                return;
+                return -1;
             if(arg->type!=temp){
                 printf("line %d: error: (argument %d) expected %s but found %s!\n", ima->codeline, arg_num, type_to_string(arg->type), type_to_string(temp));
                 errors++;
+                return -1;
             }
             break;
         case arg_b_expression: 
-            semantic_analysis_b_expression(pe, env, ima->content.b_exp);
+            if(semantic_analysis_b_expression(pe, env, ima->content.b_exp) == -1)
+                return -1;
             if(arg->type != is_BOOLEAN){
                 printf("line %d: error: (argument %d) expected %s but found %s!\n", ima->codeline, arg_num, type_to_string(arg->type), "boolean");
                 errors++;
+                return -1;
             }
             break;
     }
+    return -1;
 }
 
 /*
@@ -627,69 +716,4 @@ table_element *lookup(table_element* table, char *str)
 			return aux;
 
 	return 0;
-}
-
-/*
- *  devolve o tipo de uma expressao
- */
-is_type check_expression_type(prog_env* pe, table_element* env, is_expression* exp)
-{
-    switch(exp->type)
-    {
-        case exp_infix:     return check_infix_exp_type(pe, env, (is_infix_expression*)exp->content.infix_exp, line);
-        case exp_unary:     return check_expression_type(pe,env, (is_expression*)((is_unary_expression*)exp->content.unary_exp)->exp);
-        case exp_int:       return is_INT;
-        case exp_float:     return is_FLOAT;
-        case exp_var:       return check_var_type(pe, env, exp);
-        case exp_m_call:    return check_method_call_type(pe, env, (is_method_call*)(exp->content.m_call));
-    }
-    return 0;
-}
-
-/*
- *  devolve o tipo de um metodo atraves da sua chamada
- */
-is_type check_method_call_type(prog_env* pe, table_element* env, is_method_call* mc){
-    table_element* te = lookup(pe->global, mc->name);
-    return te->type;
-}
-
-/*
- *  devolve o tipo de uma infix_expression
- */
-is_type check_infix_exp_type(prog_env* pe, table_element* env, is_infix_expression* exp, int line)
-{
-    is_type type1 = check_expression_type(pe, env, exp->exp1);
-    is_type type2 = check_expression_type(pe, env, exp->exp2); 
-    
-    if(type1==-1 || type2==-1)
-        return -1;
-    
-    if(type1==is_FLOAT || type2==is_FLOAT )
-        return is_FLOAT;
-
-    return is_INT;
-}
-
-/*
- *  devolve o tipo de uma var
- */
-is_type check_var_type(prog_env* pe, table_element* env, is_expression* exp)
-{
-    table_element *aux;
-    
-	aux=lookup(env, exp->content.var);
-	if(aux==0){
-	    aux=lookup(pe->global, exp->content.var);
-		if(aux==0 || aux->stype==is_METHOD){
-		    printf("line %d: error: %s is not defined!\n", exp->codeline, exp->content.var);
-            errors++;
-            return -1;
-        }
-	    else if(aux!=0 && aux->stype!=is_METHOD){
-	        return aux->type;
-        }
-    }
-    
-    return aux->type;
 }

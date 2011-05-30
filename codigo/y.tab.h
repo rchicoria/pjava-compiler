@@ -68,11 +68,13 @@
      AND = 284,
      OR = 285,
      RETURN = 286,
-     VAR = 287,
-     NUM_INT = 288,
-     NUM_FLOAT = 289,
-     UMINUS = 290,
-     IFX = 291
+     ARRAY = 287,
+     VAR = 288,
+     NUM_INT = 289,
+     NUM_DOUBLE = 290,
+     VAL_CHAR = 291,
+     UMINUS = 292,
+     IFX = 293
    };
 #endif
 /* Tokens.  */
@@ -105,11 +107,13 @@
 #define AND 284
 #define OR 285
 #define RETURN 286
-#define VAR 287
-#define NUM_INT 288
-#define NUM_FLOAT 289
-#define UMINUS 290
-#define IFX 291
+#define ARRAY 287
+#define VAR 288
+#define NUM_INT 289
+#define NUM_DOUBLE 290
+#define VAL_CHAR 291
+#define UMINUS 292
+#define IFX 293
 
 
 
@@ -119,7 +123,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 16 "pjava.y"
+#line 17 "pjava.y"
 
 	is_static_list* isl;
 	is_attribution_list* ial;
@@ -138,7 +142,8 @@ typedef union YYSTYPE
 	is_b_expression* ibe;
 	is_while* iw;
 	int inum;
-	float fnum;
+	double dnum;
+	char vchar;
 	char* var;
 	is_if* ii;
 	is_else* iiel;
@@ -150,7 +155,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 154 "y.tab.h"
+#line 159 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

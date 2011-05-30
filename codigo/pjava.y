@@ -8,6 +8,7 @@
 #include <string.h>
 
 void show_table(table_element* table);
+void show_environments();
 
 is_static_list* isl;
 prog_env* prog_environment;
@@ -31,7 +32,8 @@ prog_env* prog_environment;
 	is_b_expression* ibe;
 	is_while* iw;
 	int inum;
-	float fnum;
+	double dnum;
+	char vchar;
 	char* var;
 	is_if* ii;
 	is_else* iiel;
@@ -70,10 +72,12 @@ prog_env* prog_environment;
 %token AND
 %token OR
 %token RETURN
+%token ARRAY
 
 %token<var>VAR
 %token<inum>NUM_INT
-%token<fnum>NUM_FLOAT
+%token<dnum>NUM_DOUBLE
+%token<vchar>VAL_CHAR
 %type<isl>statics
 %type<isl>static
 %type<ia>attribution
@@ -99,7 +103,7 @@ prog_env* prog_environment;
 %type<imal>method_arg
 %type<ir>return_val
 
-%left '+' '-' '*' '/' AND OR
+%left '+' '-' '*' '/' '%' AND OR
 %nonassoc UMINUS
 %nonassoc IFX
 %nonassoc ELSE
@@ -121,10 +125,10 @@ declaration: type attributions ';'  {$$=insert_declaration(line, $2,$1);}
         
 attributions:   attributions ',' attribution        {$$=insert_attribution_list($1, $3);}
         |       attribution                         {$$=insert_attribution_list(NULL, $1);}
+        |       VAR                                 {$$=insert_attribution_list(NULL, insert_attribution_exp(line, $1, NULL));}
         ;
 
-attribution:	VAR                                 {$$=insert_attribution_exp(line, $1, NULL);}
-        |       VAR '=' expression                  {$$=insert_attribution_exp(line, $1, $3);}
+attribution:	VAR '=' expression                  {$$=insert_attribution_exp(line, $1, $3);}
         |       VAR '=' b_expression                {$$=insert_attribution_b_exp(line, $1, $3);}
 		;
 
@@ -146,13 +150,19 @@ args:		args ',' arg    {$$=insert_argument_list($1, $3);}
 arg:        type VAR        {$$=insert_argument($1, $2);}
         ;
 
-type:		INT		{$$=is_INT;}
-		|	STRING	{$$=is_STRING;}
-		|	VOID	{$$=is_VOID;}
-		|	FLOAT	{$$=is_FLOAT;}
-		|	DOUBLE	{$$=is_DOUBLE;}
-		|	CHAR	{$$=is_CHAR;}
-		|   BOOLEAN {$$=is_BOOLEAN;}
+type:		INT		        {$$=is_INT;}
+		|	STRING	        {$$=is_STRING;}
+		|	VOID	        {$$=is_VOID;}
+		|	FLOAT	        {$$=is_FLOAT;}
+		|	DOUBLE	        {$$=is_DOUBLE;}
+		|	CHAR	        {$$=is_CHAR;}
+		|   BOOLEAN         {$$=is_BOOLEAN;}
+		|	INT	ARRAY	    {$$=is_INT;}
+		|	STRING ARRAY	{$$=is_STRING;}
+		|	FLOAT ARRAY	    {$$=is_FLOAT;}
+		|	DOUBLE ARRAY	{$$=is_DOUBLE;}
+		|	CHAR ARRAY	    {$$=is_CHAR;}
+		|   BOOLEAN ARRAY   {$$=is_BOOLEAN;}
 		;
 
 statements: statements statement    {insert_statement_list($1,$2);}
@@ -165,7 +175,7 @@ statement:	declaration         {$$=insert_d_statement($1);}
         |   if                  {$$=insert_i_statement($1);}
         |   while               {$$=insert_w_statement($1);}
         |   for                 {$$=insert_f_statement($1);}
-        |   method_call ';'       {$$=insert_mc_statement($1);}
+        |   method_call ';'     {$$=insert_mc_statement($1);}
         |   return_val          {$$=insert_r_statement($1);}
         ;
 
@@ -178,7 +188,8 @@ expression:	infix_expression	{$$=insert_i_expression(line, $1);}
 		|	unary_expression	{$$=insert_u_expression(line, $1);}
 		|	NUM_INT				{$$=insert_INT(line, $1);}
 		|   VAR                 {$$=insert_VAR(line, $1);}
-		|   NUM_FLOAT           {$$=insert_FLOAT(line, $1);}
+		|   NUM_DOUBLE          {$$=insert_DOUBLE(line, $1);}
+		|   VAL_CHAR            {$$=insert_CHAR(line,$1);}
 		|   method_call         {$$=insert_mc_expression(line, $1);}
 		;
 
@@ -186,6 +197,7 @@ infix_expression:	expression '+' expression	{$$=insert_infix_expression($1, is_P
 		|			expression '-' expression	{$$=insert_infix_expression($1, is_MINUS, $3);}
 		|			expression '*' expression	{$$=insert_infix_expression($1, is_MULT, $3);}
 		|			expression '/' expression	{$$=insert_infix_expression($1, is_DIVIDE, $3);}
+		|			expression '%' expression	{$$=insert_infix_expression($1, is_MOD, $3);}
 		|			expression '+''+'			{$$=insert_infix_expression($1, is_PLUS, insert_INT(line, 1));}
 		|			expression '-''-'			{$$=insert_infix_expression($1, is_MINUS, insert_INT(line, 1));}
 		;
@@ -245,14 +257,15 @@ int main()
 	errors = 0;
 	int parsing = yyparse();
 
-	if(!parsing)
+	if(!parsing){
 		prog_environment=semantic_analysis(isl);
-	if(errors)
-		printf("This program could not compile because there are %d errors.\n", errors);
-	else
-	{
-	    show_program(isl);	//mostra a árvore que acabou de ser construida
-	    show_table(prog_environment->global);
+	    if(errors)
+		    printf("This program could not compile because there are %d errors.\n", errors);
+	    else
+	    {
+	        show_program(isl);	//mostra a árvore que acabou de ser construida
+	        show_environments();
+	    }
 	}
     return 0;
 }
@@ -266,19 +279,21 @@ int yyerror(char* s)
 void show_table(table_element* table)
 {
 	table_element *aux;
-	printf("\n");
-	environment_list* aux1 = (environment_list*) malloc(sizeof(environment_list));
-	aux1=prog_environment->procs;
-	for(aux=table; aux; aux=aux->next){
-		printf("symbol %s, type %s %s", aux->name, type_to_string(aux->type), sym_type_to_string(aux->stype)); 
-		if(aux->stype==is_METHOD){
-		    printf(":\n---------");
-		    show_table(aux1->locals);
-		    aux1=aux1->next;
-		    printf("---------\n");
-		}
-		else
-		    printf("\n");
-	}
+	for(aux=table; aux; aux=aux->next)
+		printf("symbol %s, type %s %s (offset %d)\n", aux->name, type_to_string(aux->type), sym_type_to_string(aux->stype), aux->offset); 
+}
+
+void show_environments(){
+    environment_list* aux1;
+    printf("global\n");
+    printf("------------\n");
+    show_table(prog_environment->global);
+    printf("------------\n");
+    for(aux1 = prog_environment->procs; aux1; aux1=aux1->next){
+        printf("%s\n",aux1->name);
+        printf("------------\n");
+        show_table(aux1->locals);
+        printf("------------\n");
+    }
 }
 

@@ -102,8 +102,11 @@ void show_expression(is_expression* ie)
 	    case exp_int:	
 	        printf("INT(%d)", ie->content.num_int);
 		    break;
-	    case exp_float:	
-	        printf("FLOAT(%f)", ie->content.num_float);
+	    case exp_double:	
+	        printf("DOUBLE(%f)", ie->content.num_double);
+		    break;
+		case exp_char:	
+	        printf("CHAR(%c)", ie->content.val_char);
 		    break;
 	    case exp_var:	
 	        printf("VAR(%s)", ie->content.var);
@@ -138,6 +141,8 @@ void show_operator(is_operator op)
 		printf("-");
 	else if(op==is_MULT)
 		printf("*");
+	else if(op==is_MOD)
+		printf("%c",'%');
 	else
 		printf("/");
 }
