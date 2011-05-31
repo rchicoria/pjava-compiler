@@ -4,7 +4,8 @@ class test3
 	static int b = 1;
 	static String texto;
 	
-	public static double func(int a, double b, boolean c) {
+	public static char func(int a, double b, boolean c) {
+	    return 'a';
 	}
 
 	public static int main(String [] args) {

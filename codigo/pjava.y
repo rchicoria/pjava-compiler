@@ -6,6 +6,7 @@
 #include "symbol_table.h"
 #include "semantic.h"
 #include <string.h>
+#include "translate.h"
 
 void show_table(table_element* table);
 void show_environments();
@@ -251,7 +252,7 @@ method_arg: method_arg ',' expression {$$=insert_method_arg_list($1, insert_meth
     ;
 
 %%
-int main()
+int main(int argc, char **argv)
 {
 	line = 1;
 	errors = 0;
@@ -263,6 +264,7 @@ int main()
 		    printf("This program could not compile because there are %d errors.\n", errors);
 	    else
 	    {
+	        translate(isl, prog_environment);
 	        show_program(isl);	//mostra a árvore que acabou de ser construida
 	        show_environments();
 	    }
