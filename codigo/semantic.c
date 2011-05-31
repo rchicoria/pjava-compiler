@@ -4,8 +4,6 @@
 #include <string.h>
 #include <stdio.h>
 
-enum {LOCALSCOPE, GLOBALSCOPE};
-
 int global_offset=0;
 
 /*

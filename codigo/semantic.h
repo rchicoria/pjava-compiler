@@ -1,6 +1,8 @@
 #include "structures.h"
 #include "symbol_table.h"
 
+enum {LOCALSCOPE, GLOBALSCOPE};
+
 prog_env* semantic_analysis(is_static_list* isl);
 void semantic_analysis_static(prog_env *pe, is_static* is);
 void semantic_analysis_method(prog_env *pe, is_method* im);
