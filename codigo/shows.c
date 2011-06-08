@@ -24,15 +24,18 @@ void show_static(is_static* is)
 							printf(")");
 							break;
 		case stat_declaration:	printf("declaration(");
-							        show_declaration((is_declaration*)is->content.dec);
-							        printf(")");
-							        break;
+						        show_declaration((is_declaration*)is->content.dec);
+						        printf(")");
+						        break;
 	}
 }
 
 void show_attribution(is_attribution* ia)
 {
-	printf("%s = ", ia->name);
+	if(ia->op != '=')
+	    printf("%s %c= ", ia->name,  ia->op);
+	else
+	    printf("%s = ", ia->name);
 	
 	if (ia->content.exp == NULL && ia->content.b_exp == NULL)
 		printf("NULL");
@@ -108,29 +111,43 @@ void show_expression(is_expression* ie)
 		case exp_char:	
 	        printf("CHAR(%c)", ie->content.val_char);
 		    break;
-	    case exp_var:	
-	        printf("VAR(%s)", ie->content.var);
-	        break;
-        case exp_m_call:  
-            printf("method_call("); 
-            show_method_call((is_method_call*)ie->content.m_call); 
-            printf(")\n");
-            break;
 	}
 }
 
 void show_infix_expression(is_infix_expression* iie)
 {
-	show_expression(iie->exp1);
+	show_s_expression(iie->exp1);
 	printf(", ");
 	show_operator(iie->op);
 	printf(", ");
-	show_expression(iie->exp2);
+	show_s_expression(iie->exp2);
+}
+
+void show_s_expression(is_s_expression* ise)
+{
+    switch(ise->type){
+        case s_exp_exp: show_expression((is_expression*)ise->content.exp);
+                        break;
+        case s_exp_var: printf("VAR(%s)",ise->content.var);
+                        break;
+        case s_exp_m_call:  
+            printf("method_call("); 
+            show_method_call((is_method_call*)ise->content.m_call); 
+            printf(")\n");
+            break;
+        case s_exp_inc:
+            printf("inc(");
+            show_increment((is_increment*) ise->content.inc);
+            printf(")\n");
+            break;
+    }
 }
 
 void show_unary_expression(is_unary_expression* iue)
 {
-	show_expression(iue->exp);
+	if(iue->type == u_exp_neg)
+	    printf("-");
+	show_s_expression(iue->exp);
 }
 
 void show_operator(is_operator op)
@@ -199,12 +216,17 @@ void show_statement(is_statement* stt)
 		case stt_return:        printf("return("); 
 		                        show_return((is_return*)stt->content._return); 
 		                        printf(")\n");break;
+		case stt_inc:
+            printf("inc(");
+            show_increment((is_increment*) stt->content.inc);
+            printf(")\n");
+            break;
 	}
 }
 
 void show_print(is_print* print)
 {
-    show_expression((is_expression*)print->content.exp);
+    show_s_expression((is_s_expression*)print->content.exp);
 }
 
 void show_declaration(is_declaration* id)
@@ -258,6 +280,19 @@ void show_b_expression(is_b_expression* ibe)
                 printf("False"); 
             printf(")");
             break;
+        case b_exp_var:	
+	        printf("VAR(%s)", ibe->content.var);
+	        break;
+        case b_exp_m_call:  
+            printf("method_call("); 
+            show_method_call((is_method_call*)ibe->content.m_call); 
+            printf(")\n");
+            break;
+        case b_exp_inc:
+            printf("inc(");
+            show_increment((is_increment*) ibe->content.inc);
+            printf(")\n");
+            break;
 	}
 }
 
@@ -295,11 +330,11 @@ void show_comparator(is_comparator op)
 
 void show_comparison(is_comparison* ic)
 {
-	show_expression(ic->exp1);
+	show_s_expression(ic->exp1);
 	printf(", ");
 	show_comparator(ic->op);
 	printf(", ");
-	show_expression(ic->exp2);
+	show_s_expression(ic->exp2);
 }
 
 void show_b_operator(is_b_operator op)
@@ -358,7 +393,7 @@ void show_for(is_for* isf)
 	
 	is_statement_list* aux;
 	
-	printf("dec_and_attr(");
+	printf("first_camp(");
 	for(aux=(is_statement_list*)(isf->attr); aux!=NULL; aux=aux->next)
 	{
 		show_statement(aux->stt);
@@ -369,8 +404,11 @@ void show_for(is_for* isf)
 	show_b_expression(isf->b_exp);
 	printf(")\n");
 	
-	printf("expression(");
-	show_expression(isf->exp);
+	printf("last_camp(");
+	for(aux=(is_statement_list*)(isf->last); aux!=NULL; aux=aux->next)
+	{
+		show_statement(aux->stt);
+	}
 	printf(")\n");
 	
 	is_statement_list* aux1;
@@ -407,4 +445,8 @@ void show_method_arg(is_method_arg* ima)
 		    printf(")");
 		    break;
 	}
+}
+void show_increment(is_increment* iinc)
+{
+    printf("VAR(%s)%c%c",iinc->var, iinc->op, iinc->op);
 }

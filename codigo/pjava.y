@@ -23,6 +23,7 @@ prog_env* prog_environment;
 	is_type it;
 	is_expression_list* iel;
 	is_expression* ie;
+	is_s_expression* ise;
 	is_infix_expression* iie;
 	is_unary_expression* iue;
 	is_argument* iar;
@@ -42,6 +43,7 @@ prog_env* prog_environment;
 	is_method_call* imc;
 	is_method_arg_list* imal;
 	is_return* ir;
+	is_increment* iinc;
 }
 
 %token CLASS
@@ -74,6 +76,8 @@ prog_env* prog_environment;
 %token OR
 %token RETURN
 %token ARRAY
+%token INC
+%token DEC
 
 %token<var>VAR
 %token<inum>NUM_INT
@@ -89,6 +93,7 @@ prog_env* prog_environment;
 %type<ie>expression
 %type<iie>infix_expression
 %type<iue>unary_expression
+%type<ise>simple_expression
 %type<iar>arg
 %type<iarl>args
 %type<ip>print
@@ -103,11 +108,16 @@ prog_env* prog_environment;
 %type<imc>method_call
 %type<imal>method_arg
 %type<ir>return_val
+%type<iinc>increment
+%type<istl>for_last_camp
 
 %left '+' '-' '*' '/' '%' AND OR
 %nonassoc UMINUS
 %nonassoc IFX
 %nonassoc ELSE
+%nonassoc SIMPLE
+%nonassoc INC
+%nonassoc DEC
 %%
 
 initclass:	CLASS VAR '{' statics '}'
@@ -126,11 +136,19 @@ declaration: type attributions ';'  {$$=insert_declaration(line, $2,$1);}
         
 attributions:   attributions ',' attribution        {$$=insert_attribution_list($1, $3);}
         |       attribution                         {$$=insert_attribution_list(NULL, $1);}
-        |       VAR                                 {$$=insert_attribution_list(NULL, insert_attribution_exp(line, $1, NULL));}
+        |       VAR                                 {$$=insert_attribution_list(NULL, insert_attribution_exp(line, $1, NULL, '='));}
         ;
 
-attribution:	VAR '=' expression                  {$$=insert_attribution_exp(line, $1, $3);}
-        |       VAR '=' b_expression                {$$=insert_attribution_b_exp(line, $1, $3);}
+attribution:	VAR '=' expression                     {$$=insert_attribution_exp(line, $1, $3, '=');}
+        |       VAR '=' b_expression                   {$$=insert_attribution_b_exp(line, $1, $3, '=');}
+        |       VAR '+''=' expression                  {$$=insert_attribution_exp(line, $1, $4, '+');}
+        |       VAR '+''=' b_expression                {$$=insert_attribution_b_exp(line, $1, $4, '+');}
+        |       VAR '-''=' expression                  {$$=insert_attribution_exp(line, $1, $4, '-');}
+        |       VAR '-''=' b_expression                {$$=insert_attribution_b_exp(line, $1, $4, '-');}
+        |       VAR '/''=' expression                  {$$=insert_attribution_exp(line, $1, $4, '/');}
+        |       VAR '/''=' b_expression                {$$=insert_attribution_b_exp(line, $1, $4, '/');}
+        |       VAR '*''=' expression                  {$$=insert_attribution_exp(line, $1, $4, '*');}
+        |       VAR '*''=' b_expression                {$$=insert_attribution_b_exp(line, $1, $4, '*');}
 		;
 
 method:		STATIC type VAR '(' args ')' '{' statements '}'	{$$=insert_method(line, $2, $3, $5, $8);}
@@ -172,51 +190,62 @@ statements: statements statement    {insert_statement_list($1,$2);}
 
 statement:	declaration         {$$=insert_d_statement($1);}
         |   attribution ';'     {$$=insert_a_statement($1);}
-        |   print               {$$=insert_p_statement($1);}
+        |   print ';'           {$$=insert_p_statement($1);}
         |   if                  {$$=insert_i_statement($1);}
         |   while               {$$=insert_w_statement($1);}
         |   for                 {$$=insert_f_statement($1);}
         |   method_call ';'     {$$=insert_mc_statement($1);}
         |   return_val          {$$=insert_r_statement($1);}
+        |   increment ';'       {$$=insert_inc_statement($1);}
         ;
 
 
-print:      PRINT '(' expression ')' ';'    {$$=insert_print(line, $3, '\0');}
-		|	PRINTLN '(' expression ')' ';'	{$$=insert_print(line, $3, '\n');}
+print:      PRINT '(' simple_expression ')'             {$$=insert_print(line, $3, '\0');}
+		|	PRINTLN '(' simple_expression ')'    	    {$$=insert_print(line, $3, '\n');}
         ;     
 
 expression:	infix_expression	{$$=insert_i_expression(line, $1);}
 		|	unary_expression	{$$=insert_u_expression(line, $1);}
 		|	NUM_INT				{$$=insert_INT(line, $1);}
-		|   VAR                 {$$=insert_VAR(line, $1);}
 		|   NUM_DOUBLE          {$$=insert_DOUBLE(line, $1);}
 		|   VAL_CHAR            {$$=insert_CHAR(line,$1);}
-		|   method_call         {$$=insert_mc_expression(line, $1);}
+		;
+		
+simple_expression:  expression  {$$=insert_s_expression_exp($1);}
+        |           VAR         {$$=insert_s_expression_var($1);}
+        |           method_call {$$=insert_s_expression_mc($1);}
+        |           increment   {$$=insert_s_expression_inc($1);}
+        ;
+
+infix_expression:	simple_expression '+' simple_expression	{$$=insert_infix_expression($1, is_PLUS, $3);}
+		|			simple_expression '-' simple_expression	{$$=insert_infix_expression($1, is_MINUS, $3);}
+		|			simple_expression '*' simple_expression	{$$=insert_infix_expression($1, is_MULT, $3);}
+		|			simple_expression '/' simple_expression	{$$=insert_infix_expression($1, is_DIVIDE, $3);}
+		|			simple_expression '%' simple_expression	{$$=insert_infix_expression($1, is_MOD, $3);}
 		;
 
-infix_expression:	expression '+' expression	{$$=insert_infix_expression($1, is_PLUS, $3);}
-		|			expression '-' expression	{$$=insert_infix_expression($1, is_MINUS, $3);}
-		|			expression '*' expression	{$$=insert_infix_expression($1, is_MULT, $3);}
-		|			expression '/' expression	{$$=insert_infix_expression($1, is_DIVIDE, $3);}
-		|			expression '%' expression	{$$=insert_infix_expression($1, is_MOD, $3);}
-		|			expression '+''+'			{$$=insert_infix_expression($1, is_PLUS, insert_INT(line, 1));}
-		|			expression '-''-'			{$$=insert_infix_expression($1, is_MINUS, insert_INT(line, 1));}
+unary_expression:	'-' simple_expression	%prec UMINUS	{$$=insert_unary_expression_neg($2);}
+        |           '(' simple_expression ')' {$$=insert_unary_expression_par($2);}
 		;
 
-unary_expression:	'-' expression	%prec UMINUS	{$$=insert_unary_expression($2);}
-		;
-
-b_expression:       b_expression AND b_expression       {$$=insert_b_infix_expression(line, $1, is_AND, $3);}
-        |           b_expression OR b_expression        {$$=insert_b_infix_expression(line, $1, is_OR, $3);}
-        |           '!' b_expression  %prec UMINUS      {$$=insert_b_not_expression(line, $2);}
-        |           expression EQUALS expression        {$$=insert_comparison(line, $1, is_EQUALS, $3);}
-        |           expression DIFERENT expression      {$$=insert_comparison(line, $1, is_DIFERENT, $3);}
-        |           expression GREATER expression       {$$=insert_comparison(line, $1, is_GREATER, $3);}
-        |           expression LESSER expression        {$$=insert_comparison(line, $1, is_LESSER, $3);}
-        |           expression GREATEQ expression       {$$=insert_comparison(line, $1, is_GREATEQ, $3);}
-        |           expression LESSEQ expression        {$$=insert_comparison(line, $1, is_LESSEQ, $3);}
-        |           TRUE                                {$$=insert_b_bool_expression(line, '1');}
-        |           FALSE                               {$$=insert_b_bool_expression(line, '0');}
+b_expression:       b_expression AND b_expression                       {$$=insert_b_infix_expression(line, $1, is_AND, $3);}
+        |           b_expression OR b_expression                        {$$=insert_b_infix_expression(line, $1, is_OR, $3);}
+        |           '!' b_expression  %prec UMINUS                      {$$=insert_b_not_expression(line, $2);}
+        |           simple_expression EQUALS simple_expression          {$$=insert_comparison(line, $1, is_EQUALS, $3);}
+        |           simple_expression DIFERENT simple_expression        {$$=insert_comparison(line, $1, is_DIFERENT, $3);}
+        |           simple_expression GREATER simple_expression         {$$=insert_comparison(line, $1, is_GREATER, $3);}
+        |           simple_expression LESSER simple_expression          {$$=insert_comparison(line, $1, is_LESSER, $3);}
+        |           simple_expression GREATEQ simple_expression         {$$=insert_comparison(line, $1, is_GREATEQ, $3);}
+        |           simple_expression LESSEQ simple_expression          {$$=insert_comparison(line, $1, is_LESSEQ, $3);}
+        |           TRUE                                                {$$=insert_b_bool_expression(line, '1');}
+        |           FALSE                                               {$$=insert_b_bool_expression(line, '0');}
+        |           VAR                                                 {$$=insert_b_expression_var(line, $1);}
+        |           method_call                                         {$$=insert_b_mc_expression(line,$1);}
+        |           increment                                           {$$=insert_b_expression_inc($1);}
+        ;
+        
+increment:  VAR INC         {$$=insert_increment(line, $1, '+');}
+        |   VAR DEC         {$$=insert_increment(line, $1, '-');}
         ;
 
 if:     IF '(' b_expression ')' '{' statements '}' %prec IFX     {$$=insert_if(line, $3, $6, NULL);}
@@ -233,13 +262,19 @@ while:  WHILE '(' b_expression ')' '{' statements '}'      {$$=insert_while(line
     |   WHILE '(' b_expression ')' statement               {$$=insert_while(line, $3, $5);}
     ;
 
-for:    FOR '(' for_first_camp b_expression ';' expression ')' '{' statements '}' {$$=insert_for(line, $3, $4, $6, $9);}
-    |   FOR '(' for_first_camp b_expression ';' expression ')' statement          {$$=insert_for(line, $3, $4, $6, $8);}
+for:    FOR '(' for_first_camp b_expression ';' for_last_camp ')' '{' statements '}' {$$=insert_for(line, $3, $4, $6, $9);}
+    |   FOR '(' for_first_camp b_expression ';' for_last_camp ')' statement          {$$=insert_for(line, $3, $4, $6, $8);}
     ;
     
 for_first_camp: attributions ';'    {$$=insert_as_statement($1);}
     |           declaration         {$$=insert_d_statement($1);}
     ;
+    
+for_last_camp:  attributions        {$$=insert_as_statement($1);}
+    |           print               {$$=insert_p_statement($1);}
+    |           method_call         {$$=insert_mc_statement($1);}
+    |           increment           {$$=insert_inc_statement($1);}
+    ;    
 
 method_call:    VAR '(' method_arg ')'      {$$=insert_method_call(line, $1, $3);}
     |           VAR '('  ')'                {$$=insert_method_call(line, $1, NULL);}
@@ -257,7 +292,6 @@ int main(int argc, char **argv)
 	line = 1;
 	errors = 0;
 	int parsing = yyparse();
-
 	if(!parsing){
 		prog_environment=semantic_analysis(isl);
 	    if(errors)

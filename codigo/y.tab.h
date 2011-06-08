@@ -69,12 +69,15 @@
      OR = 285,
      RETURN = 286,
      ARRAY = 287,
-     VAR = 288,
-     NUM_INT = 289,
-     NUM_DOUBLE = 290,
-     VAL_CHAR = 291,
-     UMINUS = 292,
-     IFX = 293
+     INC = 288,
+     DEC = 289,
+     VAR = 290,
+     NUM_INT = 291,
+     NUM_DOUBLE = 292,
+     VAL_CHAR = 293,
+     UMINUS = 294,
+     IFX = 295,
+     SIMPLE = 296
    };
 #endif
 /* Tokens.  */
@@ -108,12 +111,15 @@
 #define OR 285
 #define RETURN 286
 #define ARRAY 287
-#define VAR 288
-#define NUM_INT 289
-#define NUM_DOUBLE 290
-#define VAL_CHAR 291
-#define UMINUS 292
-#define IFX 293
+#define INC 288
+#define DEC 289
+#define VAR 290
+#define NUM_INT 291
+#define NUM_DOUBLE 292
+#define VAL_CHAR 293
+#define UMINUS 294
+#define IFX 295
+#define SIMPLE 296
 
 
 
@@ -132,6 +138,7 @@ typedef union YYSTYPE
 	is_type it;
 	is_expression_list* iel;
 	is_expression* ie;
+	is_s_expression* ise;
 	is_infix_expression* iie;
 	is_unary_expression* iue;
 	is_argument* iar;
@@ -151,11 +158,12 @@ typedef union YYSTYPE
 	is_method_call* imc;
 	is_method_arg_list* imal;
 	is_return* ir;
+	is_increment* iinc;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 159 "y.tab.h"
+#line 167 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

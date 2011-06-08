@@ -14,7 +14,7 @@ typedef enum {is_GREATER, is_LESSER, is_GREATEQ, is_LESSEQ, is_EQUALS, is_DIFERE
 
 typedef enum {stat_declaration, stat_method} type_static;
 
-typedef enum {stt_attribution, stt_declaration, stt_print, stt_if, stt_while, stt_for, stt_m_call, stt_return} type_statement;
+typedef enum {stt_attribution, stt_declaration, stt_print, stt_if, stt_while, stt_for, stt_m_call, stt_return, stt_inc} type_statement;
 
 typedef enum {print_expression} type_print;
 
@@ -24,9 +24,13 @@ typedef enum {ret_expression, ret_b_expression, ret_void} type_return;
 
 typedef enum {attr_expression, attr_b_expression} type_attribution;
 
-typedef enum {exp_infix, exp_unary, exp_int, exp_double, exp_char, exp_var, exp_m_call} type_expression;
+typedef enum {exp_infix, exp_unary, exp_int, exp_double, exp_char} type_expression;
 
-typedef enum {b_exp_bool, b_exp_comp, b_exp_infix, b_exp_not} type_b_expression;
+typedef enum {b_exp_bool, b_exp_comp, b_exp_infix, b_exp_not, b_exp_var, b_exp_m_call, b_exp_inc} type_b_expression;
+
+typedef enum {s_exp_var, s_exp_exp, s_exp_m_call, s_exp_inc} type_s_expression;
+
+typedef enum {u_exp_neg, u_exp_par} type_u_expression;
 
 typedef struct _a0 {
 	type_static type;
@@ -40,6 +44,7 @@ typedef struct _a0 {
 typedef struct _a1 {
 	type_attribution type;
 	char* name;
+	char op;
 	union{
 	    struct is_expression* exp;
 	    struct is_b_expression* b_exp;
@@ -55,20 +60,29 @@ typedef struct _a3 {
 		int num_int;
 		double num_double;
 		char val_char;
-		char* var;
-		struct is_method_call* m_call;
 	} content;
 	int codeline;
 } is_expression;
 
+typedef struct _a28 {
+    type_s_expression type;
+    union {
+        char* var;
+        struct is_expression* exp;
+        struct is_method_call* m_call;
+        struct is_increment* inc;
+    } content;
+} is_s_expression;
+
 typedef struct _a4 {
-	is_expression* exp1;
+	is_s_expression* exp1;
 	is_operator op;
-	is_expression* exp2;
+	is_s_expression* exp2;
 } is_infix_expression;
 
 typedef struct _a5 {
-	is_expression* exp;
+	type_u_expression type;
+	is_s_expression* exp;
 } is_unary_expression;
 
 typedef struct _a6 {
@@ -107,6 +121,7 @@ typedef struct _a12 {
 		struct is_for* _for;
 		struct is_method_call* m_call;
 		struct is_return* _return;
+		struct is_increment* inc;
 	} content;
 } is_statement;
 
@@ -119,7 +134,7 @@ typedef struct _a14 {
     type_print type;
     char end;
     union {
-        struct is_expression* exp;
+        struct is_simple_expression* exp;
     } content;
     int codeline;
 } is_print;
@@ -137,6 +152,9 @@ typedef struct _a16 {
         struct is_b_infix_expression* infix_b_exp;
         struct is_b_not_expression* not_b_exp;
         struct is_comparison* comp;
+        struct is_method_call* m_call;
+        char* var;
+        struct is_increment* inc;
     } content;
     int codeline;
 } is_b_expression;
@@ -148,14 +166,20 @@ typedef struct _a17 {
 } is_b_infix_expression;
 
 typedef struct _a18 {
-    is_expression* exp1;
+    is_s_expression* exp1;
     is_comparator op;
-    is_expression* exp2;
+    is_s_expression* exp2;
 } is_comparison;
 
 typedef struct _a19 {
     is_b_expression* exp;
 } is_b_not_expression;
+
+typedef struct _a29 {
+    char* var;
+    char op;
+    int codeline;
+} is_increment;
 
 typedef struct _a27 {
     type_return type;
@@ -196,7 +220,7 @@ typedef struct _a21 {
 typedef struct _a22 {
     is_statement_list* attr;
     is_b_expression* b_exp;
-    is_expression* exp;
+    is_statement_list* last;
     is_statement_list* stt;
     int codeline;
 } is_for;

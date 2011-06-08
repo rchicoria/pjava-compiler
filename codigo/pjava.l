@@ -13,7 +13,7 @@
 [0-9]+\.[0-9]+	{yylval.dnum=atof(yytext);
 				return NUM_DOUBLE;}
 
-\'.\'           {yylval.vchar=yytext[0];
+\'.\'           {yylval.vchar=yytext[1];
                     return VAL_CHAR;
                 }
 
@@ -62,6 +62,9 @@
 
 "System.out.print"  	{return PRINT;}
 "System.out.println"	{return PRINTLN;}
+
+"++"            {return INC;}
+"--"            {return DEC;}
 
 [A-z][A-z0-9_]* {//	Nomes de variáveis têm de começar com letra, podem ter letra, número e _
 					yylval.var = (char*) strdup(yytext); 
