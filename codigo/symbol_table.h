@@ -3,13 +3,13 @@
 
 typedef enum {integer, character, doub, method} basic_type;
 
-typedef enum {is_INT, is_STRING, is_VOID, is_FLOAT, is_DOUBLE, is_BOOLEAN, is_CHAR, is_NONE} is_tipo;
+typedef enum {is_INT, is_STRING, is_VOID, is_FLOAT, is_DOUBLE, is_BOOLEAN, is_CHAR, is_NONE} is_type;
 typedef enum {is_METHOD, is_ARGUMENT, is_VAR} sym_type;
 
 //lista ligada de simbolos - um ambiente/registo de activação
 typedef struct _t1{	
 	char name[32];
-	is_tipo type;
+	is_type type;
 	sym_type stype;
 	int offset;		//futura posição na frame, caso seja uma variavel -1, se for uma procedure.
 	struct _t1 *next;

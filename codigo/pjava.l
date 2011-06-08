@@ -6,12 +6,16 @@
 %%
 
 [0-9]+			{//	Recebe os numeros
-					yylval.num=atoi(yytext);
-					return NUMBER;
+					yylval.inum=atoi(yytext);
+					return NUM_INT;
 				}
 
-[0-9]+\.[0-9]+		{yylval.fnum=atof(yytext);
-						return FLOAT_NUM;}
+[0-9]+\.[0-9]+	{yylval.dnum=atof(yytext);
+				return NUM_DOUBLE;}
+
+\'.\'           {yylval.vchar=yytext[1];
+                    return VAL_CHAR;
+                }
 
 "class"			{// Recebe a declaração da classe
 					return CLASS;
@@ -28,10 +32,11 @@
 "void"			{return VOID;}
 "float"			{return FLOAT;}
 "double"		{return DOUBLE;}
-"Boolean"		{return BOOLEAN;}
+"boolean"		{return BOOLEAN;}
 "char"			{return CHAR;}
 
 "if"            {return IF;}
+"else"          {return ELSE;}
 "while"         {return WHILE;}
 "for"           {return FOR;}
 "do"			{return DO;}
@@ -51,8 +56,15 @@
 "true"          {return TRUE;}
 "false"         {return FALSE;}
 
+"return"        {return RETURN;}
+
+"[]"            {return ARRAY;}
+
 "System.out.print"  	{return PRINT;}
 "System.out.println"	{return PRINTLN;}
+
+"++"            {return INC;}
+"--"            {return DEC;}
 
 [A-z][A-z0-9_]* {//	Nomes de variáveis têm de começar com letra, podem ter letra, número e _
 					yylval.var = (char*) strdup(yytext); 

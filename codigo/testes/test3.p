@@ -1,22 +1,37 @@
 class test3
 {
 
-	static int b = 0;
+	static int b = 1, a = 1;
+	static int j = a+b;
 	static String texto;
 	
-	public static int func(double a, double b, int c) {
+	public static boolean func(int a, double b, boolean c) {
+	    return true;
 	}
 
-	public static void main(String args) {
-		int a=2, b=3+4+5;
-		float d=1.0+3+5;
-		if(true && a==1 || !false)
-		    int c=0;
-		for(a=1; a<10; a++)
+	public static int main(String [] args) {
+		int a=2+j, b=a+5;
+		double d=1.0;
+		boolean v=true;
+		char g='h';
+		int k = b-(-(a++));
+		boolean li = func(a,d,v);
+		if(a==3){
+		    int c_a=3;
+		}
+		else if(a > b){
+		    int c=a++;
+		    double var = 5.0;
+		}
+		else{
+		    a=3;
+		}
+		a=(-b*a)/(3%2);
+		a++;
+		b=a++;
+		for(int n=1; a<a; System.out.println(a))
 		    int aa=1;
-		b=33;
-		int c=2;
-		System.out.println(2+4);
+		System.out.println(a);
+		return 1;
 	}
-
 }
