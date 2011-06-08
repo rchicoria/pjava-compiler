@@ -498,7 +498,7 @@ void semantic_analysis_print(prog_env* pe, table_element* env, is_print* ip)
 {
 	switch(ip->type)
 	{
-		case print_expression: semantic_analysis_s_expression(pe, env, (is_s_expression*)(ip->content.exp), ip->codeline);break;
+		case print_expression: ip->exp_type = semantic_analysis_s_expression(pe, env, (is_s_expression*)(ip->content.exp), ip->codeline);break;
 	}
 }
 

@@ -12,7 +12,7 @@ class test3
 	public static int main(String [] args) {
 		int a=2+j, b=a+5;
 		double d=1.0;
-		boolean v=true;
+		boolean v=!true;
 		char g='h';
 		int k = b-(-(a++));
 		boolean li = func(a,d,v);
@@ -27,7 +27,7 @@ class test3
 		    a=3;
 		}
 		a=(-b*a)/(3%2);
-		a++;
+		li = b >= a;
 		b=a++;
 		for(int n=1; a<a; System.out.println(a))
 		    int aa=1;

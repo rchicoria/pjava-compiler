@@ -132,6 +132,7 @@ typedef struct _a13 {
 
 typedef struct _a14 {
     type_print type;
+    is_type exp_type;
     char end;
     union {
         struct is_simple_expression* exp;

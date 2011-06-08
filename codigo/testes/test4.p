@@ -1,18 +1,37 @@
-class ola
+class test4
 {
 
-	static Boolean a;
-	static int b = 0, c, d=1;
-	static double e = 1.5;
-	static String texto = "olá";
+	static int b = 1, a = 1;
+	static int j = a+b;
+	static String texto;
 	
-	public static int func(double a, double b, int c) {
-	}
-	
-	static void main(String args) {
-		4+5-3-2;
-		1+2+-3;
-		90-2-0+90;
+	public static boolean func(int a, double b, boolean c) {
+	    return true;
 	}
 
+	public static int main(String [] args) {
+		int a=2+j, b=a+5;
+		double d=1.0;
+		boolean v=true;
+		char g='h';
+		int k = b-(-(a++));
+		boolean li = func(a,d,v);
+		if(a==3){
+		    int c_a=3;
+		}
+		else if(a > b){
+		    int c=a++;
+		    double var = 5.0;
+		}
+		else{
+		    a=3;
+		}
+		a=(-b*a)/(3%2);
+		a++;
+		b=a++;
+		for(int n=1; a<a; System.out.println(a))
+		    int aa=1;
+		System.out.println(a);
+		return 1;
+	}
 }
