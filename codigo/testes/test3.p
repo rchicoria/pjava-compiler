@@ -2,6 +2,7 @@ class test3
 {
 
 	static int b = 1, a = 1;
+	static int j = a+b;
 	static String texto;
 	
 	public static boolean func(int a, double b, boolean c) {
@@ -9,7 +10,7 @@ class test3
 	}
 
 	public static int main(String [] args) {
-		int a=2, b=a+5;
+		int a=2+j, b=a+5;
 		double d=1.0;
 		boolean v=true;
 		char g='h';
