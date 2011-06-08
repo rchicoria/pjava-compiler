@@ -8,7 +8,7 @@ class test3
 	}
 
 	public static void main(String args) {
-		int a=2.0, b=3+4+5;
+		int a=2, b=3+4+5;
 		float d=1.0+3+5;
 		if(true && a==1 || !false)
 		    int c=0;
