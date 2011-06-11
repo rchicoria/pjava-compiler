@@ -7,6 +7,9 @@
 int global_offset=0;
 int method_returns=0;
 int method_scope=0;
+int n_for=0;
+int n_while=0;
+int n_if=0;
 
 /*
  *	chama, para cada is_static, a respectiva função de análise semantica. retorna um prog_env que contem todos os símbolos (globais, locais, methods)
@@ -353,20 +356,27 @@ table_element* semantic_analysis_statement(prog_env *pe, table_element* env, is_
  */
 is_type semantic_analysis_expression(prog_env* pe, table_element* env, is_expression* ie)
 {
+	is_type temp=-1;
 	switch(ie->type)
 	{
 		case exp_infix: 
-		    return semantic_analysis_infix_exp(pe, env, (is_infix_expression*)(ie->content.infix_exp), ie->codeline);
+		    temp= semantic_analysis_infix_exp(pe, env, (is_infix_expression*)(ie->content.infix_exp), ie->codeline);
+		    break;
 		case exp_unary: 
-		    return semantic_analysis_s_expression(pe,env, (is_s_expression*)(((is_unary_expression*)(ie->content.unary_exp))->exp), ie->codeline);
+		    temp= semantic_analysis_s_expression(pe,env, (is_s_expression*)(((is_unary_expression*)(ie->content.unary_exp))->exp), ie->codeline);
+		    break;
 		case exp_int: 
-		    return is_INT;
+		    temp= is_INT;
+		    break;
 		case exp_double: 
-		    return is_DOUBLE;
+		    temp= is_DOUBLE;
+		    break;
 		case exp_char:
-		    return is_CHAR; 
+		    temp= is_CHAR;
+		    break; 
 	}
-	return -1;
+	ie->val_type=temp;
+	return temp;
 }
 
 /*
@@ -376,33 +386,45 @@ is_type semantic_analysis_infix_exp(prog_env* pe, table_element* env, is_infix_e
 {
     is_type type1 = semantic_analysis_s_expression(pe, env, exp->exp1, line);
     is_type type2 = semantic_analysis_s_expression(pe, env, exp->exp2, line);
+    is_type temp = -1;
     
     if(type1==-1 || type2==-1)
-        return -1;
+        temp=-1;
         
     if((type1==is_BOOLEAN && type2!=is_BOOLEAN) || (type1!=is_BOOLEAN && type2==is_BOOLEAN)){
         printf("line %d: error: invalid operation for boolean\n", line);
         errors++;
-        return -1;
+        temp=-1;
     }
     if(type1==is_DOUBLE || type2==is_DOUBLE )
-        return is_DOUBLE;
+        temp=is_DOUBLE;
         
-     if(type1==is_INT || type2==is_INT )
-        return is_INT;
-
-    return is_CHAR;
+    else if(type1==is_INT || type2==is_INT )
+        temp=is_INT;
+    else
+        temp=is_CHAR;
+    exp->val_type=temp;
+    return temp;
 }
 
 is_type semantic_analysis_s_expression(prog_env* pe, table_element* env, is_s_expression* exp, int line)
 {
+    is_type temp = -1;
     switch(exp->type){
-        case s_exp_var: return semantic_analysis_var(pe, env, exp->content.var, line);
-        case s_exp_exp: return semantic_analysis_expression(pe, env, (is_expression*)exp->content.exp);
-        case s_exp_m_call: return semantic_analysis_method_call(pe, env, (is_method_call*) (exp->content.m_call));
-        case s_exp_inc: return semantic_analysis_increment(pe, env, (is_increment*)(exp->content.inc));
+        case s_exp_var: 
+            temp= semantic_analysis_var(pe, env, exp->content.var, line);
+            break;
+        case s_exp_exp: 
+            temp= semantic_analysis_expression(pe, env, (is_expression*)exp->content.exp);
+            break;
+        case s_exp_m_call: 
+            temp= semantic_analysis_method_call(pe, env, (is_method_call*) (exp->content.m_call));
+            break;
+        case s_exp_inc: 
+            temp= semantic_analysis_increment(pe, env, (is_increment*)(exp->content.inc));
+            break;
     }
-    return -1;
+    return temp;
 }
 
 /*
@@ -411,7 +433,7 @@ is_type semantic_analysis_s_expression(prog_env* pe, table_element* env, is_s_ex
 is_type semantic_analysis_var(prog_env* pe, table_element* env, char* var, int line)
 {
     table_element *aux;
-    
+    is_type temp = -1;
 	aux=lookup(env, var);
 	if(aux==0){
 	    aux=lookup(pe->global, var);
@@ -421,10 +443,11 @@ is_type semantic_analysis_var(prog_env* pe, table_element* env, char* var, int l
             return -1;
         }
 	    else if(aux!=0 && aux->stype!=is_METHOD){
-	        return aux->type;
+	         temp = aux->type;
         }
     }
-    return aux->type;
+    temp = aux->type;
+    return temp;
 }
 
 /*
@@ -432,24 +455,33 @@ is_type semantic_analysis_var(prog_env* pe, table_element* env, char* var, int l
  */
 is_type semantic_analysis_b_expression(prog_env* pe, table_element* env, is_b_expression* ibe)
 {
+    is_type temp = -1;
     switch(ibe->type)
 	{
 		case b_exp_infix: 
-		    return semantic_analysis_b_infix_exp(pe, env, (is_b_infix_expression*)(ibe->content.infix_b_exp));
+		    temp= semantic_analysis_b_infix_exp(pe, env, (is_b_infix_expression*)(ibe->content.infix_b_exp));
+		    break;
 		case b_exp_not: 
-		    return semantic_analysis_b_expression(pe, env, (is_b_expression*)((is_b_not_expression*)ibe->content.not_b_exp)->exp);
+		    temp= semantic_analysis_b_expression(pe, env, (is_b_expression*)((is_b_not_expression*)ibe->content.not_b_exp)->exp);
+		    break;
 		case b_exp_bool:
-		    return is_BOOLEAN;
+		    temp= is_BOOLEAN;
+		    break;
 		case b_exp_comp: 
-		    return semantic_analysis_comparison(pe, env, (is_comparison*)(ibe->content.comp), ibe->codeline);
+		    temp= semantic_analysis_comparison(pe, env, (is_comparison*)(ibe->content.comp), ibe->codeline);
+		    break;
 		case b_exp_var: 
-		    return semantic_analysis_var(pe, env, ibe->content.var, ibe->codeline);
+		    temp= semantic_analysis_var(pe, env, ibe->content.var, ibe->codeline);
+		    break;
 		case b_exp_m_call:
-		    return semantic_analysis_method_call(pe, env, (is_method_call*) (ibe->content.m_call));
+		    temp= semantic_analysis_method_call(pe, env, (is_method_call*) (ibe->content.m_call));
+		    break;
 		case b_exp_inc:
-		    return semantic_analysis_increment(pe, env, (is_increment*)(ibe->content.inc));
+		    temp= semantic_analysis_increment(pe, env, (is_increment*)(ibe->content.inc));
+	        break;
 	}
-	return -1;
+	ibe->val_type = temp;
+	return temp;
 }
 
 /*
@@ -457,6 +489,7 @@ is_type semantic_analysis_b_expression(prog_env* pe, table_element* env, is_b_ex
  */
 is_type semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_infix_expression* ibe)
 {
+    is_type temp=-1;
     is_type a = semantic_analysis_b_expression(pe, env, ibe->exp1);
     is_type b = semantic_analysis_b_expression(pe, env, ibe->exp2);
     if(a!=is_BOOLEAN){
@@ -471,7 +504,9 @@ is_type semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_inf
     }
     if(a == -1 || b == -1)
         return -1;
-    return is_BOOLEAN;
+    temp = is_BOOLEAN;
+    ibe->val_type = temp;
+    return temp;
 }
 
 /*
@@ -479,6 +514,7 @@ is_type semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_inf
  */
 is_type semantic_analysis_comparison(prog_env* pe, table_element* env, is_comparison* comp, int line)
 {
+    is_type temp=-1;
     is_type a = semantic_analysis_s_expression(pe, env, comp->exp1, line);
     is_type b = semantic_analysis_s_expression(pe, env, comp->exp2, line);
     if((a==is_BOOLEAN && b!=is_BOOLEAN) || (a!=is_BOOLEAN && b==is_BOOLEAN)){
@@ -488,7 +524,9 @@ is_type semantic_analysis_comparison(prog_env* pe, table_element* env, is_compar
     }
     if(a == -1 || b == -1)
         return -1;
-    return is_BOOLEAN;
+    temp=is_BOOLEAN;
+    comp->val_type=temp;
+    return temp;
 }
 
 /*
@@ -523,18 +561,22 @@ void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii, is_type t
 		for(aux=pe->procs; aux->next; aux=aux->next);
 		aux->next=pl;
 	}
-	pl->name=(char*)strdup("if");	
+	pl->name=(char*)strdup("if");
+	char temp_n[20];
+	sprintf(temp_n, "%d", n_if);
+	strcat(pl->name, temp_n);
+	n_if++;
 	//faz a analise semantica dos arguments e statements do if
 	pl->locals = semantic_analysis_statement_list(pe, env, ii->stt, type);
 	if(ii->ifelse)
-	    semantic_analysis_else(pe, env, ii->ifelse, type);
+	    semantic_analysis_else(pe, env, ii->ifelse, type, temp_n);
 	method_scope--;
 }
 
 /*
  *  faz a analise semantica de um is_else. o is_type type corresponde ao tipo do metodo respectivo
  */
-void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_type type)
+void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_type type, char* n)
 {
 	environment_list* aux;
 	//cria uma nova entrada para a environment_list que corresponde ao ambiente do else
@@ -547,7 +589,8 @@ void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_
 		for(aux=pe->procs; aux->next; aux=aux->next);
 		aux->next=pl;
 	}
-	pl->name=(char*)strdup("else");	
+	pl->name=(char*)strdup("else");
+	strcat(pl->name, n);
 	//faz a analise semantica dos arguments e statements do else
 	pl->locals=semantic_analysis_statement_list(pe, env, iiel->stt, type);
 }
@@ -569,10 +612,14 @@ void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw, is_
 		for(aux=pe->procs; aux->next; aux=aux->next);
 		aux->next=pl;
 	}
-	pl->name=(char*)strdup("while");	
+	pl->name=(char*)strdup("while");
+	char temp_n[20];
+	sprintf(temp_n, "%d", n_while);
+	strcat(pl->name, temp_n);
+	printf("%s\n",pl->name);
+	n_while++;
     semantic_analysis_b_expression(pe, env, (is_b_expression*)(iw->exp));
 	pl->locals=semantic_analysis_statement_list(pe, env, iw->stt, type);
-	aux->next=NULL;
 	method_scope--;
 }
 
@@ -593,7 +640,11 @@ void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf, is_typ
 		for(aux=pe->procs; aux->next; aux=aux->next);
 		aux->next=pl;
 	}
-	pl->name=(char*)strdup("for");	
+	pl->name=(char*)strdup("for");
+	char temp_n[20];
+	sprintf(temp_n, "%d", n_for);
+	strcat(pl->name, temp_n);
+	n_for++;
 	//faz a analise semantica dos arguments e statements do for
 	pl->locals=semantic_analysis_statement_list(pe, env, (is_statement_list*)(isf->attr), type);
 	semantic_analysis_b_expression(pe, env, (is_b_expression*)(isf->b_exp));

@@ -1,8 +1,15 @@
 class ola
 {
-
-	4+5-3-2;
-	1+2+-3;
-	90-2-0+90;
-
+    public static int dec(int a){
+        a++;
+        if(a<10)
+            a=dec(a);
+        return a;
+    }
+    
+    public static void main()
+    {
+        int a=0;
+        System.out.println(dec(a));    
+    }
 }

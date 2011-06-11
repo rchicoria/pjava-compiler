@@ -24,7 +24,7 @@ is_type semantic_analysis_b_infix_exp(prog_env* pe, table_element* env, is_b_inf
 is_type semantic_analysis_comparison(prog_env* pe, table_element* env, is_comparison* comp, int line);
 void semantic_analysis_print(prog_env* pe, table_element* env, is_print* ip);
 void semantic_analysis_if(prog_env* pe, table_element* env, is_if* ii, is_type type);
-void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_type type);
+void semantic_analysis_else(prog_env* pe, table_element* env, is_else* iiel, is_type type, char* n);
 void semantic_analysis_while(prog_env* pe, table_element* env, is_while* iw, is_type type);
 void semantic_analysis_for(prog_env* pe, table_element* env, is_for* isf, is_type type);
 is_type semantic_analysis_method_call(prog_env* pe, table_element* env, is_method_call* imc);
