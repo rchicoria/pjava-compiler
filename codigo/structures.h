@@ -54,6 +54,7 @@ typedef struct _a1 {
 
 typedef struct _a3 {
 	type_expression type;
+	is_type val_type;
 	union {
 		struct is_infix_expression* infix_exp;
 		struct is_unary_expression* unary_exp;
@@ -66,6 +67,7 @@ typedef struct _a3 {
 
 typedef struct _a28 {
     type_s_expression type;
+    is_type val_type;
     union {
         char* var;
         struct is_expression* exp;
@@ -75,12 +77,14 @@ typedef struct _a28 {
 } is_s_expression;
 
 typedef struct _a4 {
+	is_type val_type;
 	is_s_expression* exp1;
 	is_operator op;
 	is_s_expression* exp2;
 } is_infix_expression;
 
 typedef struct _a5 {
+	is_type val_type;
 	type_u_expression type;
 	is_s_expression* exp;
 } is_unary_expression;
@@ -148,6 +152,7 @@ typedef struct _a15 {
 
 typedef struct _a16 {
     type_b_expression type;
+    is_type val_type;
     union {
         char boolean;
         struct is_b_infix_expression* infix_b_exp;
@@ -161,18 +166,21 @@ typedef struct _a16 {
 } is_b_expression;
 
 typedef struct _a17 {
+    is_type val_type;
     is_b_expression* exp1;
     is_b_operator op;
     is_b_expression* exp2;
 } is_b_infix_expression;
 
 typedef struct _a18 {
+    is_type val_type;
     is_s_expression* exp1;
     is_comparator op;
     is_s_expression* exp2;
 } is_comparison;
 
 typedef struct _a19 {
+    is_type val_type;
     is_b_expression* exp;
 } is_b_not_expression;
 

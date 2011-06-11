@@ -135,6 +135,7 @@ declaration: type attributions ';'  {$$=insert_declaration(line, $2,$1);}
         ;
         
 attributions:   attributions ',' attribution        {$$=insert_attribution_list($1, $3);}
+        |       attributions ',' VAR                {$$=insert_attribution_list($1, insert_attribution_exp(line, $3, NULL, '='));}
         |       attribution                         {$$=insert_attribution_list(NULL, $1);}
         |       VAR                                 {$$=insert_attribution_list(NULL, insert_attribution_exp(line, $1, NULL, '='));}
         ;
